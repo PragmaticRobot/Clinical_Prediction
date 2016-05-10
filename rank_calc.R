@@ -175,11 +175,85 @@ Wolf_Lin_RF_sort <- RF_3[order(-RF_3$X1), , drop=FALSE]
 
 ## plot the LASSO results:
 # FM: FM_Lin_LASSO_sort
-plot.new()
-for (i in 1:dim(FM_Lin_LASSO_sort)[1]){
+par(las=1)
+par(mar=c(4,10,4,2))
+x <- FM_Lin_LASSO_sort[1,]
+nam <- rownames(FM_Lin_LASSO_sort)[1]
+x <- x[!is.na(x)]
+offs <- runif(length(x),-0.1,0.1)
+gg <- x
+yy <- rep(dim(FM_Lin_LASSO_sort)[1], length(gg))+ offs
+# points(rowMeans(WO_quad_lasso),yWO, col = 'blue',pch=22, cex=0.8)
+# ylim = c(-28, 14), xlim = c(-28, 14)
+# ,
+plot(gg,yy,col='blue',pch=16,ylim = c(1, dim(FM_Lin_LASSO_sort)[1]),
+     xlim = c(-7, 26),
+     cex=0.5,yaxt='n', main="Fugl-Meyer LASSO Coefficients", 
+     xlab="Value",ylab="",cex.lab=0.8)
+axis(side = 2, at = dim(FM_Lin_LASSO_sort)[1],paste(nam))
+for (i in 2:dim(FM_Lin_LASSO_sort)[1]){
   x <- FM_Lin_LASSO_sort[i,]
   nam <- rownames(FM_Lin_LASSO_sort)[i]
   x <- x[!is.na(x)]
-  offs <- runif(length(x),-0.25,0.25)
-  points()
+  offs <- runif(length(x),-0.1,0.1)
+  gg <- x
+  yy <- rep(dim(FM_Lin_LASSO_sort)[1] - (i-1), length(gg))+ offs
+  # points(rowMeans(WO_quad_lasso),yWO, col = 'blue',pch=22, cex=0.8)
+  points(gg,yy,col='blue',pch=16,cex=0.5)
+  axis(side = 2, at = dim(FM_Lin_LASSO_sort)[1] - (i-1),paste(nam))
+}
+
+# Arm-Only FM: ArmFM_Lin_LASSO_sort
+par(las=1)
+par(mar=c(4,10,4,2))
+x <- ArmFM_Lin_LASSO_sort[1,]
+nam <- rownames(ArmFM_Lin_LASSO_sort)[1]
+x <- x[!is.na(x)]
+offs <- runif(length(x),-0.1,0.1)
+gg <- x
+yy <- rep(dim(ArmFM_Lin_LASSO_sort)[1], length(gg))+ offs
+# points(rowMeans(WO_quad_lasso),yWO, col = 'blue',pch=22, cex=0.8)
+# ylim = c(-28, 14), xlim = c(-28, 14)
+# ,
+plot(gg,yy,col='blue',pch=16,ylim = c(1, dim(ArmFM_Lin_LASSO_sort)[1]),
+     xlim = c(-2, 17),
+     cex=0.5,yaxt='n', main="Arm-Only Fugl-Meyer LASSO Coefficients", 
+     xlab="Value",ylab="",cex.lab=0.8)
+axis(side = 2, at = dim(ArmFM_Lin_LASSO_sort)[1],paste(nam))
+for (i in 2:dim(ArmFM_Lin_LASSO_sort)[1]){
+  x <- ArmFM_Lin_LASSO_sort[i,]
+  nam <- rownames(ArmFM_Lin_LASSO_sort)[i]
+  x <- x[!is.na(x)]
+  offs <- runif(length(x),-0.1,0.1)
+  gg <- x
+  yy <- rep(dim(ArmFM_Lin_LASSO_sort)[1] - (i-1), length(gg))+ offs
+  # points(rowMeans(WO_quad_lasso),yWO, col = 'blue',pch=22, cex=0.8)
+  points(gg,yy,col='blue',pch=16,cex=0.5)
+  axis(side = 2, at = dim(ArmFM_Lin_LASSO_sort)[1] - (i-1),paste(nam))
+}
+
+# Wolf: Wolf_Lin_LASSO_sort
+par(las=1)
+par(mar=c(4,10,4,2))
+x <- Wolf_Lin_LASSO_sort[1,]
+nam <- rownames(Wolf_Lin_LASSO_sort)[1]
+x <- x[!is.na(x)]
+offs <- runif(length(x),-0.1,0.1)
+gg <- x
+yy <- rep(dim(Wolf_Lin_LASSO_sort)[1], length(gg))+ offs
+plot(gg,yy,col='blue',pch=16,ylim = c(1, dim(Wolf_Lin_LASSO_sort)[1]),
+     xlim = c(-45, 56),
+     cex=0.5,yaxt='n', main="Wolf Motor Function LASSO Coefficients", 
+     xlab="Value",ylab="",cex.lab=0.8)
+axis(side = 2, at = dim(Wolf_Lin_LASSO_sort)[1],paste(nam))
+for (i in 2:dim(Wolf_Lin_LASSO_sort)[1]){
+  x <- Wolf_Lin_LASSO_sort[i,]
+  nam <- rownames(Wolf_Lin_LASSO_sort)[i]
+  x <- x[!is.na(x)]
+  offs <- runif(length(x),-0.1,0.1)
+  gg <- x
+  yy <- rep(dim(Wolf_Lin_LASSO_sort)[1] - (i-1), length(gg))+ offs
+  # points(rowMeans(WO_quad_lasso),yWO, col = 'blue',pch=22, cex=0.8)
+  points(gg,yy,col='blue',pch=16,cex=0.5)
+  axis(side = 2, at = dim(Wolf_Lin_LASSO_sort)[1] - (i-1),paste(nam))
 }
