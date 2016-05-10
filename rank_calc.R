@@ -25,10 +25,8 @@ library(dplyr)
 library(lattice) 
 
 ##
-Dpath <- file.path("C:","Users","Yaz","Dropbox","Research","NewDec2015","2016-04-19 - Second Run CV","lasso_pred.mat")
-LASSO_res <- readMat(Dpath, maxLength=NULL, fixNames=TRUE, Verbose=FALSE)
-Dpath <- file.path("C:","Users","Yaz","Dropbox","Research","NewDec2015","2016-04-19 - Second Run CV","RF_pred.mat")
-RF_res <- readMat(Dpath, maxLength=NULL, fixNames=TRUE, Verbose=FALSE)
+LASSO_res <- readMat("lasso_pred.mat", maxLength=NULL, fixNames=TRUE, Verbose=FALSE)
+RF_res <- readMat("RF_pred.mat", maxLength=NULL, fixNames=TRUE, Verbose=FALSE)
 load(file = "C:/Users/Yaz/Dropbox/Research/NewDec2015/colnames.rda")
 ## restructure the data into a data frame
 # RF: Random Forests
@@ -174,3 +172,14 @@ Wolf_Lin_LASSO_sort <- gg[order(-abs(gg$X1)), , drop = FALSE]
 FM_Lin_RF_sort <- RF_1[order(-RF_1$X1), , drop=FALSE]
 ArmFM_Lin_RF_sort <- RF_2[order(-RF_2$X1), , drop=FALSE]
 Wolf_Lin_RF_sort <- RF_3[order(-RF_3$X1), , drop=FALSE]
+
+## plot the LASSO results:
+# FM: FM_Lin_LASSO_sort
+plot.new()
+for (i in 1:dim(FM_Lin_LASSO_sort)[1]){
+  x <- FM_Lin_LASSO_sort[i,]
+  nam <- rownames(FM_Lin_LASSO_sort)[i]
+  x <- x[!is.na(x)]
+  offs <- runif(length(x),-0.25,0.25)
+  points()
+}
