@@ -7,22 +7,8 @@
 #########################
 
 rm(list = ls())
-# options(error=recover)
 library(MASS)
 library(R.matlab)
-library(corrplot)
-library(GGally)
-library(tableone)
-library(lars)
-library(glmnet)
-library(coefplot)
-library(ggplot2)
-library(foreach)
-library(randomForest)
-library(doParallel)
-library(qpcR)
-library(dplyr)
-library(lattice) 
 
 ##
 LASSO_res <- readMat("lasso_pred.mat", maxLength=NULL, fixNames=TRUE, Verbose=FALSE)
@@ -256,4 +242,30 @@ for (i in 2:dim(Wolf_Lin_LASSO_sort)[1]){
   # points(rowMeans(WO_quad_lasso),yWO, col = 'blue',pch=22, cex=0.8)
   points(gg,yy,col='blue',pch=16,cex=0.5)
   axis(side = 2, at = dim(Wolf_Lin_LASSO_sort)[1] - (i-1),paste(nam))
+}
+# 
+## For random forests, only use the first 15 features
+# FM: FM_Lin_RF_sort
+par(las=1)
+par(mar=c(2,8,2,1))
+x <- FM_Lin_RF_sort[1,]
+nam <- rownames(FM_Lin_RF_sort)[1]
+x <- x[!is.na(x)]
+offs <- runif(length(x),-0.1,0.1)
+gg <- x
+yy <- rep(15, length(gg))+ offs
+plot(gg,yy,col='blue',pch=16,ylim = c(1, 15),
+     xlim = c(0, 46),cex=0.3,yaxt='n', main="UEFM RF Variable Importance",
+     xlab="",ylab="",cex.lab=0.7)
+axis(side = 2, at = 15,paste(nam))
+for (i in 2:15){
+  x <- FM_Lin_RF_sort[i,]
+  nam <- rownames(FM_Lin_RF_sort)[i]
+  x <- x[!is.na(x)]
+  offs <- runif(length(x),-0.1,0.1)
+  gg <- x
+  yy <- rep(15 - (i-1), length(gg))+ offs
+  # points(rowMeans(WO_quad_lasso),yWO, col = 'blue',pch=22, cex=0.8)
+  points(gg,yy,col='blue',pch=16,cex=0.3)
+  axis(side = 2, at = 15 - (i-1),paste(nam))
 }
