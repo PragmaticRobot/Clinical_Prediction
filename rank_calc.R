@@ -269,3 +269,35 @@ for (i in 2:15){
   points(gg,yy,col='blue',pch=16,cex=0.3)
   axis(side = 2, at = 15 - (i-1),paste(nam))
 }
+
+### Functions #############
+plot_sideways_RF <- function(sorted_list)
+{
+  par(las=1)
+  par(mar=c(2,8,2,1))
+  x <- sorted_list[1,]
+  nam <- rownames(sorted_list)[1]
+  x <- x[!is.na(x)]
+  offs <- runif(length(x),-0.1,0.1)
+  gg <- x
+  yy <- rep(15, length(gg))+ offs
+  plot(gg,yy,col='blue',pch=16,ylim = c(1, 15),
+       xlim = c(0, 46),cex=0.3,yaxt='n', main="UEFM RF Variable Importance",
+       xlab="",ylab="",cex.lab=0.7)
+  axis(side = 2, at = 15,paste(nam))
+  for (i in 2:15){
+    x <- sorted_list[i,]
+    nam <- rownames(sorted_list)[i]
+    x <- x[!is.na(x)]
+    offs <- runif(length(x),-0.1,0.1)
+    gg <- x
+    yy <- rep(15 - (i-1), length(gg))+ offs
+    # points(rowMeans(WO_quad_lasso),yWO, col = 'blue',pch=22, cex=0.8)
+    points(gg,yy,col='blue',pch=16,cex=0.3)
+    axis(side = 2, at = 15 - (i-1),paste(nam))
+  }
+  return()
+}
+
+
+##################################
