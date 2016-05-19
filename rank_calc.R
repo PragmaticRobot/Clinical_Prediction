@@ -6,7 +6,7 @@
 ## Setup and libraries ##
 #########################
 
-rm(list = ls())
+# rm(list = ls()) # clear the environment
 library(MASS)
 library(R.matlab)
 
@@ -159,144 +159,67 @@ FM_Lin_RF_sort <- RF_1[order(-RF_1$X1), , drop=FALSE]
 ArmFM_Lin_RF_sort <- RF_2[order(-RF_2$X1), , drop=FALSE]
 Wolf_Lin_RF_sort <- RF_3[order(-RF_3$X1), , drop=FALSE]
 
-## plot the LASSO results:
-# FM: FM_Lin_LASSO_sort
-par(las=1)
-par(mar=c(4,10,4,2))
-x <- FM_Lin_LASSO_sort[1,]
-nam <- rownames(FM_Lin_LASSO_sort)[1]
-x <- x[!is.na(x)]
-offs <- runif(length(x),-0.1,0.1)
-gg <- x
-yy <- rep(dim(FM_Lin_LASSO_sort)[1], length(gg))+ offs
-# points(rowMeans(WO_quad_lasso),yWO, col = 'blue',pch=22, cex=0.8)
-# ylim = c(-28, 14), xlim = c(-28, 14)
-# ,
-plot(gg,yy,col='blue',pch=16,ylim = c(1, dim(FM_Lin_LASSO_sort)[1]),
-     xlim = c(-7, 26),
-     cex=0.5,yaxt='n', main="Fugl-Meyer LASSO Coefficients", 
-     xlab="Value",ylab="",cex.lab=0.8)
-axis(side = 2, at = dim(FM_Lin_LASSO_sort)[1],paste(nam))
-for (i in 2:dim(FM_Lin_LASSO_sort)[1]){
-  x <- FM_Lin_LASSO_sort[i,]
-  nam <- rownames(FM_Lin_LASSO_sort)[i]
-  x <- x[!is.na(x)]
-  offs <- runif(length(x),-0.1,0.1)
-  gg <- x
-  yy <- rep(dim(FM_Lin_LASSO_sort)[1] - (i-1), length(gg))+ offs
-  # points(rowMeans(WO_quad_lasso),yWO, col = 'blue',pch=22, cex=0.8)
-  points(gg,yy,col='blue',pch=16,cex=0.5)
-  axis(side = 2, at = dim(FM_Lin_LASSO_sort)[1] - (i-1),paste(nam))
-}
+#################### plot the results #################################
 
-# Arm-Only FM: ArmFM_Lin_LASSO_sort
-par(las=1)
-par(mar=c(4,10,4,2))
-x <- ArmFM_Lin_LASSO_sort[1,]
-nam <- rownames(ArmFM_Lin_LASSO_sort)[1]
-x <- x[!is.na(x)]
-offs <- runif(length(x),-0.1,0.1)
-gg <- x
-yy <- rep(dim(ArmFM_Lin_LASSO_sort)[1], length(gg))+ offs
-# points(rowMeans(WO_quad_lasso),yWO, col = 'blue',pch=22, cex=0.8)
-# ylim = c(-28, 14), xlim = c(-28, 14)
-# ,
-plot(gg,yy,col='blue',pch=16,ylim = c(1, dim(ArmFM_Lin_LASSO_sort)[1]),
-     xlim = c(-2, 17),
-     cex=0.5,yaxt='n', main="Arm-Only Fugl-Meyer LASSO Coefficients", 
-     xlab="Value",ylab="",cex.lab=0.8)
-axis(side = 2, at = dim(ArmFM_Lin_LASSO_sort)[1],paste(nam))
-for (i in 2:dim(ArmFM_Lin_LASSO_sort)[1]){
-  x <- ArmFM_Lin_LASSO_sort[i,]
-  nam <- rownames(ArmFM_Lin_LASSO_sort)[i]
-  x <- x[!is.na(x)]
-  offs <- runif(length(x),-0.1,0.1)
-  gg <- x
-  yy <- rep(dim(ArmFM_Lin_LASSO_sort)[1] - (i-1), length(gg))+ offs
-  # points(rowMeans(WO_quad_lasso),yWO, col = 'blue',pch=22, cex=0.8)
-  points(gg,yy,col='blue',pch=16,cex=0.5)
-  axis(side = 2, at = dim(ArmFM_Lin_LASSO_sort)[1] - (i-1),paste(nam))
-}
+## Fugl-Meyer:
+tit1 <- "UEFM LASSO Coefficients"
+tit2 <- "UEFM RF Variable Importance"
+plot_sideways(FM_Lin_LASSO_sort,0,tit1)
+plot_sideways(FM_Lin_RF_sort,15,tit2)
+## Arm-Only FM:
+tit1 <- "Arm-Only FM LASSO Coefficients"
+tit2 <- "Arm-Only FM RF Variable Importance"
+plot_sideways(ArmFM_Lin_LASSO_sort,0,tit1)
+plot_sideways(ArmFM_Lin_RF_sort,15,tit2)
+## Wolf:
+tit1 <- "Wolf LASSO Coefficients"
+tit2 <- "Wolf RF Variable Importance"
+plot_sideways(Wolf_Lin_LASSO_sort,0,tit1)
+plot_sideways(Wolf_Lin_RF_sort,15,tit2)
 
-# Wolf: Wolf_Lin_LASSO_sort
-par(las=1)
-par(mar=c(4,10,4,2))
-x <- Wolf_Lin_LASSO_sort[1,]
-nam <- rownames(Wolf_Lin_LASSO_sort)[1]
-x <- x[!is.na(x)]
-offs <- runif(length(x),-0.1,0.1)
-gg <- x
-yy <- rep(dim(Wolf_Lin_LASSO_sort)[1], length(gg))+ offs
-plot(gg,yy,col='blue',pch=16,ylim = c(1, dim(Wolf_Lin_LASSO_sort)[1]),
-     xlim = c(-45, 56),
-     cex=0.5,yaxt='n', main="Wolf Motor Function LASSO Coefficients", 
-     xlab="Value",ylab="",cex.lab=0.8)
-axis(side = 2, at = dim(Wolf_Lin_LASSO_sort)[1],paste(nam))
-for (i in 2:dim(Wolf_Lin_LASSO_sort)[1]){
-  x <- Wolf_Lin_LASSO_sort[i,]
-  nam <- rownames(Wolf_Lin_LASSO_sort)[i]
-  x <- x[!is.na(x)]
-  offs <- runif(length(x),-0.1,0.1)
-  gg <- x
-  yy <- rep(dim(Wolf_Lin_LASSO_sort)[1] - (i-1), length(gg))+ offs
-  # points(rowMeans(WO_quad_lasso),yWO, col = 'blue',pch=22, cex=0.8)
-  points(gg,yy,col='blue',pch=16,cex=0.5)
-  axis(side = 2, at = dim(Wolf_Lin_LASSO_sort)[1] - (i-1),paste(nam))
-}
-# 
-## For random forests, only use the first 15 features
-# FM: FM_Lin_RF_sort
-par(las=1)
-par(mar=c(2,8,2,1))
-x <- FM_Lin_RF_sort[1,]
-nam <- rownames(FM_Lin_RF_sort)[1]
-x <- x[!is.na(x)]
-offs <- runif(length(x),-0.1,0.1)
-gg <- x
-yy <- rep(15, length(gg))+ offs
-plot(gg,yy,col='blue',pch=16,ylim = c(1, 15),
-     xlim = c(0, 46),cex=0.3,yaxt='n', main="UEFM RF Variable Importance",
-     xlab="",ylab="",cex.lab=0.7)
-axis(side = 2, at = 15,paste(nam))
-for (i in 2:15){
-  x <- FM_Lin_RF_sort[i,]
-  nam <- rownames(FM_Lin_RF_sort)[i]
-  x <- x[!is.na(x)]
-  offs <- runif(length(x),-0.1,0.1)
-  gg <- x
-  yy <- rep(15 - (i-1), length(gg))+ offs
-  # points(rowMeans(WO_quad_lasso),yWO, col = 'blue',pch=22, cex=0.8)
-  points(gg,yy,col='blue',pch=16,cex=0.3)
-  axis(side = 2, at = 15 - (i-1),paste(nam))
-}
-
-### Functions #############
-plot_sideways_RF <- function(sorted_list)
+########################### Functions ######################################
+#
+# plot_sideways plots the variable importance for the cross-validation of
+# the random forest algorithm, it takes the "sorted list", a data frame with
+# representing features and columns representing cross-validations, the rows
+# should have the feature name as rownames
+#
+# The second input is N, if N is zero, the function uses the number of features
+# in the list as N, otherwise it uses the value provided when the function is
+# called
+#
+# The third input is a title string, used for the "main" title for the plot
+#
+#
+plot_sideways <- function(sorted_list,N,tit)
 {
   par(las=1)
-  par(mar=c(2,8,2,1))
+  par(mar=c(4,10,4,2))
   x <- sorted_list[1,]
   nam <- rownames(sorted_list)[1]
   x <- x[!is.na(x)]
-  offs <- runif(length(x),-0.1,0.1)
+  offs <- runif(length(x),-0.15,0.15)
   gg <- x
-  yy <- rep(15, length(gg))+ offs
-  plot(gg,yy,col='blue',pch=16,ylim = c(1, 15),
-       xlim = c(0, 46),cex=0.3,yaxt='n', main="UEFM RF Variable Importance",
+  if(N == 0){
+    N <- dim(sorted_list)[1]
+  }
+  x1 <- ceiling(max(sorted_list, na.rm = TRUE))
+  x2 <- floor(min(sorted_list, na.rm = TRUE))
+  yy <- rep(N, length(gg))+ offs
+  plot(gg,yy,col='blue',pch=16,ylim = c(1, N),
+       xlim = c(x2, x1),cex=0.3,yaxt='n', main=tit,
        xlab="",ylab="",cex.lab=0.7)
-  axis(side = 2, at = 15,paste(nam))
-  for (i in 2:15){
+  axis(side = 2, at = N,paste(nam))
+  for (i in 2:N){
     x <- sorted_list[i,]
     nam <- rownames(sorted_list)[i]
     x <- x[!is.na(x)]
-    offs <- runif(length(x),-0.1,0.1)
+    offs <- runif(length(x),-0.15,0.15)
     gg <- x
-    yy <- rep(15 - (i-1), length(gg))+ offs
-    # points(rowMeans(WO_quad_lasso),yWO, col = 'blue',pch=22, cex=0.8)
+    yy <- rep(N - (i-1), length(gg))+ offs
     points(gg,yy,col='blue',pch=16,cex=0.3)
-    axis(side = 2, at = 15 - (i-1),paste(nam))
+    axis(side = 2, at = N - (i-1),paste(nam))
   }
-  return()
 }
 
 
