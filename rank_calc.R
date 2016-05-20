@@ -138,21 +138,24 @@ gnames <- namelist[-c(as.vector(g[,1]))]
 LASSO_1 <- data.frame(LASSO_1[-c(1),],row.names = namelist)
 # gg will be the data frame without the unwanted features
 gg <- data.frame(LASSO_1[-c(as.vector(g[,1])),],row.names = gnames)
-FM_Lin_LASSO_sort <- gg[order(-abs(gg$X1)), , drop = FALSE]
+mns <- rowMeans(gg, na.rm=TRUE);
+FM_Lin_LASSO_sort <- gg[order(-abs(mns)), , drop = FALSE]
 
 ## now repeat for Arm FM
 g<-which(counts_pFM==0,arr.ind = T)
 gnames <- namelist[-c(as.vector(g[,1]))]
 LASSO_2 <- data.frame(LASSO_2[-c(1),],row.names = namelist)
 gg <- data.frame(LASSO_2[-c(as.vector(g[,1])),],row.names = gnames)
-ArmFM_Lin_LASSO_sort <- gg[order(-abs(gg$X1)), , drop = FALSE]
+mns <- rowMeans(gg, na.rm=TRUE);
+ArmFM_Lin_LASSO_sort <- gg[order(-abs(mns)), , drop = FALSE]
 
 ## and Wolf
 g<-which(counts_WO==0,arr.ind = T)
 gnames <- namelist[-c(as.vector(g[,1]))]
 LASSO_3 <- data.frame(LASSO_3[-c(1),],row.names = namelist)
 gg <- data.frame(LASSO_3[-c(as.vector(g[,1])),],row.names = gnames)
-Wolf_Lin_LASSO_sort <- gg[order(-abs(gg$X1)), , drop = FALSE]
+mns <- rowMeans(gg, na.rm=TRUE);
+Wolf_Lin_LASSO_sort <- gg[order(-abs(mns)), , drop = FALSE]
 
 ## NOW, sort RF results, easier since no empty cells
 FM_Lin_RF_sort <- RF_1[order(-RF_1$X1), , drop=FALSE]
@@ -209,6 +212,14 @@ plot_sideways <- function(sorted_list,N,tit)
   plot(gg,yy,col='blue',pch=16,ylim = c(1, N),
        xlim = c(x2, x1),cex=0.3,yaxt='n', main=tit,
        xlab="",ylab="",cex.lab=0.7)
+  # mean segment
+  xx1 <- fivenum(gg,na.rm = TRUE)
+  xq1 <- xx1[2];  xq2 <- xx1[3]; xq3 <- xx1[4]
+  segments(xq2-0.05, N-0.5, xq2-0.05, N+0.5, col = 'red',lwd = 2) # center (median)
+  segments(xq1-0.05, N-0.5, xq1-0.05, N+0.5, col = 'forestgreen',lwd = 2) # left (Q1)
+  segments(xq3-0.05, N-0.5, xq3-0.05, N+0.5, col = 'forestgreen',lwd = 2) # right (Q3)
+  segments(xq1-0.05, N+0.5, xq3-0.05, N+0.5, col = 'forestgreen',lwd = 2) # top
+  segments(xq1-0.05, N-0.5, xq3-0.05, N-0.5, col = 'forestgreen',lwd = 2) # bottom
   axis(side = 2, at = N,paste(nam))
   for (i in 2:N){
     x <- sorted_list[i,]
@@ -218,7 +229,15 @@ plot_sideways <- function(sorted_list,N,tit)
     gg <- x
     yy <- rep(N - (i-1), length(gg))+ offs
     points(gg,yy,col='blue',pch=16,cex=0.3)
-    axis(side = 2, at = N - (i-1),paste(nam))
+    yc <- N - (i-1) # the center of the y-axis for this feature
+    xx1 <- fivenum(gg,na.rm = TRUE)
+    xq1 <- xx1[2];  xq2 <- xx1[3]; xq3 <- xx1[4]
+    segments(xq2-0.05, yc-0.5, xq2-0.05, yc+0.5, col = 'red',lwd = 2) # center (median)
+    segments(xq1-0.05, yc-0.5, xq1-0.05, yc+0.5, col = 'forestgreen',lwd = 2) # left (Q1)
+    segments(xq3-0.05, yc-0.5, xq3-0.05, yc+0.5, col = 'forestgreen',lwd = 2) # right (Q3)
+    segments(xq1-0.05, yc+0.5, xq3-0.05, yc+0.5, col = 'forestgreen',lwd = 2) # top
+    segments(xq1-0.05, yc-0.5, xq3-0.05, yc-0.5, col = 'forestgreen',lwd = 2) # bottom
+    axis(side = 2, at = yc,paste(nam))
   }
 }
 
