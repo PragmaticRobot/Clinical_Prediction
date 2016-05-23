@@ -55,12 +55,12 @@ gverb[55] <- "Initial Box-and-Blocks Score"
 ##
 gverb2 <- c("Intercept",gverb) # add intercept
 # initialize data frames with the correct sizes and add row names for features
-LASSO_1 <- data.frame(matrix(vector(),56,100), row.names = gm2)
-LASSO_2 <- data.frame(matrix(vector(),56,100), row.names = gm2)
-LASSO_3 <- data.frame(matrix(vector(),56,100), row.names = gm2)
-RF_1 <- data.frame(matrix(vector(),55,100), row.names = gm)
-RF_2 <- data.frame(matrix(vector(),55,100), row.names = gm)
-RF_3 <- data.frame(matrix(vector(),55,100), row.names = gm)
+LASSO_1 <- data.frame(matrix(vector(),56,100), row.names = gverb2)
+LASSO_2 <- data.frame(matrix(vector(),56,100), row.names = gverb2)
+LASSO_3 <- data.frame(matrix(vector(),56,100), row.names = gverb2)
+RF_1 <- data.frame(matrix(vector(),55,100), row.names = gverb)
+RF_2 <- data.frame(matrix(vector(),55,100), row.names = gverb)
+RF_3 <- data.frame(matrix(vector(),55,100), row.names = gverb)
 
 
 ## put the features in the right order with coefficients (LASSO) and variable importance (RF)
@@ -134,11 +134,11 @@ for (ii in 1:length(counts_FM)){
 }
 
 # convert the count holders to data frams (to have row names)
-counts_FM <- data.frame(counts_FM[2:length(counts_FM)], row.names = gm)
+counts_FM <- data.frame(counts_FM[2:length(counts_FM)], row.names = gverb)
 colnames(counts_FM) <- c("Count")
-counts_pFM <- data.frame(counts_pFM[2:length(counts_pFM)], row.names = gm)
+counts_pFM <- data.frame(counts_pFM[2:length(counts_pFM)], row.names = gverb)
 colnames(counts_pFM) <- c("Count")
-counts_WO <- data.frame(counts_WO[2:length(counts_WO)], row.names = gm)
+counts_WO <- data.frame(counts_WO[2:length(counts_WO)], row.names = gverb)
 colnames(counts_WO) <- c("Count")
 
 # sort and pick out non-zero elements
@@ -152,12 +152,21 @@ sorted_WO<- sorted_WO[seq(23), , FALSE]
 # Simple Bar Plot with Added Labels
 
 # set the plot margins to have more space on the left for variable names
-op <- par(mar = c(4,10,4,2) + 0.1)
+op <- par(mar = c(4,20,4,2) + 0.1)
 
 # plot bar chart, rev makes sure the first item is on top (reverse, since default is botton)
-barplot(rev(sorted_FM$Count), horiz = TRUE, main="FM Variable Frequency", names.arg =rev(rownames(sorted_FM)),las=2)
+postscript("UEFM_counts.ps",title="UEFM Variable Frequency", paper="letter")
+barplot(rev(sorted_FM$Count), horiz = TRUE, main="UEFM Variable Frequency", names.arg =rev(rownames(sorted_FM)),las=2)
+dev.off()
+
+postscript("ArmFM_counts.ps",title="Arm-Only FM Variable Frequency", paper="letter")
 barplot(rev(sorted_pFM$Count), horiz = TRUE, main="Arm-Only FM Variable Frequency", names.arg =rev(rownames(sorted_pFM)),las=2)
+dev.off()
+
+postscript("Wolf_counts.ps",title="Wolf Variable Frequency", paper="letter")
 barplot(rev(sorted_WO$Count), horiz = TRUE, main="Wolf Variable Frequency", names.arg =rev(rownames(sorted_WO)),las=2)
+dev.off()
+
 par(op) ## reset plot parameters (margins)
 
 ## sort LASSO results (use first column for sorting)
@@ -200,18 +209,36 @@ Wolf_Lin_RF_sort <- RF_3[order(-RF_3$X1), , drop=FALSE]
 ## Fugl-Meyer:
 tit1 <- "UEFM LASSO Coefficients"
 tit2 <- "UEFM RF Variable Importance"
+
+postscript("UEFM_LASSO.ps",title="UEFM LASSO Coefficients", paper="letter")
 plot_sideways(FM_Lin_LASSO_sort,0,tit1)
+dev.off()
+
+postscript("UEFM_RF.ps",title="UEFM Random Forest Feature Importance", paper="letter")
 plot_sideways(FM_Lin_RF_sort,15,tit2)
+dev.off()
+
 ## Arm-Only FM:
 tit1 <- "Arm-Only FM LASSO Coefficients"
 tit2 <- "Arm-Only FM RF Variable Importance"
+postscript("ArmFM_LASSO.ps",title="Arm-Only FM LASSO Coefficients", paper="letter")
 plot_sideways(ArmFM_Lin_LASSO_sort,0,tit1)
+dev.off()
+
+postscript("ArmFM_RF.ps",title="Arm-Only FM Random Forest Feature Importance", paper="letter")
 plot_sideways(ArmFM_Lin_RF_sort,15,tit2)
+dev.off()
+
 ## Wolf:
 tit1 <- "Wolf LASSO Coefficients"
 tit2 <- "Wolf RF Variable Importance"
+postscript("Wolf_LASSO.ps",title="Wolf LASSO Coefficients", paper="letter")
 plot_sideways(Wolf_Lin_LASSO_sort,0,tit1)
+dev.off()
+
+postscript("Wolf_RF.ps",title="Wolf Random Forest Feature Importance", paper="letter")
 plot_sideways(Wolf_Lin_RF_sort,15,tit2)
+dev.off()
 
 ########################### Functions ######################################
 #
@@ -230,7 +257,7 @@ plot_sideways(Wolf_Lin_RF_sort,15,tit2)
 plot_sideways <- function(sorted_list,N,tit)
 {
   par(las=1)
-  par(mar=c(4,10,4,2))
+  par(mar=c(4,20,4,2))
   x <- sorted_list[1,]
   nam <- rownames(sorted_list)[1]
   x <- x[!is.na(x)]
