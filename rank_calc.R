@@ -155,15 +155,15 @@ sorted_WO<- sorted_WO[seq(23), , FALSE]
 op <- par(mar = c(4,20,4,2) + 0.1)
 
 # plot bar chart, rev makes sure the first item is on top (reverse, since default is botton)
-postscript("UEFM_counts.ps",title="UEFM Variable Frequency", paper="letter")
+png("UEFM_counts.png",width=1500, height = 1014, units = "px", pointsize = 11, bg="white", res=72)
 barplot(rev(sorted_FM$Count), horiz = TRUE, main="UEFM Variable Frequency", names.arg =rev(rownames(sorted_FM)),las=2)
 dev.off()
 
-postscript("ArmFM_counts.ps",title="Arm-Only FM Variable Frequency", paper="letter")
+png("ArmFM_counts.png",width=1500, height = 1014, units = "px", pointsize = 11, bg="white", res=72)
 barplot(rev(sorted_pFM$Count), horiz = TRUE, main="Arm-Only FM Variable Frequency", names.arg =rev(rownames(sorted_pFM)),las=2)
 dev.off()
 
-postscript("Wolf_counts.ps",title="Wolf Variable Frequency", paper="letter")
+png("Wolf_counts.png",width=1500, height = 1014, units = "px", pointsize = 11, bg="white", res=72)
 barplot(rev(sorted_WO$Count), horiz = TRUE, main="Wolf Variable Frequency", names.arg =rev(rownames(sorted_WO)),las=2)
 dev.off()
 
@@ -210,33 +210,33 @@ Wolf_Lin_RF_sort <- RF_3[order(-RF_3$X1), , drop=FALSE]
 tit1 <- "UEFM LASSO Coefficients"
 tit2 <- "UEFM RF Variable Importance"
 
-postscript("UEFM_LASSO.ps",title="UEFM LASSO Coefficients", paper="letter")
+png("UEFM_LASSO.png",width=1500, height = 1014, units = "px", pointsize = 11, bg="white", res=72)
 plot_sideways(FM_Lin_LASSO_sort,0,tit1)
 dev.off()
 
-postscript("UEFM_RF.ps",title="UEFM Random Forest Feature Importance", paper="letter")
+png("UEFM_RF.png",width=1500, height = 1014, units = "px", pointsize = 11, bg="white", res=72)
 plot_sideways(FM_Lin_RF_sort,15,tit2)
 dev.off()
 
 ## Arm-Only FM:
 tit1 <- "Arm-Only FM LASSO Coefficients"
 tit2 <- "Arm-Only FM RF Variable Importance"
-postscript("ArmFM_LASSO.ps",title="Arm-Only FM LASSO Coefficients", paper="letter")
+png("ArmFM_LASSO.png",width=1500, height = 1014, units = "px", pointsize = 11, bg="white", res=72)
 plot_sideways(ArmFM_Lin_LASSO_sort,0,tit1)
 dev.off()
 
-postscript("ArmFM_RF.ps",title="Arm-Only FM Random Forest Feature Importance", paper="letter")
+png("ArmFM_RF.png",width=1500, height = 1014, units = "px", pointsize = 11, bg="white", res=72)
 plot_sideways(ArmFM_Lin_RF_sort,15,tit2)
 dev.off()
 
 ## Wolf:
 tit1 <- "Wolf LASSO Coefficients"
 tit2 <- "Wolf RF Variable Importance"
-postscript("Wolf_LASSO.ps",title="Wolf LASSO Coefficients", paper="letter")
+png("Wolf_LASSO.png",width=1500, height = 1014, units = "px", pointsize = 11, bg="white", res=72)
 plot_sideways(Wolf_Lin_LASSO_sort,0,tit1)
 dev.off()
 
-postscript("Wolf_RF.ps",title="Wolf Random Forest Feature Importance", paper="letter")
+png("Wolf_RF.png",width=1500, height = 1014, units = "px", pointsize = 11, bg="white", res=72)
 plot_sideways(Wolf_Lin_RF_sort,15,tit2)
 dev.off()
 
