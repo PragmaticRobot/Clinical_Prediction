@@ -105,3 +105,102 @@ for (j in 1:100) # loop over cross-validations
   }
 }
 
+#####################################################
+## New Wroking folder: Dropbox/Research/NewDec2015 ##
+##                 Data Prep - Importing           ##
+#####################################################
+
+Dpath <- file.path("C:","Users","Yaz","Dropbox","Research","MatlabFunctions","RandomForest","RF_Ready_noscramble.mat")
+Data <- readMat(Dpath, maxLength=NULL, fixNames=TRUE, Verbose=FALSE)
+setwd("c:/Users/Yaz/Dropbox/Research/NewDec2015/")
+# setup variables
+Features <- data.frame(Data$red.DesignMat[1:26,2:56])
+Outcomes <- data.frame(Data$y.FM,Data$y.PartsFM,Data$y.WO)
+numfeat <- dim(Features)[2]
+
+###############################
+## Data Prep - column titles ##
+###############################
+
+colnames(Features)[1] <- Data$red.Dnames.full[[2]][[1]][[1,1]]
+for (i in 2:numfeat+1)
+{
+  colnames(Features)[i-1] <- Data$red.Dnames.full[[i]][[1]][[1,1]]
+}
+colnames(Outcomes)[1] <- 'FullFM'
+colnames(Outcomes)[2] <- 'ArmFM'
+CombinedNum <- cbind(Features[,1:42],Features[,53:55],Outcomes)
+CombinedFull <- cbind(Features,Outcomes)
+rm(Data,Dpath,i,numfeat)
+
+colnames(Features) <- gsub(" ","",colnames(Features)) # ggpairs doesn't like spaces in varnames
+top <- dim(Features)[2]
+
+## We want to use the "Features" Data Frame for the next part(s)
+
+############################################################
+## Invert binary variables (there was an error in matlab) ##
+############################################################
+VarNames <- colnames(Features)
+varsToFactor <- VarNames[43:52]
+FeaturesF <- Features # a copy of features with binary variables turned into factors (so the original is fine)
+FeaturesF[varsToFactor] <- lapply(FeaturesF[varsToFactor], factor)
+
+for (i in 43:52)
+{
+  FeaturesF[,i] <- as.factor(2-as.integer(FeaturesF[,i])) 
+}
+
+outs <- list()
+outs[[1]] <- Outcomes$FullFM
+yFM = Outcomes$FullFM
+outs[[2]] <- Outcomes$ArmFM
+yPartFM = Outcomes$ArmFM
+outs[[3]] <- Outcomes$Data.y.WO
+yWO = Outcomes$Data.y.WO
+
+###############################################
+## 03 - Prepare for quadratic random forests ##
+###############################################
+df1 <- Features 
+# this is the original copy of Features, where binary variables are still treated as integers
+# this allows for the multiplication of binary variables with other variables
+
+df2 <- Features
+names2 <- c(colnames(Features))
+for (i in c(1:dim(df1)[2])) {
+  for (j in c(i:dim(df1)[2])){
+    name_new <- paste(colnames(df1)[i], '*',colnames(df1)[j], sep="")
+    names2 <- c(names2,name_new)
+    
+    df_new <- data.frame(new_name = t(t(df1[,i])*t(df1[,j])))
+    df2 <- cbind(df2,(df_new))
+  }
+}
+colnames(df2) <- c(names2)
+FeaturesQ <- df2               
+# a new data frame containing quadratic predictors with correct column names (thanks Peter!)
+FeaturesQ[varsToFactor] <- lapply(FeaturesQ[varsToFactor], factor)
+
+for (i in 43:52)
+{
+  FeaturesQ[,i] <- as.factor(2-as.integer(FeaturesQ[,i])) 
+}
+
+#########################################################
+## The Section above creates two data frames that contain
+## features for both the linear and quad models
+## there is legacy code in that section, unimportant
+## some things aren't being used, but no time to go through it
+## Important outcomes from the above code:
+## df1: linear data frame with subject x feature
+## df2: quad data frame with subject x feature
+
+## remove everything except df1 & 2 and variable names
+rm(list=ls()[! ls() %in% c("df1","df2","gverb","gm")])
+
+## Current workspace:
+## df1 & df2
+## gm: variable names, abbreviated
+## gverb: variable names, verbose
+
