@@ -204,3 +204,9 @@ rm(list=ls()[! ls() %in% c("df1","df2","gverb","gm")])
 ## gm: variable names, abbreviated
 ## gverb: variable names, verbose
 
+## speed related features in df1:
+## 4,5,8,10 (spd pks), 17,18,22 (spd pks), 29,30,33,35
+spd_cols <- df1[,c(4,5,8,10,17,18,22,29,30,33,35)]
+spd.pca <- prcomp(spd_cols,center = TRUE, scale. = TRUE)
+plot(spd.pca, type = "l")
+summary(spd.pca)

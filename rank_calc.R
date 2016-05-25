@@ -7,6 +7,7 @@
 #########################
 
 # rm(list = ls()) # clear the environment
+rm(list = setdiff(ls(), lsf.str())) # remove everything except functions
 library(MASS)
 library(R.matlab)
 
