@@ -11,7 +11,69 @@ rm(list = setdiff(ls(), lsf.str())) # remove everything except functions
 library(MASS)
 library(R.matlab)
 
-##
+########################### Functions ######################################
+#
+# plot_sideways plots the variable importance for the cross-validation of
+# the random forest algorithm, it takes the "sorted list", a data frame with
+# representing features and columns representing cross-validations, the rows
+# should have the feature name as rownames
+#
+# The second input is N, if N is zero, the function uses the number of features
+# in the list as N, otherwise it uses the value provided when the function is
+# called
+#
+# The third input is a title string, used for the "main" title for the plot
+#
+#
+plot_sideways <- function(sorted_list,N,tit)
+{
+  par(las=1)
+  par(mar=c(4,20,4,2))
+  x <- sorted_list[1,]
+  nam <- rownames(sorted_list)[1]
+  x <- x[!is.na(x)]
+  offs <- runif(length(x),-0.35,0.35)
+  gg <- x
+  if(N == 0){
+    N <- dim(sorted_list)[1]
+  }
+  x1 <- ceiling(max(sorted_list, na.rm = TRUE))
+  x2 <- floor(min(sorted_list, na.rm = TRUE))
+  yy <- rep(N, length(gg))+ offs
+  plot(gg,yy,col='blue',pch=16,ylim = c(1, N),
+       xlim = c(x2, x1),cex=0.3,yaxt='n', main=tit,
+       xlab="",ylab="",cex.lab=0.7)
+  # mean segment
+  xx1 <- fivenum(gg,na.rm = TRUE)
+  xq1 <- xx1[2];  xq2 <- xx1[3]; xq3 <- xx1[4]
+  segments(xq2-0.05, N-0.5, xq2-0.05, N+0.5, col = 'red',lwd = 2) # center (median)
+  segments(xq1-0.05, N-0.5, xq1-0.05, N+0.5, col = 'forestgreen',lwd = 2) # left (Q1)
+  segments(xq3-0.05, N-0.5, xq3-0.05, N+0.5, col = 'forestgreen',lwd = 2) # right (Q3)
+  segments(xq1-0.05, N+0.5, xq3-0.05, N+0.5, col = 'forestgreen',lwd = 2) # top
+  segments(xq1-0.05, N-0.5, xq3-0.05, N-0.5, col = 'forestgreen',lwd = 2) # bottom
+  axis(side = 2, at = N,paste(nam))
+  for (i in 2:N){
+    x <- sorted_list[i,]
+    nam <- rownames(sorted_list)[i]
+    x <- x[!is.na(x)]
+    offs <- runif(length(x),-0.35,0.35)
+    gg <- x
+    yy <- rep(N - (i-1), length(gg))+ offs
+    points(gg,yy,col='blue',pch=16,cex=0.3)
+    yc <- N - (i-1) # the center of the y-axis for this feature
+    xx1 <- fivenum(gg,na.rm = TRUE)
+    xq1 <- xx1[2];  xq2 <- xx1[3]; xq3 <- xx1[4]
+    segments(xq2-0.05, yc-0.5, xq2-0.05, yc+0.5, col = 'red',lwd = 2) # center (median)
+    segments(xq1-0.05, yc-0.5, xq1-0.05, yc+0.5, col = 'forestgreen',lwd = 2) # left (Q1)
+    segments(xq3-0.05, yc-0.5, xq3-0.05, yc+0.5, col = 'forestgreen',lwd = 2) # right (Q3)
+    segments(xq1-0.05, yc+0.5, xq3-0.05, yc+0.5, col = 'forestgreen',lwd = 2) # top
+    segments(xq1-0.05, yc-0.5, xq3-0.05, yc-0.5, col = 'forestgreen',lwd = 2) # bottom
+    axis(side = 2, at = yc,paste(nam))
+  }
+}
+
+
+####################################
 LASSO_res <- readMat("lasso_pred.mat", maxLength=NULL, fixNames=TRUE, Verbose=FALSE)
 RF_res <- readMat("RF_pred.mat", maxLength=NULL, fixNames=TRUE, Verbose=FALSE)
 load("colnames.rda")
@@ -156,17 +218,17 @@ sorted_WO<- sorted_WO[seq(23), , FALSE]
 op <- par(mar = c(4,20,4,2) + 0.1)
 
 # plot bar chart, rev makes sure the first item is on top (reverse, since default is botton)
-png("UEFM_counts.png",width=1500, height = 1014, units = "px", pointsize = 11, bg="white", res=72)
+# png("UEFM_counts.png",width=1500, height = 1014, units = "px", pointsize = 11, bg="white", res=72)
 barplot(rev(sorted_FM$Count), horiz = TRUE, main="UEFM Variable Frequency", names.arg =rev(rownames(sorted_FM)),las=2)
-dev.off()
+# dev.off()
 
-png("ArmFM_counts.png",width=1500, height = 1014, units = "px", pointsize = 11, bg="white", res=72)
+# png("ArmFM_counts.png",width=1500, height = 1014, units = "px", pointsize = 11, bg="white", res=72)
 barplot(rev(sorted_pFM$Count), horiz = TRUE, main="Arm-Only FM Variable Frequency", names.arg =rev(rownames(sorted_pFM)),las=2)
-dev.off()
+# dev.off()
 
-png("Wolf_counts.png",width=1500, height = 1014, units = "px", pointsize = 11, bg="white", res=72)
+# png("Wolf_counts.png",width=1500, height = 1014, units = "px", pointsize = 11, bg="white", res=72)
 barplot(rev(sorted_WO$Count), horiz = TRUE, main="Wolf Variable Frequency", names.arg =rev(rownames(sorted_WO)),las=2)
-dev.off()
+# dev.off()
 
 par(op) ## reset plot parameters (margins)
 
@@ -211,96 +273,32 @@ Wolf_Lin_RF_sort <- RF_3[order(-RF_3$X1), , drop=FALSE]
 tit1 <- "UEFM LASSO Coefficients"
 tit2 <- "UEFM RF Variable Importance"
 
-png("UEFM_LASSO.png",width=1500, height = 1014, units = "px", pointsize = 11, bg="white", res=72)
+# png("UEFM_LASSO.png",width=1500, height = 1014, units = "px", pointsize = 11, bg="white", res=72)
 plot_sideways(FM_Lin_LASSO_sort,0,tit1)
-dev.off()
+# dev.off()
 
-png("UEFM_RF.png",width=1500, height = 1014, units = "px", pointsize = 11, bg="white", res=72)
+# png("UEFM_RF.png",width=1500, height = 1014, units = "px", pointsize = 11, bg="white", res=72)
 plot_sideways(FM_Lin_RF_sort,15,tit2)
-dev.off()
+# dev.off()
 
 ## Arm-Only FM:
 tit1 <- "Arm-Only FM LASSO Coefficients"
 tit2 <- "Arm-Only FM RF Variable Importance"
-png("ArmFM_LASSO.png",width=1500, height = 1014, units = "px", pointsize = 11, bg="white", res=72)
+# png("ArmFM_LASSO.png",width=1500, height = 1014, units = "px", pointsize = 11, bg="white", res=72)
 plot_sideways(ArmFM_Lin_LASSO_sort,0,tit1)
-dev.off()
+# dev.off()
 
-png("ArmFM_RF.png",width=1500, height = 1014, units = "px", pointsize = 11, bg="white", res=72)
+# png("ArmFM_RF.png",width=1500, height = 1014, units = "px", pointsize = 11, bg="white", res=72)
 plot_sideways(ArmFM_Lin_RF_sort,15,tit2)
-dev.off()
+# dev.off()
 
 ## Wolf:
 tit1 <- "Wolf LASSO Coefficients"
 tit2 <- "Wolf RF Variable Importance"
-png("Wolf_LASSO.png",width=1500, height = 1014, units = "px", pointsize = 11, bg="white", res=72)
+# png("Wolf_LASSO.png",width=1500, height = 1014, units = "px", pointsize = 11, bg="white", res=72)
 plot_sideways(Wolf_Lin_LASSO_sort,0,tit1)
-dev.off()
+# dev.off()
 
-png("Wolf_RF.png",width=1500, height = 1014, units = "px", pointsize = 11, bg="white", res=72)
+# png("Wolf_RF.png",width=1500, height = 1014, units = "px", pointsize = 11, bg="white", res=72)
 plot_sideways(Wolf_Lin_RF_sort,15,tit2)
-dev.off()
-
-########################### Functions ######################################
-#
-# plot_sideways plots the variable importance for the cross-validation of
-# the random forest algorithm, it takes the "sorted list", a data frame with
-# representing features and columns representing cross-validations, the rows
-# should have the feature name as rownames
-#
-# The second input is N, if N is zero, the function uses the number of features
-# in the list as N, otherwise it uses the value provided when the function is
-# called
-#
-# The third input is a title string, used for the "main" title for the plot
-#
-#
-plot_sideways <- function(sorted_list,N,tit)
-{
-  par(las=1)
-  par(mar=c(4,20,4,2))
-  x <- sorted_list[1,]
-  nam <- rownames(sorted_list)[1]
-  x <- x[!is.na(x)]
-  offs <- runif(length(x),-0.15,0.15)
-  gg <- x
-  if(N == 0){
-    N <- dim(sorted_list)[1]
-  }
-  x1 <- ceiling(max(sorted_list, na.rm = TRUE))
-  x2 <- floor(min(sorted_list, na.rm = TRUE))
-  yy <- rep(N, length(gg))+ offs
-  plot(gg,yy,col='blue',pch=16,ylim = c(1, N),
-       xlim = c(x2, x1),cex=0.3,yaxt='n', main=tit,
-       xlab="",ylab="",cex.lab=0.7)
-  # mean segment
-  xx1 <- fivenum(gg,na.rm = TRUE)
-  xq1 <- xx1[2];  xq2 <- xx1[3]; xq3 <- xx1[4]
-  segments(xq2-0.05, N-0.5, xq2-0.05, N+0.5, col = 'red',lwd = 2) # center (median)
-  segments(xq1-0.05, N-0.5, xq1-0.05, N+0.5, col = 'forestgreen',lwd = 2) # left (Q1)
-  segments(xq3-0.05, N-0.5, xq3-0.05, N+0.5, col = 'forestgreen',lwd = 2) # right (Q3)
-  segments(xq1-0.05, N+0.5, xq3-0.05, N+0.5, col = 'forestgreen',lwd = 2) # top
-  segments(xq1-0.05, N-0.5, xq3-0.05, N-0.5, col = 'forestgreen',lwd = 2) # bottom
-  axis(side = 2, at = N,paste(nam))
-  for (i in 2:N){
-    x <- sorted_list[i,]
-    nam <- rownames(sorted_list)[i]
-    x <- x[!is.na(x)]
-    offs <- runif(length(x),-0.15,0.15)
-    gg <- x
-    yy <- rep(N - (i-1), length(gg))+ offs
-    points(gg,yy,col='blue',pch=16,cex=0.3)
-    yc <- N - (i-1) # the center of the y-axis for this feature
-    xx1 <- fivenum(gg,na.rm = TRUE)
-    xq1 <- xx1[2];  xq2 <- xx1[3]; xq3 <- xx1[4]
-    segments(xq2-0.05, yc-0.5, xq2-0.05, yc+0.5, col = 'red',lwd = 2) # center (median)
-    segments(xq1-0.05, yc-0.5, xq1-0.05, yc+0.5, col = 'forestgreen',lwd = 2) # left (Q1)
-    segments(xq3-0.05, yc-0.5, xq3-0.05, yc+0.5, col = 'forestgreen',lwd = 2) # right (Q3)
-    segments(xq1-0.05, yc+0.5, xq3-0.05, yc+0.5, col = 'forestgreen',lwd = 2) # top
-    segments(xq1-0.05, yc-0.5, xq3-0.05, yc-0.5, col = 'forestgreen',lwd = 2) # bottom
-    axis(side = 2, at = yc,paste(nam))
-  }
-}
-
-
-##################################
+# dev.off()

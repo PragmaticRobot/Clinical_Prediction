@@ -110,9 +110,7 @@ for (j in 1:100) # loop over cross-validations
 ##                 Data Prep - Importing           ##
 #####################################################
 
-Dpath <- file.path("C:","Users","Yaz","Dropbox","Research","MatlabFunctions","RandomForest","RF_Ready_noscramble.mat")
-Data <- readMat(Dpath, maxLength=NULL, fixNames=TRUE, Verbose=FALSE)
-setwd("c:/Users/Yaz/Dropbox/Research/NewDec2015/")
+Data <- readMat("RF_Ready_noscramble.mat", maxLength=NULL, fixNames=TRUE, Verbose=FALSE)
 # setup variables
 Features <- data.frame(Data$red.DesignMat[1:26,2:56])
 Outcomes <- data.frame(Data$y.FM,Data$y.PartsFM,Data$y.WO)
@@ -210,3 +208,7 @@ spd_cols <- df1[,c(4,5,8,10,17,18,22,29,30,33,35)]
 spd.pca <- prcomp(spd_cols,center = TRUE, scale. = TRUE)
 plot(spd.pca, type = "l")
 summary(spd.pca)
+
+whole.pca <- prcomp(df1,center=TRUE, scale. = TRUE)
+plot(whole.pca, type="l")
+summary(whole.pca)
