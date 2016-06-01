@@ -14,6 +14,7 @@ require(devtools)
 require(rgl)
 require(nFactors)
 library(FactoMineR)
+library(psych)
 
 ##
 LASSO_res <- readMat("lasso_pred.mat", maxLength=NULL, fixNames=TRUE, Verbose=FALSE)
@@ -254,8 +255,27 @@ plotnScree(nS)
 ## Using FactoMineR package
 result_spd_pca <- PCA(spd_cols)
 
-
 ## whole data PCA
 whole.pca <- prcomp(df1,center=TRUE, scale. = TRUE)
 plot(whole.pca, type="l")
 summary(whole.pca)
+whole.pca$rotation
+whole.pca$x # PCA scores
+biplot(whole.pca)
+plot3d(whole.pca$x[,1:3])
+# How many factors?
+ev2 <- eigen(cor(df1))
+ap2 <- parallel(subject = nrow(df1), var = ncol(df1),
+                rep=100,cent = 0.05)
+ns2 <- nScree(x=ev2$values,aparallel = ap2$eigen$qevpea)
+plotnScree(ns2)
+# Varimax Rotation
+### whole.fact <- factanal(df1, 4)
+# since the matrix is singular, we need a different method, using the psych package
+# options: fa, pa, minres, principal, factor.pa
+# keep in mind we need 4 factors as per the previous step (plotnScree)
+whole.fact <- fa(df1, nfactors = 4, residuals = TRUE, rotate = "varimax",
+                            min.err = 0.001, fm="minres")
+print(whole.fact, digits = 2, cutoff=0.3, sort=TRUE)
+load2<- whole.fact$loadings[,1:2]
+plot(load2, labels = names(df1), cex=0.7, pos = 3)
