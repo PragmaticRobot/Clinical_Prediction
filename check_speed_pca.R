@@ -129,7 +129,7 @@ for (j in 1:100) # loop over cross-validations
 #####################################################
 
 Data <- readMat("RF_Ready_noscramble.mat", maxLength=NULL, fixNames=TRUE, 
-                erbose=FALSE)
+                verbose=FALSE)
 # setup variables
 Features <- data.frame(Data$red.DesignMat[1:26,2:56])
 Outcomes <- data.frame(Data$y.FM,Data$y.PartsFM,Data$y.WO)
@@ -276,6 +276,28 @@ plotnScree(ns2)
 # keep in mind we need 4 factors as per the previous step (plotnScree)
 whole.fact <- fa(df1, nfactors = 4, residuals = TRUE, rotate = "varimax",
                             min.err = 0.001, fm="minres")
-print(whole.fact, digits = 2, cutoff=0.3, sort=TRUE)
-load2<- whole.fact$loadings[,1:2]
-plot(load2, labels = names(df1), cex=0.7, pos = 3)
+print(whole.fact$loadings, digits = 2, sort=FALSE, fixnames = TRUE, cutoff = 0.3)
+op <- par(mar = c(4,20,4,2) + 0.1)
+rownames(whole.fact$loadings) <- gverb
+barplot(rev(whole.fact$loadings[,1]), horiz = TRUE, main="UEFM PC1", 
+        names.arg =rev(rownames(whole.fact$loadings)),las=2)
+barplot(rev(whole.fact$loadings[,2]), horiz = TRUE, main="UEFM PC2", 
+        names.arg =rev(rownames(whole.fact$loadings)),las=2)
+barplot(rev(whole.fact$loadings[,3]), horiz = TRUE, main="UEFM PC3", 
+        names.arg =rev(rownames(whole.fact$loadings)),las=2)
+barplot(rev(whole.fact$loadings[,4]), horiz = TRUE, main="UEFM PC4", 
+        names.arg =rev(rownames(whole.fact$loadings)),las=2)
+
+###########################################################
+#### Now let's look at "rational" grouping of factors #####
+###########################################################
+
+## Speed-related features: spd.fact
+spd_cols <- df1[,c(4,5,8,10,17,18,22,29,30,33,35)]
+stroke_cols <- df1[,c(42,44,45,46,47,48,49,50,51)] # stroke info
+clinic_cols <- df1[,c(53,54,55)] # clinical Scores
+demog_cols <- df1[,c(39,40,41,43)] # demographics
+treat <- df1[,c(52)] # treatment
+launch_cols <- df1[,c(1,3,7,14,16,20,26,28,32)]
+mvmnt_cols <- df1[,c(2,6,9,13,15,19,21,25,27,31,34,38)]
+accuracy_cols <- df1[,c(11,12,23,24,36,37)]
