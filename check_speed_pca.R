@@ -76,6 +76,65 @@ cleanup_RF <- function(pred1)
   return(RF_pred1)
 }
 
+# plot_sideways plots the variable importance for the cross-validation of
+# the random forest algorithm, it takes the "sorted list", a data frame with
+# representing features and columns representing cross-validations, the rows
+# should have the feature name as rownames
+#
+# The second input is N, if N is zero, the function uses the number of features
+# in the list as N, otherwise it uses the value provided when the function is
+# called
+#
+# The third input is a title string, used for the "main" title for the plot
+#
+#
+plot_sideways <- function(sorted_list,N,tit)
+{
+  par(las=1)
+  par(mar=c(4,20,4,2))
+  x <- sorted_list[1,]
+  nam <- rownames(sorted_list)[1]
+  x <- x[!is.na(x)]
+  offs <- runif(length(x),-0.35,0.35)
+  gg <- x
+  if(N == 0){
+    N <- dim(sorted_list)[1]
+  }
+  x1 <- ceiling(max(sorted_list, na.rm = TRUE))
+  x2 <- floor(min(sorted_list, na.rm = TRUE))
+  yy <- rep(N, length(gg))+ offs
+  plot(gg,yy,col='blue',pch=16,ylim = c(1, N),
+       xlim = c(x2, x1),cex=0.3,yaxt='n', main=tit,
+       xlab="",ylab="",cex.lab=0.7)
+  # mean segment
+  xx1 <- fivenum(gg,na.rm = TRUE)
+  xq1 <- xx1[2];  xq2 <- xx1[3]; xq3 <- xx1[4]
+  segments(xq2-0.05, N-0.5, xq2-0.05, N+0.5, col = 'red',lwd = 2) # center (median)
+  segments(xq1-0.05, N-0.5, xq1-0.05, N+0.5, col = 'forestgreen',lwd = 2) # left (Q1)
+  segments(xq3-0.05, N-0.5, xq3-0.05, N+0.5, col = 'forestgreen',lwd = 2) # right (Q3)
+  segments(xq1-0.05, N+0.5, xq3-0.05, N+0.5, col = 'forestgreen',lwd = 2) # top
+  segments(xq1-0.05, N-0.5, xq3-0.05, N-0.5, col = 'forestgreen',lwd = 2) # bottom
+  axis(side = 2, at = N,paste(nam))
+  for (i in 2:N){
+    x <- sorted_list[i,]
+    nam <- rownames(sorted_list)[i]
+    x <- x[!is.na(x)]
+    offs <- runif(length(x),-0.35,0.35)
+    gg <- x
+    yy <- rep(N - (i-1), length(gg))+ offs
+    points(gg,yy,col='blue',pch=16,cex=0.3)
+    yc <- N - (i-1) # the center of the y-axis for this feature
+    xx1 <- fivenum(gg,na.rm = TRUE)
+    xq1 <- xx1[2];  xq2 <- xx1[3]; xq3 <- xx1[4]
+    segments(xq2-0.05, yc-0.5, xq2-0.05, yc+0.5, col = 'red',lwd = 2) # center (median)
+    segments(xq1-0.05, yc-0.5, xq1-0.05, yc+0.5, col = 'forestgreen',lwd = 2) # left (Q1)
+    segments(xq3-0.05, yc-0.5, xq3-0.05, yc+0.5, col = 'forestgreen',lwd = 2) # right (Q3)
+    segments(xq1-0.05, yc+0.5, xq3-0.05, yc+0.5, col = 'forestgreen',lwd = 2) # top
+    segments(xq1-0.05, yc-0.5, xq3-0.05, yc-0.5, col = 'forestgreen',lwd = 2) # bottom
+    axis(side = 2, at = yc,paste(nam))
+  }
+}
+
 
 #########################
 ## Setup and libraries ##
@@ -96,11 +155,10 @@ library(inTrees)
 library(lars)
 library(glmnet)
 library(coefplot)
+library(qpcR)
 
 ##
 setwd("C:/Users/Yaz/Documents/Clinical_Prediction/")
-LASSO_res <- readMat("lasso_pred.mat", maxLength=NULL, fixNames=TRUE, Verbose=FALSE)
-RF_res <- readMat("RF_pred.mat", maxLength=NULL, fixNames=TRUE, Verbose=FALSE)
 load("colnames.rda")
 ## restructure the data into a data frame
 # RF: Random Forests
@@ -149,61 +207,6 @@ gverb[55] <- "Initial Box-and-Blocks Score"
 
 ##
 gverb2 <- c("Intercept",gverb) # add intercept
-# initialize data frames with the correct sizes and add row names for features
-LASSO_1 <- data.frame(matrix(vector(),56,100), row.names = gverb2)
-LASSO_2 <- data.frame(matrix(vector(),56,100), row.names = gverb2)
-LASSO_3 <- data.frame(matrix(vector(),56,100), row.names = gverb2)
-RF_1 <- data.frame(matrix(vector(),55,100), row.names = gverb)
-RF_2 <- data.frame(matrix(vector(),55,100), row.names = gverb)
-RF_3 <- data.frame(matrix(vector(),55,100), row.names = gverb)
-
-
-## put the features in the right order with coefficients (LASSO) 
-# and variable importance (RF)
-## after this, each matrix has features for rows, and cross-validation 
-# results in columns
-for (j in 1:100) # loop over cross-validations
-{
-  for (i in 1:dim(LASSO_res$LASSO.pred1[[2]])[1])
-  {
-    if (is.na(LASSO_res$LASSO.pred1[[2]][i,j])) {
-      next 
-    }
-    else {
-      LASSO_1[LASSO_res$LASSO.pred1[[2]][i,j],j] <- 
-        LASSO_res$LASSO.pred1[[3]][i,j]
-    }
-  }
-  ####################################################################
-  for (i in 1:dim(LASSO_res$LASSO.pred2[[2]])[1])
-  {
-    if (is.na(LASSO_res$LASSO.pred2[[2]][i,j])) {
-      next 
-    }
-    else {
-      LASSO_2[LASSO_res$LASSO.pred2[[2]][i,j],j] <- 
-        LASSO_res$LASSO.pred2[[3]][i,j]
-    }
-  }
-  #####################################################################
-  for (i in 1:dim(LASSO_res$LASSO.pred3[[2]])[1])
-  {
-    if (is.na(LASSO_res$LASSO.pred3[[2]][i,j])) {
-      next 
-    }
-    else {
-      LASSO_3[LASSO_res$LASSO.pred3[[2]][i,j],j] <- 
-        LASSO_res$LASSO.pred3[[3]][i,j]
-    }
-  }
-  #####################################################################
-  for (i in 1:55)
-  {
-    RF_1[RF_res$RF.pred1[[2]][i,j],j] <- RF_res$RF.pred1[[3]][i,j]
-    RF_2[RF_res$RF.pred2[[2]][i,j],j] <- RF_res$RF.pred2[[3]][i,j]
-    RF_3[RF_res$RF.pred3[[2]][i,j],j] <- RF_res$RF.pred3[[3]][i,j]
-  }
-}
 
 #####################################################
 ## New Wroking folder: Dropbox/Research/NewDec2015 ##
@@ -512,3 +515,273 @@ for (i in 1:100)
 RF_pred1 <- cleanup_RF(predRF1)
 RF_pred2 <- cleanup_RF(predRF2)
 RF_pred3 <- cleanup_RF(predRF3)
+
+## LASSO
+FM_lin_lasso <-   LASSO_pred1[[1]]
+pFM_lin_lasso <-  LASSO_pred2[[1]]
+WO_lin_lasso  <-  LASSO_pred3[[1]]
+
+## Random Forests
+FM_lin_RF <-   RF_pred1[[1]]
+pFM_lin_RF <-  RF_pred2[[1]]
+WO_lin_RF <-   RF_pred3[[1]]
+
+## fitting the linear models
+fm_lin_lasso_mod <- lm(yFM~rowMeans(FM_lin_lasso))
+fm_lin_rf_mod <- lm(yFM~rowMeans(FM_lin_RF))
+
+pfm_lin_lasso_mod <- lm(yPartFM~rowMeans(pFM_lin_lasso))
+pfm_lin_rf_mod <- lm(yPartFM~rowMeans(pFM_lin_RF))
+
+wo_lin_lasso_mod <- lm(yWO~rowMeans(WO_lin_lasso))
+wo_lin_rf_mod <- lm(yWO~rowMeans(WO_lin_RF))
+
+## plotting I: Fugl-Meyer, make plot pretty
+plot(rowMeans(FM_lin_lasso),yFM, ylim = c(-10, 20), xlim = c(-10, 20), col='red',
+     xlab="Predicted Change in Fugl-Meyer Score",ylab="Change in Fugl-Meyer Score",
+     cex.lab=0.8,pch=21, cex=0.8)
+abline(fm_lin_lasso_mod, col='red')
+blah <- summary(fm_lin_lasso_mod)
+r1 <- round(blah$adj.r.squared, digits = 2)
+points(rowMeans(FM_lin_RF),yFM, col = 'blue',pch=24, cex=0.8)
+abline(fm_lin_rf_mod, col='blue')
+blah <- summary(fm_lin_rf_mod)
+r3 <- round(blah$adj.r.squared, digits = 2)
+
+abline(0,1, col='black',pch=16,cex=0.6)
+legend("topleft",c(paste('Linear LASSO R^2 = ',as.character(r1)),
+                   paste('Linear Random Forests R^2 = ',as.character(r3))),
+       cex=0.8, col=c('red','blue'),
+       pch=c(21,24),bty="n")
+
+
+## plotting II: Arm-only Fugl-Meyer, make plot pretty
+plot(rowMeans(pFM_lin_lasso),yPartFM, ylim = c(-7, 12), xlim = c(-7, 12), col='red',
+     xlab="Predicted Change in Arm Fugl-Meyer Score",ylab="Change in Arm-Only Fugl-Meyer Score",
+     cex.lab=0.8,pch=21, cex=0.8)
+abline(pfm_lin_lasso_mod, col='red')
+blah <- summary(pfm_lin_lasso_mod)
+r5 <- round(blah$adj.r.squared, digits = 2)
+points(rowMeans(pFM_lin_RF),yPartFM, col = 'blue',pch=24, cex=0.8)
+abline(pfm_lin_rf_mod, col='blue')
+blah <- summary(pfm_lin_rf_mod)
+r7 <- round(blah$adj.r.squared, digits = 2)
+
+abline(0,1, col='black',pch=16,cex=0.6)
+legend("topleft",c(paste('Linear LASSO R^2 = ',as.character(r5)),
+                   paste('Linear Random Forests R^2 = ',as.character(r7))),
+       cex=0.8, col=c('red','blue'),
+       pch=c(21,24),bty="n")
+
+
+## plotting III: Wolf, make plot pretty
+plot(rowMeans(WO_lin_lasso),yWO, ylim = c(-28, 14), xlim = c(-28, 14), col='red',
+     xlab="Predicted Change in Wolf Score",ylab="Change in Wolf Motor Function Score",
+     cex.lab=0.8,pch=21, cex=0.8)
+abline(wo_lin_lasso_mod, col='red')
+blah <- summary(wo_lin_lasso_mod)
+r9 <- round(blah$adj.r.squared, digits = 2)
+points(rowMeans(WO_lin_RF),yWO, col = 'blue',pch=24, cex=0.8)
+abline(wo_lin_rf_mod, col='blue')
+blah <- summary(wo_lin_rf_mod)
+r11 <- round(blah$adj.r.squared, digits = 2)
+
+abline(0,1, col='black',pch=16,cex=0.6)
+legend("topleft",c(paste('Linear LASSO R^2 = ',as.character(r9)),
+                   paste('Linear Random Forests R^2 = ',as.character(r11))),
+       cex=0.8, col=c('red','blue'),
+       pch=c(21,24),bty="n")
+
+
+coln1 <- colnames(Factored_data)
+coln2 <- c("Intercept",coln1)
+# initialize data frames with the correct sizes and add row names for features
+LASSO_1 <- data.frame(matrix(vector(),18,100), row.names = coln2)
+LASSO_2 <- data.frame(matrix(vector(),18,100), row.names = coln2)
+LASSO_3 <- data.frame(matrix(vector(),18,100), row.names = coln2)
+RF_1 <- data.frame(matrix(vector(),17,100), row.names = coln1)
+RF_2 <- data.frame(matrix(vector(),17,100), row.names = coln1)
+RF_3 <- data.frame(matrix(vector(),17,100), row.names = coln1)
+
+
+## put the features in the right order with coefficients (LASSO) 
+# and variable importance (RF)
+## after this, each matrix has features for rows, and cross-validation 
+# results in columns
+for (j in 1:100) # loop over cross-validations
+{
+  for (i in 1:dim(LASSO_pred1[[2]])[1])
+  {
+    if (is.na(LASSO_pred1[[2]][i,j])) {
+      next 
+    }
+    else {
+      LASSO_1[LASSO_pred1[[2]][i,j],j] <- 
+        LASSO_pred1[[3]][i,j]
+    }
+  }
+  ####################################################################
+  for (i in 1:dim(LASSO_pred2[[2]])[1])
+  {
+    if (is.na(LASSO_pred2[[2]][i,j])) {
+      next 
+    }
+    else {
+      LASSO_2[LASSO_pred2[[2]][i,j],j] <- 
+        LASSO_pred2[[3]][i,j]
+    }
+  }
+  #####################################################################
+  for (i in 1:dim(LASSO_pred3[[2]])[1])
+  {
+    if (is.na(LASSO_pred3[[2]][i,j])) {
+      next 
+    }
+    else {
+      LASSO_3[LASSO_pred3[[2]][i,j],j] <- 
+        LASSO_pred3[[3]][i,j]
+    }
+  }
+  #####################################################################
+  for (i in 1:17)
+  {
+    RF_1[RF_pred1[[2]][i,j],j] <- RF_pred1[[3]][i,j]
+    RF_2[RF_pred2[[2]][i,j],j] <- RF_pred2[[3]][i,j]
+    RF_3[RF_pred3[[2]][i,j],j] <- RF_pred3[[3]][i,j]
+  }
+}
+
+## Calculating rank based on frequency of variable selection for LASSO
+
+# Initialize the count holders
+counts_FM <- rep(0, dim(LASSO_3)[[1]])
+counts_pFM <- rep(0, dim(LASSO_3)[[1]])
+counts_WO <- rep(0, dim(LASSO_3)[[1]])
+
+# count
+for (ii in 1:length(counts_FM)){
+  for (j in 1:100){
+    if (is.na(LASSO_1[[ii,j]]) || LASSO_1[[ii,j]]==0){
+      counts_FM[[ii]] <- counts_FM[[ii]] + 0
+    } else {
+      counts_FM[[ii]] <- counts_FM[[ii]]+1
+    }
+    if (is.na(LASSO_2[[ii,j]]) || LASSO_2[[ii,j]]==0){
+      counts_pFM[[ii]] <- counts_pFM[[ii]] + 0
+    } else {
+      counts_pFM[[ii]] <- counts_pFM[[ii]]+1
+    }
+    if (is.na(LASSO_3[[ii,j]]) || LASSO_3[[ii,j]]==0){
+      counts_WO[[ii]] <- counts_WO[[ii]] + 0
+    } else {
+      counts_WO[[ii]] <- counts_WO[[ii]]+1
+    }
+  }
+}
+
+# convert the count holders to data frams (to have row names)
+counts_FM <- data.frame(counts_FM[2:length(counts_FM)], row.names = coln1)
+colnames(counts_FM) <- c("Count")
+counts_pFM <- data.frame(counts_pFM[2:length(counts_pFM)], row.names = coln1)
+colnames(counts_pFM) <- c("Count")
+counts_WO <- data.frame(counts_WO[2:length(counts_WO)], row.names = coln1)
+colnames(counts_WO) <- c("Count")
+
+# sort and pick out non-zero elements
+sorted_FM<- counts_FM[order(-counts_FM$Count), , drop = FALSE]
+sorted_pFM<- counts_pFM[order(-counts_pFM$Count), , drop = FALSE]
+sorted_WO<- counts_WO[order(-counts_WO$Count), , drop = FALSE]
+sorted_FM<- sorted_FM[seq(17), , FALSE]
+sorted_pFM<-sorted_pFM[seq(9), , FALSE]
+sorted_WO<- sorted_WO[seq(23), , FALSE]
+
+# Simple Bar Plot with Added Labels
+
+# set the plot margins to have more space on the left for variable names
+op <- par(mar = c(4,20,4,2) + 0.1)
+
+# plot bar chart, rev makes sure the first item is on top (reverse, since default is botton)
+# png("UEFM_counts.png",width=1500, height = 1014, units = "px", pointsize = 11, bg="white", res=72)
+barplot(rev(sorted_FM$Count), horiz = TRUE, main="UEFM Variable Frequency", names.arg =rev(rownames(sorted_FM)),las=2)
+# dev.off()
+
+# png("ArmFM_counts.png",width=1500, height = 1014, units = "px", pointsize = 11, bg="white", res=72)
+barplot(rev(sorted_pFM$Count), horiz = TRUE, main="Arm-Only FM Variable Frequency", names.arg =rev(rownames(sorted_pFM)),las=2)
+# dev.off()
+
+# png("Wolf_counts.png",width=1500, height = 1014, units = "px", pointsize = 11, bg="white", res=72)
+barplot(rev(sorted_WO$Count), horiz = TRUE, main="Wolf Variable Frequency", names.arg =rev(rownames(sorted_WO)),las=2)
+# dev.off()
+
+par(op) ## reset plot parameters (margins)
+
+## sort LASSO results (use first column for sorting)
+# first, find the rows that have at leasst one value
+namelist <- rownames(counts_FM)                       # full list of variable names
+# g will hold indices of zero frequency variables
+g<-which(counts_FM==0,arr.ind = T)
+# gnames will contain the names of the "remaining" features (non-zero freq)
+gnames <- namelist[-c(as.vector(g[,1]))]
+# remove the first row (intercept) from all three LASSO matrices
+LASSO_1 <- data.frame(LASSO_1[-c(1),],row.names = namelist)
+# gg will be the data frame without the unwanted features
+gg <- data.frame(LASSO_1[-c(as.vector(g[,1])),],row.names = gnames)
+mns <- rowMeans(gg, na.rm=TRUE);
+FM_Lin_LASSO_sort <- gg[order(-abs(mns)), , drop = FALSE]
+
+## now repeat for Arm FM
+g<-which(counts_pFM==0,arr.ind = T)
+gnames <- namelist[-c(as.vector(g[,1]))]
+LASSO_2 <- data.frame(LASSO_2[-c(1),],row.names = namelist)
+gg <- data.frame(LASSO_2[-c(as.vector(g[,1])),],row.names = gnames)
+mns <- rowMeans(gg, na.rm=TRUE);
+ArmFM_Lin_LASSO_sort <- gg[order(-abs(mns)), , drop = FALSE]
+
+## and Wolf
+g<-which(counts_WO==0,arr.ind = T)
+gnames <- namelist[-c(as.vector(g[,1]))]
+LASSO_3 <- data.frame(LASSO_3[-c(1),],row.names = namelist)
+gg <- data.frame(LASSO_3[-c(as.vector(g[,1])),],row.names = gnames)
+mns <- rowMeans(gg, na.rm=TRUE);
+Wolf_Lin_LASSO_sort <- gg[order(-abs(mns)), , drop = FALSE]
+
+## NOW, sort RF results, easier since no empty cells
+FM_Lin_RF_sort <- RF_1[order(-RF_1$X1), , drop=FALSE]
+ArmFM_Lin_RF_sort <- RF_2[order(-RF_2$X1), , drop=FALSE]
+Wolf_Lin_RF_sort <- RF_3[order(-RF_3$X1), , drop=FALSE]
+
+#################### plot the results #################################
+
+## Fugl-Meyer:
+tit1 <- "UEFM LASSO Coefficients"
+tit2 <- "UEFM RF Variable Importance"
+
+# png("UEFM_LASSO.png",width=1500, height = 1014, units = "px", pointsize = 11, bg="white", res=72)
+plot_sideways(FM_Lin_LASSO_sort,0,tit1)
+# dev.off()
+
+# png("UEFM_RF.png",width=1500, height = 1014, units = "px", pointsize = 11, bg="white", res=72)
+plot_sideways(FM_Lin_RF_sort,15,tit2)
+# dev.off()
+
+## Arm-Only FM:
+tit1 <- "Arm-Only FM LASSO Coefficients"
+tit2 <- "Arm-Only FM RF Variable Importance"
+# png("ArmFM_LASSO.png",width=1500, height = 1014, units = "px", pointsize = 11, bg="white", res=72)
+plot_sideways(ArmFM_Lin_LASSO_sort,0,tit1)
+# dev.off()
+
+# png("ArmFM_RF.png",width=1500, height = 1014, units = "px", pointsize = 11, bg="white", res=72)
+plot_sideways(ArmFM_Lin_RF_sort,15,tit2)
+# dev.off()
+
+## Wolf:
+tit1 <- "Wolf LASSO Coefficients"
+tit2 <- "Wolf RF Variable Importance"
+# png("Wolf_LASSO.png",width=1500, height = 1014, units = "px", pointsize = 11, bg="white", res=72)
+plot_sideways(Wolf_Lin_LASSO_sort,0,tit1)
+# dev.off()
+
+# png("Wolf_RF.png",width=1500, height = 1014, units = "px", pointsize = 11, bg="white", res=72)
+plot_sideways(Wolf_Lin_RF_sort,15,tit2)
+# dev.off()
