@@ -1,4 +1,4 @@
-# This version adds bootstrapping to LASSO, so the model predictions
+ # This version adds bootstrapping to LASSO, so the model predictions
 # can be averaged and mean and std can be calculated for these
 # predictions, the results will be forwarded to matlab for plotting
 
