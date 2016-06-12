@@ -548,10 +548,10 @@ abline(fm_lin_rf_mod, col='blue')
 blah <- summary(fm_lin_rf_mod)
 r3 <- round(blah$adj.r.squared, digits = 2)
 
-abline(0,1, col='black',pch=16,cex=0.6)
+# abline(0,1, col='black',pch=16,cex=0.6)
 legend("topleft",c(paste('Linear LASSO R^2 = ',as.character(r1)),
                    paste('Linear Random Forests R^2 = ',as.character(r3))),
-       cex=0.8, col=c('red','blue'),
+       cex=0.8, col=c('red','blue'), text.col = 'black',
        pch=c(21,24),bty="n")
 
 
@@ -567,10 +567,10 @@ abline(pfm_lin_rf_mod, col='blue')
 blah <- summary(pfm_lin_rf_mod)
 r7 <- round(blah$adj.r.squared, digits = 2)
 
-abline(0,1, col='black',pch=16,cex=0.6)
+# abline(0,1, col='black',pch=16,cex=0.6)
 legend("topleft",c(paste('Linear LASSO R^2 = ',as.character(r5)),
                    paste('Linear Random Forests R^2 = ',as.character(r7))),
-       cex=0.8, col=c('red','blue'),
+       cex=0.8, col=c('red','blue'), text.col = 'black',
        pch=c(21,24),bty="n")
 
 
@@ -586,10 +586,10 @@ abline(wo_lin_rf_mod, col='blue')
 blah <- summary(wo_lin_rf_mod)
 r11 <- round(blah$adj.r.squared, digits = 2)
 
-abline(0,1, col='black',pch=16,cex=0.6)
+# abline(0,1, col='black',pch=16,cex=0.6)
 legend("topleft",c(paste('Linear LASSO R^2 = ',as.character(r9)),
                    paste('Linear Random Forests R^2 = ',as.character(r11))),
-       cex=0.8, col=c('red','blue'),
+       cex=0.8, col=c('red','blue'), text.col = 'black',
        pch=c(21,24),bty="n")
 
 
@@ -761,7 +761,7 @@ plot_sideways(FM_Lin_LASSO_sort,0,tit1)
 # dev.off()
 
 # png("UEFM_RF.png",width=1500, height = 1014, units = "px", pointsize = 11, bg="white", res=72)
-plot_sideways(FM_Lin_RF_sort,15,tit2)
+plot_sideways(FM_Lin_RF_sort,17,tit2)
 # dev.off()
 
 ## Arm-Only FM:
@@ -772,7 +772,7 @@ plot_sideways(ArmFM_Lin_LASSO_sort,0,tit1)
 # dev.off()
 
 # png("ArmFM_RF.png",width=1500, height = 1014, units = "px", pointsize = 11, bg="white", res=72)
-plot_sideways(ArmFM_Lin_RF_sort,15,tit2)
+plot_sideways(ArmFM_Lin_RF_sort,17,tit2)
 # dev.off()
 
 ## Wolf:
@@ -783,5 +783,5 @@ plot_sideways(Wolf_Lin_LASSO_sort,0,tit1)
 # dev.off()
 
 # png("Wolf_RF.png",width=1500, height = 1014, units = "px", pointsize = 11, bg="white", res=72)
-plot_sideways(Wolf_Lin_RF_sort,15,tit2)
+plot_sideways(Wolf_Lin_RF_sort,17,tit2)
 # dev.off()
