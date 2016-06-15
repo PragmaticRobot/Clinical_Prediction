@@ -22,7 +22,7 @@ library(randomForest)
 library(doParallel)
 library(inTrees)
 library(qpcR)
-
+library(ptw)
 ##
 Dpath <- file.path("C:","Users","Yaz","Dropbox","Research","NewDec2015","2016-04-19 - Second Run CV","lasso_pred.mat")
 LASSO_res <- readMat(Dpath, maxLength=NULL, fixNames=TRUE, Verbose=FALSE)
@@ -149,3 +149,27 @@ legend("topleft",c(paste('Linear LASSO R^2 = ',as.character(r9)),
        cex=0.8, col=c('red','blue','green','orange'),
        pch=c(21,22,24,25),bty="n")
 
+
+## Bar plots showing quality of model fits
+# Columns: 1- Linear LASSO, 2- Quad LASSO, 3- Linear RF, 4- Quad RF
+difFM <- matrix(, nrow = 26, ncol = 4)
+difFM[,1] <- abs(rowMeans(FM_lin_lasso)-yFM)
+difFM[,2] <- abs(rowMeans(FM_quad_lasso)-yFM)
+difFM[,3] <- abs(rowMeans(FM_lin_RF)-yFM)
+difFM[,4] <- abs(rowMeans(FM_quad_RF)-yFM)
+D1 <- hist(difFM[,1], breaks = 9, xlim = c(0,10), ylim = c(0,12))
+D2 <- hist(difFM[,2], breaks = 9, xlim = c(0,10), ylim = c(0,12))
+D3 <- hist(difFM[,3], breaks = 7, xlim = c(0,8), ylim = c(0,14))
+D4 <- hist(difFM[,4], breaks = 8, xlim = c(0,8), ylim = c(0,14))
+# Grouped Bar Plot
+counts <- matrix(, nrow = 9, ncol = 4)
+counts[,1] <- padzeros(D1$counts,0,"right") 
+counts[,2] <- padzeros(D2$counts,0,"right") 
+counts[,3] <- padzeros(D3$counts,2,"right") 
+counts[,4] <- padzeros(D4$counts,1,"right") 
+histData <- matrix(counts,ncol = 9, byrow=T)
+rownames(histData) <- c("Linear LASSO","Quadratic LASSO","Linear Random Forests","Quadratic RandomForests")
+colnames(histData) <- c("0-1","1-2","2-3","3-4","4-5","5-6","6-7","7-8","8-9")
+barplot(histData, main="Prediction Accuracy Fugl-Meyer",
+        xlab="Absolute error (in units of Fugl-Meyer)", col=c("brown2","darkcyan","darkolivegreen","darkorange3"),
+        legend=rownames(histData),beside=TRUE,ylim = c(0,14))
