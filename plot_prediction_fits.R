@@ -1,6 +1,6 @@
 # This version adds bootstrapping to LASSO, so the model predictions
 # can be averaged and mean and std can be calculated for these
-# predictions, the results will be forwarded to matlab for plotting
+# predictions, then we plot the fits and calculate R^2 (coef of determination)
 
 #########################
 ## Setup and libraries ##
