@@ -127,3 +127,55 @@ plot_sideways <- function(sorted_list,N,tit)
     axis(side = 2, at = yc,paste(nam))
   }
 }
+
+# The plotting function is specific here, it has to take either 2 inputs or 4 inputs
+# for 2 inputs: Linear LASSO and Linear RF
+# for 4 inputs: Linear LASSO, quad LASSO, Linear RF, quad RF
+# ORDER IS IMPORTANT!!!
+# modlist should have the models listed in exactly the same order
+plot_LSRF_fits <- function(allins,modlist,out,outname)
+{
+  if (ncol(allins)==2){
+    plot(out,allins[,1], ylim = c(round(min(out),1), round(max(out),1)), 
+         xlim = c(round(min(out),1), round(max(out),1)), col='red',
+         xlab=paste('Actual Relative Change in',outname),
+         ylab=paste('Predicted Relative Change in',outname),
+         cex.lab=0.8,pch=21, cex=0.8)
+    abline(modlist[[1]], col='red')
+    r1 <- round(sqrt(mean((out-allins[,1])^2)), digits = 2)
+    points(out,allins[,2], col = 'blue',pch=22, cex=0.8)
+    abline(modlist[[2]], col='blue')
+    r2 <- round(sqrt(mean((out-allins[,2])^2)), digits = 2)
+    abline(0,1, col='black',pch=16,cex=0.6)
+    legend("topleft",c(paste('Linear LASSO RMSE = ',as.character(r1)),
+                       paste('Linear Random Forests RMSE = ',as.character(r2))),
+           cex=0.8, col=c('red','blue'),
+           pch=c(21,22),bty="n")
+  } else if (ncol(allins)==4) {
+    plot(out,allins[,1], ylim = c(round(min(out),1), round(max(out),1)), 
+         xlim = c(round(min(out),1), round(max(out),1)), col='red',
+         xlab=paste('Actual Relative Change in',outname),
+         ylab=paste('Predicted Relative Change in',outname),
+         cex.lab=0.8,pch=21, cex=0.8)
+    abline(modlist[[1]], col='red')
+    r1 <- round(sqrt(mean((out-allins[,1])^2)), digits = 2)
+    points(out,allins[,2], col = 'blue',pch=22, cex=0.8)
+    abline(modlist[[2]], col='blue')
+    r2 <- round(sqrt(mean((out-allins[,2])^2)), digits = 2)
+    points(out,allins[,3], col = 'green',pch=24, cex=0.8)
+    abline(modlist[[3]], col='green')
+    r3 <- round(sqrt(mean((out-allins[,3])^2)), digits = 2)
+    points(out,allins[,4], col = 'orange',pch=25, cex=0.8)
+    abline(modlist[[4]], col='orange')
+    r4 <- round(sqrt(mean((out-allins[,4])^2)), digits = 2)
+    abline(0,1, col='black',pch=16,cex=0.6)
+    legend("topleft",c(paste('Linear LASSO RMSE = ',as.character(r1)),
+                       paste('Quadratic LASSO RMSE = ',as.character(r2)),
+                       paste('Linear Random Forests RMSE = ',as.character(r3)),
+                       paste('Quadratic Random Forests RMSE = ',as.character(r4))),
+           cex=0.8, col=c('red','blue','green','orange'),
+           pch=c(21,22,24,25),bty="n")
+  } else {
+    message("Unsupported input size")
+  }
+}
