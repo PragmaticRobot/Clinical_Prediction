@@ -93,20 +93,32 @@ plot_sideways <- function(sorted_list,N,tit)
   if(N == 0){
     N <- dim(sorted_list)[1]
   }
-  x1 <- ceiling(max(sorted_list, na.rm = TRUE))
-  x2 <- floor(min(sorted_list, na.rm = TRUE))
+  xg1 <- max(sorted_list, na.rm = TRUE)
+  xg2 <- min(sorted_list, na.rm = TRUE)
+  if (xg1>1) {
+    x1 <- ceiling(xg1)
+  }
+  else {
+    x1 <- round(xg1,2)
+  }
+  if (xg2>1){
+    x2 <- floor(xg2)
+  }
+  else {
+    x2 <- round(xg2,2)
+  }
   yy <- rep(N, length(gg))+ offs
-  plot(gg,yy,col='blue',pch=16,ylim = c(1, N),
+  plot(gg,yy,col='darkcyan',pch=16,ylim = c(1, N),
        xlim = c(x2, x1),cex=0.3,yaxt='n', main=tit,
        xlab="",ylab="",cex.lab=0.7)
   # mean segment
   xx1 <- fivenum(gg,na.rm = TRUE)
   xq1 <- xx1[2];  xq2 <- xx1[3]; xq3 <- xx1[4]
-  segments(xq2-0.05, N-0.5, xq2-0.05, N+0.5, col = 'red',lwd = 2) # center (median)
-  segments(xq1-0.05, N-0.5, xq1-0.05, N+0.5, col = 'forestgreen',lwd = 2) # left (Q1)
-  segments(xq3-0.05, N-0.5, xq3-0.05, N+0.5, col = 'forestgreen',lwd = 2) # right (Q3)
-  segments(xq1-0.05, N+0.5, xq3-0.05, N+0.5, col = 'forestgreen',lwd = 2) # top
-  segments(xq1-0.05, N-0.5, xq3-0.05, N-0.5, col = 'forestgreen',lwd = 2) # bottom
+  segments(xq2, N-0.5, xq2, N+0.5, col = 'firebrick2',lwd = 2) # center (median)
+  segments(xq1, N-0.5, xq1, N+0.5, col = 'forestgreen',lwd = 2) # left (Q1)
+  segments(xq3, N-0.5, xq3, N+0.5, col = 'forestgreen',lwd = 2) # right (Q3)
+  segments(xq1, N+0.5, xq3, N+0.5, col = 'forestgreen',lwd = 2) # top
+  segments(xq1, N-0.5, xq3, N-0.5, col = 'forestgreen',lwd = 2) # bottom
   axis(side = 2, at = N,paste(nam))
   for (i in 2:N){
     x <- sorted_list[i,]
@@ -115,15 +127,15 @@ plot_sideways <- function(sorted_list,N,tit)
     offs <- runif(length(x),-0.35,0.35)
     gg <- x
     yy <- rep(N - (i-1), length(gg))+ offs
-    points(gg,yy,col='blue',pch=16,cex=0.3)
+    points(gg,yy,col='darkcyan',pch=16,cex=0.3)
     yc <- N - (i-1) # the center of the y-axis for this feature
     xx1 <- fivenum(gg,na.rm = TRUE)
     xq1 <- xx1[2];  xq2 <- xx1[3]; xq3 <- xx1[4]
-    segments(xq2-0.05, yc-0.5, xq2-0.05, yc+0.5, col = 'red',lwd = 2) # center (median)
-    segments(xq1-0.05, yc-0.5, xq1-0.05, yc+0.5, col = 'forestgreen',lwd = 2) # left (Q1)
-    segments(xq3-0.05, yc-0.5, xq3-0.05, yc+0.5, col = 'forestgreen',lwd = 2) # right (Q3)
-    segments(xq1-0.05, yc+0.5, xq3-0.05, yc+0.5, col = 'forestgreen',lwd = 2) # top
-    segments(xq1-0.05, yc-0.5, xq3-0.05, yc-0.5, col = 'forestgreen',lwd = 2) # bottom
+    segments(xq2, yc-0.5, xq2, yc+0.5, col = 'firebrick2',lwd = 2) # center (median)
+    segments(xq1, yc-0.5, xq1, yc+0.5, col = 'forestgreen',lwd = 2) # left (Q1)
+    segments(xq3, yc-0.5, xq3, yc+0.5, col = 'forestgreen',lwd = 2) # right (Q3)
+    segments(xq1, yc+0.5, xq3, yc+0.5, col = 'forestgreen',lwd = 2) # top
+    segments(xq1, yc-0.5, xq3, yc-0.5, col = 'forestgreen',lwd = 2) # bottom
     axis(side = 2, at = yc,paste(nam))
   }
 }
@@ -133,49 +145,124 @@ plot_sideways <- function(sorted_list,N,tit)
 # for 4 inputs: Linear LASSO, quad LASSO, Linear RF, quad RF
 # ORDER IS IMPORTANT!!!
 # modlist should have the models listed in exactly the same order
-plot_LSRF_fits <- function(allins,modlist,out,outname)
+plot_LSRF_fits <- function(allins,modlist,relative,out,outname)
 {
   if (ncol(allins)==2){
-    plot(out,allins[,1], ylim = c(round(min(out),1), round(max(out),1)), 
-         xlim = c(round(min(out),1), round(max(out),1)), col='red',
-         xlab=paste('Actual Relative Change in',outname),
-         ylab=paste('Predicted Relative Change in',outname),
-         cex.lab=0.8,pch=21, cex=0.8)
-    abline(modlist[[1]], col='red')
+    if (relative == 1){
+      plot(out,allins[,1], ylim = c(round(min(out),1), round(max(out),1)), 
+           xlim = c(round(min(out),1), round(max(out),1)), col='firebrick2',
+           xlab=paste('Actual Relative Change in',outname),
+           ylab=paste('Predicted Relative Change in',outname),
+           cex.lab=0.8,pch=21, cex=0.8)
+    } else {
+      plot(out,allins[,1], ylim = c(round(min(out),1), round(max(out),1)), 
+           xlim = c(round(min(out),1), round(max(out),1)), col='firebrick2',
+           xlab=paste('Actual Change in',outname),
+           ylab=paste('Predicted Change in',outname),
+           cex.lab=0.8,pch=21, cex=0.8)
+    }
+    abline(modlist[[1]], col='firebrick2')
     r1 <- round(sqrt(mean((out-allins[,1])^2)), digits = 2)
-    points(out,allins[,2], col = 'blue',pch=22, cex=0.8)
-    abline(modlist[[2]], col='blue')
+    points(out,allins[,2], col = 'darkcyan',pch=22, cex=0.8)
+    abline(modlist[[2]], col='darkcyan')
     r2 <- round(sqrt(mean((out-allins[,2])^2)), digits = 2)
     abline(0,1, col='black',pch=16,cex=0.6)
     legend("topleft",c(paste('Linear LASSO RMSE = ',as.character(r1)),
                        paste('Linear Random Forests RMSE = ',as.character(r2))),
-           cex=0.8, col=c('red','blue'),
+           cex=0.8, col=c('firebrick2','darkcyan'),
            pch=c(21,22),bty="n")
   } else if (ncol(allins)==4) {
-    plot(out,allins[,1], ylim = c(round(min(out),1), round(max(out),1)), 
-         xlim = c(round(min(out),1), round(max(out),1)), col='red',
-         xlab=paste('Actual Relative Change in',outname),
-         ylab=paste('Predicted Relative Change in',outname),
-         cex.lab=0.8,pch=21, cex=0.8)
-    abline(modlist[[1]], col='red')
+    if (relative==1){
+      plot(out,allins[,1], ylim = c(round(min(out),1), round(max(out),1)), 
+           xlim = c(round(min(out),1), round(max(out),1)), col='firebrick2',
+           xlab=paste('Actual Relative Change in',outname),
+           ylab=paste('Predicted Relative Change in',outname),
+           cex.lab=0.8,pch=21, cex=0.8)
+    } else {
+      plot(out,allins[,1], ylim = c(round(min(out),1), round(max(out),1)), 
+           xlim = c(round(min(out),1), round(max(out),1)), col='firebrick2',
+           xlab=paste('Actual Change in',outname),
+           ylab=paste('Predicted Change in',outname),
+           cex.lab=0.8,pch=21, cex=0.8)
+    }
+    abline(modlist[[1]], col='firebrick2')
     r1 <- round(sqrt(mean((out-allins[,1])^2)), digits = 2)
-    points(out,allins[,2], col = 'blue',pch=22, cex=0.8)
-    abline(modlist[[2]], col='blue')
+    points(out,allins[,2], col = 'darkcyan',pch=22, cex=0.8)
+    abline(modlist[[2]], col='darkcyan')
     r2 <- round(sqrt(mean((out-allins[,2])^2)), digits = 2)
-    points(out,allins[,3], col = 'green',pch=24, cex=0.8)
-    abline(modlist[[3]], col='green')
+    points(out,allins[,3], col = 'forestgreen',pch=24, cex=0.8)
+    abline(modlist[[3]], col='forestgreen')
     r3 <- round(sqrt(mean((out-allins[,3])^2)), digits = 2)
-    points(out,allins[,4], col = 'orange',pch=25, cex=0.8)
-    abline(modlist[[4]], col='orange')
+    points(out,allins[,4], col = 'darkorange1',pch=25, cex=0.8)
+    abline(modlist[[4]], col='darkorange1')
     r4 <- round(sqrt(mean((out-allins[,4])^2)), digits = 2)
     abline(0,1, col='black',pch=16,cex=0.6)
     legend("topleft",c(paste('Linear LASSO RMSE = ',as.character(r1)),
                        paste('Quadratic LASSO RMSE = ',as.character(r2)),
                        paste('Linear Random Forests RMSE = ',as.character(r3)),
                        paste('Quadratic Random Forests RMSE = ',as.character(r4))),
-           cex=0.8, col=c('red','blue','green','orange'),
+           cex=0.8, col=c('firebrick2','darkcyan','forestgreen','darkorange1'),
            pch=c(21,22,24,25),bty="n")
   } else {
     message("Unsupported input size")
   }
+}
+
+## Add a function DoHists here, have it return skewness
+## Bar plots showing quality of model fits
+# Columns: 1- Linear LASSO, 2- Quad LASSO, 3- Linear RF, 4- Quad RF
+DoHists <- function(allins,out,outname)
+{
+  if (ncol(allins)==2){
+    difFM <- matrix(, nrow = 26, ncol = 2)
+    difFM[,1] <- abs(allins[,1]-out)
+    difFM[,2] <- abs(allins[,2]-out)
+    bks <- ceiling(apply(difFM,2,max,na.rm = TRUE)) # find the xlim of each hist
+    D1 <- hist(difFM[,1], breaks = bks[1], xlim = c(0,bks[1]+1), ylim = c(0,12),plot=FALSE)
+    D2 <- hist(difFM[,2], breaks = bks[2], xlim = c(0,bks[2]+1), ylim = c(0,12),plot=FALSE)
+    # Grouped Bar Plot
+    counts <- matrix(, nrow = max(bks), ncol = 2)
+    counts[,1] <- padzeros(D1$counts,max(bks)-bks[1],"right")
+    counts[,2] <- padzeros(D2$counts,max(bks)-bks[2],"right")
+    histData <- matrix(counts,ncol = max(bks), byrow=T)
+    rownames(histData) <- c("Linear LASSO","Linear Random Forests")
+    colns <- c("0-1","1-2","2-3","3-4","4-5","5-6","6-7","7-8","8-9","9-10","10-11","11-12")
+    colnames(histData) <- colns[1:max(bks)]
+    barplot(histData, main=paste("Prediction Accuracy for",outname),
+            xlab=paste("Absolute prediction error (in units of)",outname,")"),
+            ylab = "number of subjects",
+            col=c("firebrick2","darkcyan","forestgreen","darkorange1"),
+            legend=rownames(histData),beside=TRUE,ylim = c(0,max(counts)+1))
+    sks <- apply(counts,2,e1071::skewness,na.rm=TRUE)
+  } else if (ncol(allins)==4){
+    difFM <- matrix(, nrow = 26, ncol = 4)
+    difFM[,1] <- abs(allins[,1]-out)
+    difFM[,2] <- abs(allins[,2]-out)
+    difFM[,3] <- abs(allins[,3]-out)
+    difFM[,4] <- abs(allins[,4]-out)
+    bks <- ceiling(apply(difFM,2,max,na.rm = TRUE)) # find the xlim of each hist
+    D1 <- hist(difFM[,1], breaks = c(0:bks[1]), xlim = c(0,bks[1]+1), ylim = c(0,12),plot=FALSE)
+    D2 <- hist(difFM[,2], breaks = c(0:bks[2]), xlim = c(0,bks[2]+1), ylim = c(0,12),plot=FALSE)
+    D3 <- hist(difFM[,3], breaks = c(0:bks[3]), xlim = c(0,bks[3]+1), ylim = c(0,12),plot=FALSE)
+    D4 <- hist(difFM[,4], breaks = c(0:bks[4]), xlim = c(0,bks[4]+1), ylim = c(0,12),plot=FALSE)
+    # Grouped Bar Plot
+    counts <- matrix(, nrow = max(bks), ncol = 4)
+    counts[,1] <- padzeros(D1$counts,max(bks)-bks[1],"right")
+    counts[,2] <- padzeros(D2$counts,max(bks)-bks[2],"right")
+    counts[,3] <- padzeros(D3$counts,max(bks)-bks[3],"right")
+    counts[,4] <- padzeros(D4$counts,max(bks)-bks[4],"right")
+    histData <- matrix(counts,ncol = max(bks), byrow=T)
+    rownames(histData) <- c("Linear LASSO","Quadratic LASSO","Linear Random Forests","Quadratic RandomForests")
+    colns <- c("0-1","1-2","2-3","3-4","4-5","5-6","6-7","7-8","8-9","9-10","10-11","11-12")
+    colnames(histData) <- colns[1:max(bks)]
+    barplot(histData, main=paste("Prediction Accuracy for",outname),
+            xlab=paste("Absolute prediction error (in units of)",outname,")"),
+            ylab = "number of subjects",
+            col=c("firebrick2","darkcyan","forestgreen","darkorange1"),
+            legend=rownames(histData),beside=TRUE,ylim = c(0,max(counts)+1))
+    sks <- apply(counts,2,e1071::skewness,na.rm=TRUE)
+  } else {
+    message("Unsupported input size")
+  }
+  return(sks)
 }
