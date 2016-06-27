@@ -2,7 +2,27 @@
 # can be averaged and mean and std can be calculated for these
 # predictions, the results will be forwarded to matlab for plotting
 
+<<<<<<< HEAD
 # rm(list = ls()) # clear the environment
+=======
+rm(list = ls()) # clear the environment
+
+#################################
+########## Libraries ############
+#################################
+# options(error=recover)
+par.o <- par()
+library(pacman)
+pacman::p_load(MASS, R.matlab, devtools,rgl, nFactors, FactoMineR,GGally,
+               psych, foreach, randomForest, doParallel, inTrees,tableone,
+               lars,glmnet,coefplot, qpcR, qqman,corrplot,ptw,ggplot2,tcltk2)
+source("functions.R")
+source("create_df1_df2.R")
+
+## set up the parallel pool
+registerDoParallel(cores=4) # 4 cores to do the simulations
+
+>>>>>>> 5b757334244bc6316360ec2f75f9d47f18b5f4a2
 
 #################################
 ########## Libraries ############

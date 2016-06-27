@@ -2,7 +2,11 @@
 # can be averaged and mean and std can be calculated for these
 # predictions, then we plot the fits and calculate R^2 (coef of determination)
 
+<<<<<<< HEAD
 # rm(list = ls()) # clear the environment
+=======
+rm(list = ls()) # clear the environment
+>>>>>>> 5b757334244bc6316360ec2f75f9d47f18b5f4a2
 
 #################################
 ########## Libraries ############
@@ -53,10 +57,17 @@ fm_quad_lasso_mod <- lm(rowMeans(FM_quad_lasso)~yFM)
 fm_lin_rf_mod <- lm(rowMeans(FM_lin_RF)~yFM)
 fm_quad_rf_mod <- lm(rowMeans(FM_quad_RF)~yFM)
 
+<<<<<<< HEAD
 # pfm_lin_lasso_mod <- lm(rowMeans(pFM_lin_lasso)~ypFM)
 # pfm_quad_lasso_mod <- lm(rowMeans(pFM_quad_lasso)~ypFM)
 # pfm_lin_rf_mod <- lm(rowMeans(pFM_lin_RF)~ypFM)
 # pfm_quad_rf_mod <- lm(rowMeans(pFM_quad_RF)~ypFM)
+=======
+pfm_lin_lasso_mod <- lm(rowMeans(pFM_lin_lasso)~ypFM)
+pfm_quad_lasso_mod <- lm(rowMeans(pFM_quad_lasso)~ypFM)
+pfm_lin_rf_mod <- lm(rowMeans(pFM_lin_RF)~ypFM)
+pfm_quad_rf_mod <- lm(rowMeans(pFM_quad_RF)~ypFM)
+>>>>>>> 5b757334244bc6316360ec2f75f9d47f18b5f4a2
 
 wo_lin_lasso_mod <- lm(rowMeans(WO_lin_lasso)~yWO)
 wo_quad_lasso_mod <- lm(rowMeans(WO_quad_lasso)~yWO)
@@ -69,28 +80,47 @@ wo_quad_rf_mod <- lm(rowMeans(WO_quad_RF)~yWO)
 InsFM <- cbind(rowMeans(FM_lin_lasso),rowMeans(FM_quad_lasso),
                  rowMeans(FM_lin_RF), rowMeans(FM_quad_RF)) # this is for UEFM
 
+<<<<<<< HEAD
 # InsPFM <- cbind(rowMeans(pFM_lin_lasso),rowMeans(pFM_quad_lasso),
 #                rowMeans(pFM_lin_RF), rowMeans(pFM_quad_RF)) # this is for Arm FM
+=======
+InsPFM <- cbind(rowMeans(pFM_lin_lasso),rowMeans(pFM_quad_lasso),
+               rowMeans(pFM_lin_RF), rowMeans(pFM_quad_RF)) # this is for Arm FM
+>>>>>>> 5b757334244bc6316360ec2f75f9d47f18b5f4a2
 
 InsWO <- cbind(rowMeans(WO_lin_lasso),rowMeans(WO_quad_lasso),
                  rowMeans(WO_lin_RF), rowMeans(WO_quad_RF)) # this is for Wolf
 
 modListFM <- list(fm_lin_lasso_mod,fm_quad_lasso_mod,
                   fm_lin_rf_mod,fm_quad_rf_mod)
+<<<<<<< HEAD
 # modListPFM <- list(pfm_lin_lasso_mod,pfm_quad_lasso_mod,
                   # pfm_lin_rf_mod,pfm_quad_rf_mod)
+=======
+modListPFM <- list(pfm_lin_lasso_mod,pfm_quad_lasso_mod,
+                  pfm_lin_rf_mod,pfm_quad_rf_mod)
+>>>>>>> 5b757334244bc6316360ec2f75f9d47f18b5f4a2
 modListWO <- list(wo_lin_lasso_mod,wo_quad_lasso_mod,
                   wo_lin_rf_mod,wo_quad_rf_mod)
 
 plot_LSRF_fits(InsFM,modListFM,relative=0,yFM,'Fugl-Meyer')
+<<<<<<< HEAD
 # plot_LSRF_fits(InsPFM,modListPFM,relative=0,ypFM,'Arm-Only Fugl-Meyer')
+=======
+plot_LSRF_fits(InsPFM,modListPFM,relative=0,ypFM,'Arm-Only Fugl-Meyer')
+>>>>>>> 5b757334244bc6316360ec2f75f9d47f18b5f4a2
 plot_LSRF_fits(InsWO,modListWO,relative=0,yWO,'Wolf')
 
 ## Create and use a DoHists function here
 
 skFM <- DoHists(InsFM,yFM,'Fugl-Meyer')
+<<<<<<< HEAD
 # skpFM <- DoHists(InsPFM,ypFM,'Arm-Only Fugl-Meyer')
 skWO <- DoHists(InsWO,yWO,'Wolf')
 
 skFM2 <- DoLines(InsFM,yFM,'Fugl-Meyer')
 skWO2 <- DoLines(InsWO,yWO,'Wolf')
+=======
+skpFM <- DoHists(InsPFM,ypFM,'Arm-Only Fugl-Meyer')
+skWO <- DoHists(InsWO,yWO,'Wolf')
+>>>>>>> 5b757334244bc6316360ec2f75f9d47f18b5f4a2
