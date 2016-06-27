@@ -51,8 +51,8 @@ modListFM <- list(rvfm_lin_lasso_mod,rvfm_quad_lasso_mod,
 modListWO <- list(rvwo_lin_lasso_mod,rvwo_quad_lasso_mod,
                   rvwo_lin_rf_mod,rvwo_quad_rf_mod)
 
-plot_LSRF_fits(InsRVFM,modListFM,1,rvFM,'Fugl-Meyer')
-plot_LSRF_fits(InsRVWO,modListWO,1,rvWO,'Wolf')
+plot_LSRF_fits(InsRVFM,modListFM,1,rvFM,'Fugl-Meyer',1)
+plot_LSRF_fits(InsRVWO,modListWO,1,rvWO,'Wolf',1)
 
 # next we arrange things to calculate ranks. 1 is FM, 2 is WO
 LASSO_1 <- data.frame(matrix(vector(),56,100), row.names = gverb2)

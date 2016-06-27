@@ -82,9 +82,13 @@ modListFM <- list(fm_lin_lasso_mod,fm_quad_lasso_mod,
 modListWO <- list(wo_lin_lasso_mod,wo_quad_lasso_mod,
                   wo_lin_rf_mod,wo_quad_rf_mod)
 
-plot_LSRF_fits(InsFM,modListFM,relative=0,yFM,'Fugl-Meyer')
+# last input to following function:
+# 1: Use RMSE
+# 2: Use Slope (correlation)
+# 3: Use Coef of Determination (R^2)
+plot_LSRF_fits(InsFM,modListFM,relative=0,yFM,'Fugl-Meyer',1)
 # plot_LSRF_fits(InsPFM,modListPFM,relative=0,ypFM,'Arm-Only Fugl-Meyer')
-plot_LSRF_fits(InsWO,modListWO,relative=0,yWO,'Wolf')
+plot_LSRF_fits(InsWO,modListWO,relative=0,yWO,'Wolf',1)
 
 ## Create and use a DoHists function here
 

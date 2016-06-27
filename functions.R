@@ -138,6 +138,7 @@ plot_sideways <- function(sorted_list,N,tit)
     segments(xq1, yc-0.5, xq3, yc-0.5, col = 'forestgreen',lwd = 2) # bottom
     axis(side = 2, at = yc,paste(nam))
   }
+  segments(x0=0,y0=0,x1=0,y1=N+1, col = "black",lwd=1.5, lty=2)
 }
 
 # The plotting function is specific here, it has to take either 2 inputs or 4 inputs
@@ -145,7 +146,7 @@ plot_sideways <- function(sorted_list,N,tit)
 # for 4 inputs: Linear LASSO, quad LASSO, Linear RF, quad RF
 # ORDER IS IMPORTANT!!!
 # modlist should have the models listed in exactly the same order
-plot_LSRF_fits <- function(allins,modlist,relative,out,outname)
+plot_LSRF_fits <- function(allins,modlist,relative,out,outname,measure)
 {
   if (ncol(allins)==2){
     if (relative == 1){
@@ -162,13 +163,30 @@ plot_LSRF_fits <- function(allins,modlist,relative,out,outname)
            cex.lab=0.8,pch=21, cex=0.8,lwd=2)
     }
     abline(modlist[[1]], col='firebrick2',lwd=2)
-    r1 <- round(sqrt(mean((out-allins[,1])^2)), digits = 2)
     points(out,allins[,2], col = 'forestgreen',pch=22, cex=0.8,lwd=2)
     abline(modlist[[2]], col='forestgreen',lwd=2)
-    r2 <- round(sqrt(mean((out-allins[,2])^2)), digits = 2)
     abline(0,1, col='black',pch=16,cex=0.6,lwd=2)
-    legend("topleft",c(paste('Linear LASSO RMSE = ',as.character(r1)),
-                       paste('Linear Random Forests RMSE = ',as.character(r2))),
+    if (measure == 1){
+      r1 <- round(sqrt(mean((out-allins[,1])^2)), digits = 2)
+      r2 <- round(sqrt(mean((out-allins[,2])^2)), digits = 2)
+      meString <- 'RMSE'
+    } else if (measure == 2){
+      blah <- summary(modlist[[1]],correlation=TRUE)
+      r1 <- round(blah$correlation, digits = 2)
+      blah <- summary(modlist[[2]],correlation=TRUE)
+      r2 <- round(blah$correlation, digits = 2)
+      meString <- 'Corr'
+    } else if (measure == 3){
+      blah <- summary(modlist[[1]])
+      r1 <- round(blah$adj.r.squared, digits = 2)
+      blah <- summary(modlist[[2]])
+      r2 <- round(blah$adj.r.squared, digits = 2)
+      meString <- 'R^2'
+    } else {
+      message('unknown outcome measure')
+    }
+    legend("topleft",c(paste('Linear LASSO ',meString ,' = ',as.character(r1)),
+                       paste('Linear Random Forests ',meString,' = ',as.character(r2))),
            cex=0.8, col=c('firebrick2','forestgreen'),
            lwd=c(2.5,2.5),lty=c(1,1),bty="n")
   } else if (ncol(allins)==4) {
@@ -186,21 +204,46 @@ plot_LSRF_fits <- function(allins,modlist,relative,out,outname)
            cex.lab=0.8,pch=21, cex=0.8,lwd=2)
     }
     abline(modlist[[1]], col='firebrick2')
-    r1 <- round(sqrt(mean((out-allins[,1])^2)), digits = 2)
     points(out,allins[,2], col = 'darkcyan',pch=22, cex=0.8)
     abline(modlist[[2]], col='darkcyan')
-    r2 <- round(sqrt(mean((out-allins[,2])^2)), digits = 2)
     points(out,allins[,3], col = 'forestgreen',pch=24, cex=0.8)
     abline(modlist[[3]], col='forestgreen')
-    r3 <- round(sqrt(mean((out-allins[,3])^2)), digits = 2)
     points(out,allins[,4], col = 'darkorange1',pch=25, cex=0.8)
     abline(modlist[[4]], col='darkorange1')
-    r4 <- round(sqrt(mean((out-allins[,4])^2)), digits = 2)
     abline(0,1, col='black',pch=16,cex=0.6,lwd=2)
-    legend("topleft",c(paste('Linear LASSO RMSE = ',as.character(r1)),
-                       paste('Quadratic LASSO RMSE = ',as.character(r2)),
-                       paste('Linear Random Forests RMSE = ',as.character(r3)),
-                       paste('Quadratic Random Forests RMSE = ',as.character(r4))),
+    if (measure == 1){
+      r1 <- round(sqrt(mean((out-allins[,1])^2)), digits = 2)
+      r2 <- round(sqrt(mean((out-allins[,2])^2)), digits = 2)
+      r3 <- round(sqrt(mean((out-allins[,3])^2)), digits = 2)
+      r4 <- round(sqrt(mean((out-allins[,4])^2)), digits = 2)
+      meString <- 'RMSE'
+    } else if (measure == 2){
+      blah <- summary(modlist[[1]],correlation=TRUE)
+      r1 <- round(blah$correlation, digits = 2)
+      blah <- summary(modlist[[2]],correlation=TRUE)
+      r2 <- round(blah$correlation, digits = 2)
+      blah <- summary(modlist[[3]],correlation=TRUE)
+      r3 <- round(blah$correlation, digits = 2)
+      blah <- summary(modlist[[4]],correlation=TRUE)
+      r4 <- round(blah$correlation, digits = 2)
+      meString <- 'Corr'
+    } else if (measure == 3){
+      blah <- summary(modlist[[1]])
+      r1 <- round(blah$adj.r.squared, digits = 2)
+      blah <- summary(modlist[[2]])
+      r2 <- round(blah$adj.r.squared, digits = 2)
+      blah <- summary(modlist[[3]])
+      r3 <- round(blah$adj.r.squared, digits = 2)
+      blah <- summary(modlist[[4]])
+      r4 <- round(blah$adj.r.squared, digits = 2)
+      meString <- 'R^2'
+    } else {
+      message('unknown outcome measure')
+    }
+    legend("topleft",c(paste('Linear LASSO ',meString,' = ',as.character(r1)),
+                       paste('Quadratic LASSO ',meString,' = ',as.character(r2)),
+                       paste('Linear Random Forests ',meString,' = ',as.character(r3)),
+                       paste('Quadratic Random Forests ',meString,' = ',as.character(r4))),
            cex=0.8, col=c('firebrick2','darkcyan','forestgreen','darkorange1'),
            lty=c(1,1,1,1),lwd=c(2.5,2.5,2.5,2.5),bty="n")
   } else {

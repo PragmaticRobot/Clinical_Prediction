@@ -144,7 +144,7 @@ g<-rev(order(counts_FM))[1:cut1]
 # gnames will contain the names of the "remaining" features (non-zero freq)
 gnames <- namelist[c(as.vector(g))]
 # remove the first row (intercept) from all three LASSO matrices
-# LASSO_1 <- data.frame(LASSO_1[-c(1),],row.names = namelist)
+LASSO_1 <- data.frame(LASSO_1[-c(1),],row.names = namelist)
 # gg will be the data frame without the unwanted features
 gg <- data.frame(LASSO_1[c(as.vector(g)),],row.names = gnames)
 # mns <- rowMeans(gg, na.rm=TRUE);
