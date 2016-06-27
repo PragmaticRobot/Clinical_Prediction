@@ -153,73 +153,37 @@ plot_LSRF_fits <- function(allins,modlist,relative,out,outname)
            xlim = c(round(min(out),1), round(max(out),1)), col='firebrick2',
            xlab=paste('Actual Relative Change in',outname),
            ylab=paste('Predicted Relative Change in',outname),
-<<<<<<< HEAD
            cex.lab=0.8,pch=21, cex=0.8,lwd=2)
-=======
-           cex.lab=0.8,pch=21, cex=0.8)
->>>>>>> 5b757334244bc6316360ec2f75f9d47f18b5f4a2
     } else {
       plot(out,allins[,1], ylim = c(round(min(out),1), round(max(out),1)), 
            xlim = c(round(min(out),1), round(max(out),1)), col='firebrick2',
            xlab=paste('Actual Change in',outname),
            ylab=paste('Predicted Change in',outname),
-<<<<<<< HEAD
            cex.lab=0.8,pch=21, cex=0.8,lwd=2)
     }
     abline(modlist[[1]], col='firebrick2',lwd=2)
     r1 <- round(sqrt(mean((out-allins[,1])^2)), digits = 2)
     points(out,allins[,2], col = 'forestgreen',pch=22, cex=0.8,lwd=2)
     abline(modlist[[2]], col='forestgreen',lwd=2)
-=======
-           cex.lab=0.8,pch=21, cex=0.8)
-    }
-    abline(modlist[[1]], col='firebrick2')
-    r1 <- round(sqrt(mean((out-allins[,1])^2)), digits = 2)
-    points(out,allins[,2], col = 'darkcyan',pch=22, cex=0.8)
-    abline(modlist[[2]], col='darkcyan')
->>>>>>> 5b757334244bc6316360ec2f75f9d47f18b5f4a2
     r2 <- round(sqrt(mean((out-allins[,2])^2)), digits = 2)
     abline(0,1, col='black',pch=16,cex=0.6,lwd=2)
     legend("topleft",c(paste('Linear LASSO RMSE = ',as.character(r1)),
                        paste('Linear Random Forests RMSE = ',as.character(r2))),
-<<<<<<< HEAD
            cex=0.8, col=c('firebrick2','forestgreen'),
            lwd=c(2.5,2.5),lty=c(1,1),bty="n")
-=======
-           cex=0.8, col=c('firebrick2','darkcyan'),
-           pch=c(21,22),bty="n")
->>>>>>> 5b757334244bc6316360ec2f75f9d47f18b5f4a2
   } else if (ncol(allins)==4) {
     if (relative==1){
       plot(out,allins[,1], ylim = c(round(min(out),1), round(max(out),1)), 
            xlim = c(round(min(out),1), round(max(out),1)), col='firebrick2',
            xlab=paste('Actual Relative Change in',outname),
            ylab=paste('Predicted Relative Change in',outname),
-<<<<<<< HEAD
            cex.lab=0.8,pch=21, cex=0.8,lwd=2)
-=======
-           cex.lab=0.8,pch=21, cex=0.8)
->>>>>>> 5b757334244bc6316360ec2f75f9d47f18b5f4a2
     } else {
       plot(out,allins[,1], ylim = c(round(min(out),1), round(max(out),1)), 
            xlim = c(round(min(out),1), round(max(out),1)), col='firebrick2',
            xlab=paste('Actual Change in',outname),
            ylab=paste('Predicted Change in',outname),
-<<<<<<< HEAD
            cex.lab=0.8,pch=21, cex=0.8,lwd=2)
-    }
-    abline(modlist[[1]], col='firebrick2',lwd=2)
-    r1 <- round(sqrt(mean((out-allins[,1])^2)), digits = 2)
-    points(out,allins[,2], col = 'darkcyan',pch=22, cex=0.8,lwd=2)
-    abline(modlist[[2]], col='darkcyan',lwd=2)
-    r2 <- round(sqrt(mean((out-allins[,2])^2)), digits = 2)
-    points(out,allins[,3], col = 'forestgreen',pch=24, cex=0.8,lwd=2)
-    abline(modlist[[3]], col='forestgreen',lwd=2)
-    r3 <- round(sqrt(mean((out-allins[,3])^2)), digits = 2)
-    points(out,allins[,4], col = 'darkorange1',pch=25, cex=0.8,lwd=2)
-    abline(modlist[[4]], col='darkorange1',lwd=2)
-=======
-           cex.lab=0.8,pch=21, cex=0.8)
     }
     abline(modlist[[1]], col='firebrick2')
     r1 <- round(sqrt(mean((out-allins[,1])^2)), digits = 2)
@@ -231,7 +195,6 @@ plot_LSRF_fits <- function(allins,modlist,relative,out,outname)
     r3 <- round(sqrt(mean((out-allins[,3])^2)), digits = 2)
     points(out,allins[,4], col = 'darkorange1',pch=25, cex=0.8)
     abline(modlist[[4]], col='darkorange1')
->>>>>>> 5b757334244bc6316360ec2f75f9d47f18b5f4a2
     r4 <- round(sqrt(mean((out-allins[,4])^2)), digits = 2)
     abline(0,1, col='black',pch=16,cex=0.6,lwd=2)
     legend("topleft",c(paste('Linear LASSO RMSE = ',as.character(r1)),
@@ -239,11 +202,7 @@ plot_LSRF_fits <- function(allins,modlist,relative,out,outname)
                        paste('Linear Random Forests RMSE = ',as.character(r3)),
                        paste('Quadratic Random Forests RMSE = ',as.character(r4))),
            cex=0.8, col=c('firebrick2','darkcyan','forestgreen','darkorange1'),
-<<<<<<< HEAD
            lty=c(1,1,1,1),lwd=c(2.5,2.5,2.5,2.5),bty="n")
-=======
-           pch=c(21,22,24,25),bty="n")
->>>>>>> 5b757334244bc6316360ec2f75f9d47f18b5f4a2
   } else {
     message("Unsupported input size")
   }
@@ -272,11 +231,7 @@ DoHists <- function(allins,out,outname)
     barplot(histData, main=paste("Prediction Accuracy for",outname),
             xlab=paste("Absolute prediction error (in units of)",outname,")"),
             ylab = "number of subjects",
-<<<<<<< HEAD
             col=c("firebrick2","forestgreen"),
-=======
-            col=c("firebrick2","darkcyan","forestgreen","darkorange1"),
->>>>>>> 5b757334244bc6316360ec2f75f9d47f18b5f4a2
             legend=rownames(histData),beside=TRUE,ylim = c(0,max(counts)+1))
     sks <- apply(counts,2,e1071::skewness,na.rm=TRUE)
   } else if (ncol(allins)==4){
@@ -310,7 +265,6 @@ DoHists <- function(allins,out,outname)
     message("Unsupported input size")
   }
   return(sks)
-<<<<<<< HEAD
 }
 
 # Here, rewrite DoHists to make line plot, everything is the same
@@ -395,6 +349,4 @@ DoLines <- function(allins,out,outname)
     message("Unsupported input size")
   }
   return(sks)
-=======
->>>>>>> 5b757334244bc6316360ec2f75f9d47f18b5f4a2
 }
