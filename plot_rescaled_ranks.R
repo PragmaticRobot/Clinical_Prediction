@@ -2,11 +2,7 @@
 # rescaled outcome (relative to initial). The function it calls is that same whether it's
 # rescaled or not
 
-<<<<<<< HEAD
 # rm(list = ls()) # clear the environment
-=======
-rm(list = ls()) # clear the environment
->>>>>>> 5b757334244bc6316360ec2f75f9d47f18b5f4a2
 
 #################################
 ########## Libraries ############
