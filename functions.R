@@ -12,6 +12,14 @@ cv_RF <- function(feat,out)
   return(GRE)
 }
 
+rf_just_pred <- function(feat,out)
+{
+  RF_model <- foreach(ntree = rep(5000,8), .combine = combine, .multicombine=TRUE, 
+                      .packages = "randomForest") %dopar% randomForest(feat,out,ntree=ntree,replace = FALSE)
+  predict <- predict(RF_model, feat, type = "response" , predict.all=FALSE)
+  return(predict)
+}
+
 cv_mod <- function(feat, out, stand, isWO)
 {
   if(stand == 1)
