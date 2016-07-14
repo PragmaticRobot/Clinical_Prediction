@@ -3,7 +3,7 @@
 ## Setup and libraries ##
 #########################
 
-rm(list = ls())
+# rm(list = ls())
 # options(error=recover)
 library(MASS)
 library(R.matlab)
@@ -16,9 +16,8 @@ library(tableone)
 ##                 Data Prep - Importing           ##
 #####################################################
 
-Dpath <- file.path("C:","Users","Yaz","Dropbox","MatlabFunctions","RandomForest","RF_Ready_noscramble.mat")
-Data <- readMat(Dpath, maxLength=NULL, fixNames=TRUE, Verbose=FALSE)
-setwd("c:/Users/Yaz/Dropbox/Research/NewDec2015/")
+Data <- readMat("RF_Ready_noscramble.mat", maxLength=NULL, fixNames=TRUE, Verbose=FALSE)
+# setwd("c:/Users/Yaz/Dropbox/Research/NewDec2015/")
 # setup variables
 Features <- data.frame(Data$red.DesignMat[1:26,2:56])
 Outcome <- data.frame(Data$y.FM,Data$y.PartsFM)
