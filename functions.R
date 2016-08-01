@@ -5,7 +5,7 @@
 cv_RF <- function(feat,out)
 {
   RF_model <- foreach(ntree = rep(10000,4), .combine = combine, .multicombine=TRUE, 
-                      .packages = "randomForest") %dopar% randomForest(feat,out,ntree=ntree, corr.bias=TRUE)
+                      .packages = "randomForest") %dopar% randomForest(feat,out,ntree=ntree, corr.bias=FALSE)
   imp <- sort(RF_model$importance, partial=NULL,decreasing=TRUE, index.return=TRUE)
   predict <- predict(RF_model, feat, type = "response" , predict.all=FALSE)
   GRE <- list(predict=predict, Index=imp$ix, imps=imp$x)

@@ -192,3 +192,8 @@ tit1 <- "Wolf LASSO Coefficients"
 tit2 <- "Wolf RF Variable Importance"
 plot_sideways(Wolf_Lin_LASSO_sort,0,tit1)
 plot_sideways(Wolf_Lin_RF_sort,15,tit2)
+
+writeMat("R_results.mat",FM_Lin_LASSO_sort=FM_Lin_LASSO_sort,FM_Lin_RF_sort=FM_Lin_RF_sort,
+         Wolf_Lin_LASSO_sort=Wolf_Lin_LASSO_sort,Wolf_Lin_RF_sort=Wolf_Lin_RF_sort,rnam1=rownames(FM_Lin_LASSO_sort),
+         rnam2=rownames(FM_Lin_RF_sort),rnam3=rownames(Wolf_Lin_LASSO_sort),
+         rnam4=rownames(Wolf_Lin_RF_sort),countFM=sorted_FM$Count, countWO=sorted_WO$Count)

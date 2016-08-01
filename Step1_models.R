@@ -77,33 +77,33 @@ LASSO_pred4 <- cleanup_LASSO(predLASSO4)
 LASSO_pred5 <- cleanup_LASSO(predLASSO5)
 LASSO_pred6 <- cleanup_LASSO(predLASSO6)
 
-save(LASSO_pred1,LASSO_pred2,LASSO_pred3,LASSO_pred4,LASSO_pred5,LASSO_pred6,file = "lasso_pred_corrbias.rda")
+# save(LASSO_pred1,LASSO_pred2,LASSO_pred3,LASSO_pred4,LASSO_pred5,LASSO_pred6,file = "lasso_pred_corrbias.rda")
 
 #######################################
 ## 06 - Random Forests Bootstrapping ##
 #######################################
-predRF1 <- NULL
-predRF2 <- NULL
-predRF3 <- NULL
-predRF4 <- NULL
-predRF5 <- NULL
-predRF6 <- NULL
+# predRF1 <- NULL
+# predRF2 <- NULL
+# predRF3 <- NULL
+# predRF4 <- NULL
+# predRF5 <- NULL
+# predRF6 <- NULL
+# 
+# for (i in 1:100)
+# {
+#   predRF1[[i]] <- cv_RF(feat=Features, out=yFM)
+#   predRF2[[i]] <- cv_RF(feat=Features, out=yPartFM)
+#   predRF3[[i]] <- cv_RF(feat=Features, out=yWO)
+#   predRF4[[i]] <- cv_RF(feat=df2, out=yFM)
+#   predRF5[[i]] <- cv_RF(feat=df2, out=yPartFM)
+#   predRF6[[i]] <- cv_RF(feat=df2, out=yWO)
+# }
+# 
+# RF_pred1 <- cleanup_RF(predRF1)
+# RF_pred2 <- cleanup_RF(predRF2)
+# RF_pred3 <- cleanup_RF(predRF3)
+# RF_pred4 <- cleanup_RF(predRF4)
+# RF_pred5 <- cleanup_RF(predRF5)
+# RF_pred6 <- cleanup_RF(predRF6)
 
-for (i in 1:100)
-{
-  predRF1[[i]] <- cv_RF(feat=Features, out=yFM)
-  predRF2[[i]] <- cv_RF(feat=Features, out=yPartFM)
-  predRF3[[i]] <- cv_RF(feat=Features, out=yWO)
-  predRF4[[i]] <- cv_RF(feat=df2, out=yFM)
-  predRF5[[i]] <- cv_RF(feat=df2, out=yPartFM)
-  predRF6[[i]] <- cv_RF(feat=df2, out=yWO)
-}
-
-RF_pred1 <- cleanup_RF(predRF1)
-RF_pred2 <- cleanup_RF(predRF2)
-RF_pred3 <- cleanup_RF(predRF3)
-RF_pred4 <- cleanup_RF(predRF4)
-RF_pred5 <- cleanup_RF(predRF5)
-RF_pred6 <- cleanup_RF(predRF6)
-
-save(RF_pred1, RF_pred2, RF_pred3, RF_pred4, RF_pred5, RF_pred6, file = "RF_pred_corrbias.rda")
+# save(RF_pred1, RF_pred2, RF_pred3, RF_pred4, RF_pred5, RF_pred6, file = "RF_pred_corrbias.rda")
