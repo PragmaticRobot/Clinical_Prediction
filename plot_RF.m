@@ -60,7 +60,8 @@ xmin = floor(min(min(FM_RF(1:15,:))));
 Y = Y/xmax;
 figure(1)
 clf
-set(gca,'Position',[.05 .1 .85 .8])
+subplot(1,2,1);
+set(gca,'Position',[0.05 .1 .45 .8])
 hold on
 for i = 1:15
     nrow = size(FM_RF,1);
@@ -90,9 +91,10 @@ Y = prctile(WO_RF,[25 50 75],2); % calculate 25% 50% 75% for each feature
 xmax = ceil(max(max(WO_RF)));
 xmin = floor(min(min(WO_RF(1:15,:))));
 Y = Y/xmax;
-figure(2)
-clf
-set(gca,'Position',[.05 .1 .85 .8])
+% figure(2)
+% clf
+subplot(1,2,2);
+set(gca,'Position',[.55 .1 .4 .8])
 hold on
 for i = 1:15
     nrow = size(WO_RF,1);

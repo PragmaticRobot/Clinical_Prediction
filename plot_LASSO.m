@@ -60,7 +60,7 @@ xmax = ceil(max(max(FM_LASSO)));
 xmin = floor(min(min(FM_LASSO)));
 figure(1)
 clf
-set(gca,'Position',[.05 .1 .85 .8])
+set(gca,'Position',[.05 .1 .85 .75])
 hold on
 for i = 1:size(FM_LASSO,1)
     nrow = size(FM_LASSO,1);
@@ -94,6 +94,9 @@ c1.Label.String = 'Selection Frequency';
 box off
 set(gca,'YColor','none','Color','none')
 xlim([xmin xmax])
+title('LASSO Features for Predicting Change in UEFM')
+xlabel('Coefficient')
+axis tight
 
 %% Plotting LASSO Wolf
 % box limits
@@ -103,7 +106,7 @@ xmax = ceil(max(max(WO_LASSO)));
 xmin = floor(min(min(WO_LASSO)));
 figure(2)
 clf
-set(gca,'Position',[.05 .1 .85 .8])
+set(gca,'Position',[.05 .1 .85 .75])
 hold on
 for i = 1:size(WO_LASSO,1)
     nrow = size(WO_LASSO,1);
@@ -137,4 +140,6 @@ c1.Label.String = 'Selection Frequency';
 box off
 set(gca,'YColor','none','Color','none')
 xlim([xmin xmax])
- 
+title('LASSO Features for Predicting Change in Wolf Motor Function')
+xlabel('Coefficient')
+axis tight
