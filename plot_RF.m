@@ -73,11 +73,11 @@ for i = 1:15
     end
     text(xmin/xmax*2.1,ymid,rnam2{i},'HorizontalAlignment','left');
     % now plot the box for each value
-    line([Y(i,1) Y(i,3)],[ymid-0.25 ymid-0.25],'Color',[0 139/255 139/255]);
-    line([Y(i,1) Y(i,1)],[ymid-0.25 ymid+0.25],'Color',[0 139/255 139/255]);
-    line([Y(i,3) Y(i,3)],[ymid-0.25 ymid+0.25],'Color',[0 139/255 139/255]);
-    line([Y(i,3) Y(i,1)],[ymid+0.25 ymid+0.25],'Color',[0 139/255 139/255]);
-    line([Y(i,2) Y(i,2)],[ymid-0.25 ymid+0.25],'Color',[0 139/255 139/255]); % Median
+    line([Y(i,1) Y(i,3)],[ymid-0.25 ymid-0.25],'Color',[205/255 102/255 0]);
+    line([Y(i,1) Y(i,1)],[ymid-0.25 ymid+0.25],'Color',[205/255 102/255 0]);
+    line([Y(i,3) Y(i,3)],[ymid-0.25 ymid+0.25],'Color',[205/255 102/255 0]);
+    line([Y(i,3) Y(i,1)],[ymid+0.25 ymid+0.25],'Color',[205/255 102/255 0]);
+    line([Y(i,2) Y(i,2)],[ymid-0.25 ymid+0.25],'Color',[205/255 102/255 0]); % Median
 end
 box off
 set(gca,'color','none','YColor','none','Ticklength', [0 0])
@@ -104,13 +104,13 @@ for i = 1:15
         yy = ymid + ((rand-0.5)*.7); % add noise to y-value
         plot(WO_RF(i,j)/xmax,yy,'.','Color',[205/255 102/255 0],'MarkerSize',5);
     end
-    text(xmin/xmax*8,ymid,rnam2{i},'HorizontalAlignment','left');
+    text(xmin/xmax*8,ymid,rnam4{i},'HorizontalAlignment','left');
     % now plot the box for each value
-    line([Y(i,1) Y(i,3)],[ymid-0.25 ymid-0.25],'Color',[205/255 102/255 0]);
-    line([Y(i,1) Y(i,1)],[ymid-0.25 ymid+0.25],'Color',[205/255 102/255 0]);
-    line([Y(i,3) Y(i,3)],[ymid-0.25 ymid+0.25],'Color',[205/255 102/255 0]);
-    line([Y(i,3) Y(i,1)],[ymid+0.25 ymid+0.25],'Color',[205/255 102/255 0]);
-    line([Y(i,2) Y(i,2)],[ymid-0.25 ymid+0.25],'Color',[205/255 102/255 0]); % Median
+    line([Y(i,1) Y(i,3)],[ymid-0.25 ymid-0.25],'Color',[0 139/255 139/255]);
+    line([Y(i,1) Y(i,1)],[ymid-0.25 ymid+0.25],'Color',[0 139/255 139/255]);
+    line([Y(i,3) Y(i,3)],[ymid-0.25 ymid+0.25],'Color',[0 139/255 139/255]);
+    line([Y(i,3) Y(i,1)],[ymid+0.25 ymid+0.25],'Color',[0 139/255 139/255]);
+    line([Y(i,2) Y(i,2)],[ymid-0.25 ymid+0.25],'Color',[0 139/255 139/255]); % Median
 end
 box off
 set(gca,'color','none','YColor','none','Ticklength', [0 0])

@@ -33,7 +33,7 @@ registerDoParallel(cores=4) # 4 cores to do the simulations
 
 source("functions.R")
 source("create_df1_df2.R")
-
+write.csv(file="FeatureSet.csv",x=Features)
 ######################################################
 ## From this point forward, the numbers attached to ##
 ## variables will mean the following:               ##

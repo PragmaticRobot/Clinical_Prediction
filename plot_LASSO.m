@@ -28,6 +28,64 @@ rnam3{11} = trash;
 gg = struct2cell(Wolf_Lin_RF_sort);
 gg = gg';
 WO_RF = cell2mat(gg);
+FMLS = FM_LASSO;
+WOLS = WO_LASSO;
+% do logs for FM_LASSO and WO_LASSO
+% for i = 1:size(FM_LASSO,1)
+%     for j = 1:size(FM_LASSO,2)
+%         if FM_LASSO(i,j) > 1
+%             FM_LASSO(i,j) = log(FM_LASSO(i,j));
+%         elseif FM_LASSO(i,j) < 1 && FM_LASSO(i,j) > 0
+%             FM_LASSO(i,j) = -log(FM_LASSO(i,j));
+%         elseif FM_LASSO(i,j) < 0 && FM_LASSO(i,j) > -1
+%             FM_LASSO(i,j) = log(abs(FM_LASSO(i,j)));
+%         elseif FM_LASSO(i,j) < -1
+%             FM_LASSO(i,j) = -log(abs(FM_LASSO(i,j)));
+%         elseif isnan(FM_LASSO(i,j))
+%             FM_LASSO(i,j) = NaN;
+%         end
+%     end
+% end
+% 
+% for i = 1:size(WO_LASSO,1)
+%     for j = 1:size(WO_LASSO,2)
+%         if WO_LASSO(i,j) > 1
+%             WO_LASSO(i,j) = log(WO_LASSO(i,j));
+%         elseif WO_LASSO(i,j) < 1 && WO_LASSO(i,j) > 0
+%             WO_LASSO(i,j) = -log(WO_LASSO(i,j));
+%         elseif WO_LASSO(i,j) < 0 && WO_LASSO(i,j) > -1
+%             WO_LASSO(i,j) = log(abs(WO_LASSO(i,j)));
+%         elseif WO_LASSO(i,j) < -1
+%             WO_LASSO(i,j) = -log(abs(WO_LASSO(i,j)));
+%         elseif isnan(WO_LASSO(i,j))
+%             WO_LASSO(i,j) = NaN;
+%         end
+%     end
+% end
+% Use name abbreviations:
+rnam1{6} = 'Max NSP (-)';
+rnam1{7} = 'Init BB (+)';
+rnam1{11} = 'Mean PMS';
+rnam1{12} = 'Mean IDE';
+rnam1{13} = 'Max MAPR';
+rnam1{14} = 'Var MAPR';
+rnam1{15} = 'EA';
+rnam1{16} = 'Mean PMTD';
+rnam1{8} = 'Months Post-Stroke (-)';
+
+rnam3{1} = 'Init WO';
+rnam3{6} = 'Age (+)';
+rnam3{7} = 'Var NSP (+)';
+rnam3{8} = 'Max PLR (+)';
+rnam3{9} = 'Max HPL';
+rnam3{10} = 'Mean MAPR';
+rnam3{12} = 'Var MAPR';
+rnam3{16} = 'Max IDE';
+rnam3{17} = 'Hemorrhagic Stroke (+)';
+rnam3{19} = 'Mean PMTD';
+rnam3{20} = 'EA';
+rnam3{22} = 'Var PMS';
+rnam3{23} = 'Init BB';
 
 %% colormaps
 % Frequency of selection will be conveyed through patches behind the plot,
@@ -60,7 +118,8 @@ xmax = ceil(max(max(FM_LASSO)));
 xmin = floor(min(min(FM_LASSO)));
 figure(1)
 clf
-set(gca,'Position',[.05 .1 .85 .75])
+ax1 = subplot(1,2,1);
+set(gca,'Position',[.05 .1 .4 .75])
 hold on
 for i = 1:size(FM_LASSO,1)
     nrow = size(FM_LASSO,1);
@@ -70,6 +129,11 @@ for i = 1:size(FM_LASSO,1)
     yy = [ymid-0.5 ymid-0.5 ymid+0.5 ymid+0.5];
     col = map(countFM(i),:);
     patch(xx,yy,col,'EdgeColor','none');
+    line([Y(i,1) Y(i,3)],[ymid-0.25 ymid-0.25],'Color',[205/255 102/255 0],'LineWidth',2);
+    line([Y(i,1) Y(i,1)],[ymid-0.25 ymid+0.25],'Color',[205/255 102/255 0],'LineWidth',2);
+    line([Y(i,3) Y(i,3)],[ymid-0.25 ymid+0.25],'Color',[205/255 102/255 0],'LineWidth',2);
+    line([Y(i,3) Y(i,1)],[ymid+0.25 ymid+0.25],'Color',[205/255 102/255 0],'LineWidth',2);
+    line([Y(i,2) Y(i,2)],[ymid-0.25 ymid+0.25],'Color',[205/255 102/255 0],'LineWidth',2); % Median
     for j = 1:100
         if isnan(FM_LASSO(i,j))
             continue
@@ -77,19 +141,14 @@ for i = 1:size(FM_LASSO,1)
         yy = ymid + (rand-0.5); % add noise to y-value
         plot(FM_LASSO(i,j),yy,'.','Color',mapComp(countFM(i),:),'MarkerSize',5);
     end
-    text(xmax-0.3,ymid,rnam1{i},'HorizontalAlignment','right');
+    text(xmax-0.3,ymid,rnam1{i},'HorizontalAlignment','right','FontWeight','bold');
     % now plot the box for each value
-    line([Y(i,1) Y(i,3)],[ymid-0.25 ymid-0.25],'Color',mapComp(countFM(i),:));
-    line([Y(i,1) Y(i,1)],[ymid-0.25 ymid+0.25],'Color',mapComp(countFM(i),:));
-    line([Y(i,3) Y(i,3)],[ymid-0.25 ymid+0.25],'Color',mapComp(countFM(i),:));
-    line([Y(i,3) Y(i,1)],[ymid+0.25 ymid+0.25],'Color',mapComp(countFM(i),:));
-    line([Y(i,2) Y(i,2)],[ymid-0.25 ymid+0.25],'Color',mapComp(countFM(i),:)); % Median
     h1 = plot([0 0],[0 nrow],'Color',[0.016 0.184 0.184],'LineStyle','--');
     h1.Color(4) = 1;
 end
-colormap(map)
+colormap(ax1,map)
 c1 = colorbar('Ticks',[0,.20,.40,.60,.80,1.00],'TickLabels',{'0','20','40',...
-    '60','80','100'},'Location','east','Position',[0.92 0.13 0.02 0.7]);
+    '60','80','100'},'Location','east','Position',[0.46 0.13 0.01 0.7]);
 c1.Label.String = 'Selection Frequency';
 box off
 set(gca,'YColor','none','Color','none')
@@ -98,15 +157,17 @@ title('LASSO Features for Predicting Change in UEFM')
 xlabel('Coefficient')
 axis tight
 
+
 %% Plotting LASSO Wolf
 % box limits
 Y = prctile(WO_LASSO,[25 50 75],2); % calculate 25% 50% 75% for each feature
 
 xmax = ceil(max(max(WO_LASSO)));
 xmin = floor(min(min(WO_LASSO)));
-figure(2)
-clf
-set(gca,'Position',[.05 .1 .85 .75])
+% figure(1)
+% clf
+ax2 = subplot(1,2,2);
+set(gca,'Position',[.52 .1 .43 .75])
 hold on
 for i = 1:size(WO_LASSO,1)
     nrow = size(WO_LASSO,1);
@@ -116,6 +177,11 @@ for i = 1:size(WO_LASSO,1)
     yy = [ymid-0.5 ymid-0.5 ymid+0.5 ymid+0.5];
     col = map2(countWO(i),:);
     patch(xx,yy,col,'EdgeColor','none');
+    line([Y(i,1) Y(i,3)],[ymid-0.25 ymid-0.25],'Color',[0 139/255 139/255],'LineWidth',2);
+    line([Y(i,1) Y(i,1)],[ymid-0.25 ymid+0.25],'Color',[0 139/255 139/255],'LineWidth',2);
+    line([Y(i,3) Y(i,3)],[ymid-0.25 ymid+0.25],'Color',[0 139/255 139/255],'LineWidth',2);
+    line([Y(i,3) Y(i,1)],[ymid+0.25 ymid+0.25],'Color',[0 139/255 139/255],'LineWidth',2);
+    line([Y(i,2) Y(i,2)],[ymid-0.25 ymid+0.25],'Color',[0 139/255 139/255],'LineWidth',2); % Median
     for j = 1:100
         if isnan(WO_LASSO(i,j))
             continue
@@ -123,20 +189,15 @@ for i = 1:size(WO_LASSO,1)
         yy = ymid + (rand-0.5); % add noise to y-value
         plot(WO_LASSO(i,j),yy,'.','Color',map2Comp(countWO(i),:),'MarkerSize',5);
     end
-    text(xmax-1,ymid,rnam3{i},'HorizontalAlignment','right');
+    text(xmax-2,ymid,rnam3{i},'HorizontalAlignment','right','FontWeight','bold');
     % now plot the box for each value
-    line([Y(i,1) Y(i,3)],[ymid-0.25 ymid-0.25],'Color',map2Comp(countWO(i),:));
-    line([Y(i,1) Y(i,1)],[ymid-0.25 ymid+0.25],'Color',map2Comp(countWO(i),:));
-    line([Y(i,3) Y(i,3)],[ymid-0.25 ymid+0.25],'Color',map2Comp(countWO(i),:));
-    line([Y(i,3) Y(i,1)],[ymid+0.25 ymid+0.25],'Color',map2Comp(countWO(i),:));
-    line([Y(i,2) Y(i,2)],[ymid-0.25 ymid+0.25],'Color',map2Comp(countWO(i),:)); % Median
     h1 = plot([0 0],[0 nrow],'Color',[0.016 0.184 0.184],'LineStyle','--');
     h1.Color(4) = 1;
 end
-colormap(map2)
-c1 = colorbar('Ticks',[0,.20,.40,.60,.80,1.00],'TickLabels',{'0','20','40',...
-    '60','80','100'},'Location','east','Position',[0.92 0.13 0.02 0.7]);
-c1.Label.String = 'Selection Frequency';
+colormap(ax2,map2)
+c2 = colorbar('Ticks',[0,.20,.40,.60,.80,1.00],'TickLabels',{'0','20','40',...
+    '60','80','100'},'Location','east','Position',[0.96 0.13 0.01 0.7]);
+c2.Label.String = 'Selection Frequency';
 box off
 set(gca,'YColor','none','Color','none')
 xlim([xmin xmax])
