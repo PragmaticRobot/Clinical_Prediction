@@ -3,12 +3,31 @@
 
 %% data prep
 load('R_results.mat')
+load('counts.mat')
+Features = readtable('FeatureSet.csv');
+Features(:,1) = [];
 
+FM_count = countsFM.Count;
+WO_count = countsWO.Count;
+
+[BFM,IFM] = sort(FM_count,'descend');
+[BWO,IWO] = sort(WO_count,'descend');
+
+IFM = IFM(1:17);
+IWO = IWO(1:23);
+
+FM_Feats = Features(:,IFM);
+WO_Feats = Features(:,IWO);
+
+meansFM = mean(table2array(FM_Feats));
+meansWO = mean(table2array(WO_Feats));
 % convert data type so it's more usable
 
 gg = struct2cell(FM_Lin_LASSO_sort);
 gg = gg';
 FM_LASSO = cell2mat(gg);
+trash = repmat(meansFM',1,100);
+FM_LASSO = FM_LASSO.*trash;
 
 gg = struct2cell(FM_Lin_RF_sort);
 gg = gg';
@@ -20,6 +39,11 @@ WO_LASSO = cell2mat(gg);
 trash = WO_LASSO(2,:);
 WO_LASSO(2,:) = WO_LASSO(11,:);
 WO_LASSO(11,:) = trash;
+trash = meansWO(2);
+meansWO(2) = meansWO(11);
+meansWO(11) = trash;
+trash = repmat(meansWO',1,100);
+WO_LASSO = WO_LASSO.*trash;
 
 trash = rnam3{2};
 rnam3{2} = rnam3{11};
@@ -119,12 +143,24 @@ xmin = floor(min(min(FM_LASSO)));
 figure(1)
 clf
 ax1 = subplot(1,2,1);
+colormap(ax1,map)
+c1 = colorbar('Ticks',[0,.20,.40,.60,.80,1.00],'TickLabels',{'0','20','40',...
+    '60','80','100'},'Location','east','Position',[0.46 0.13 0.01 0.7]);
+c1.Label.String = 'Selection Frequency';
+box off
+set(gca,'YColor','none','Color','none')
+xlim([xmin xmax])
+title('LASSO Features for Predicting Change in UEFM')
+xlabel('Coefficient')
+axis tight
 set(gca,'Position',[.05 .1 .4 .75])
+LL = xmax - xmin;
 hold on
 for i = 1:size(FM_LASSO,1)
     nrow = size(FM_LASSO,1);
     % center of box at nrow-i+0.5
     ymid = (nrow-i)+0.5;   
+    xmin = xmax-((countFM(i)*LL)/100);
     xx = [xmin xmax xmax xmin];
     yy = [ymid-0.5 ymid-0.5 ymid+0.5 ymid+0.5];
     col = map(countFM(i),:);
@@ -146,16 +182,7 @@ for i = 1:size(FM_LASSO,1)
     h1 = plot([0 0],[0 nrow],'Color',[0.016 0.184 0.184],'LineStyle','--');
     h1.Color(4) = 1;
 end
-colormap(ax1,map)
-c1 = colorbar('Ticks',[0,.20,.40,.60,.80,1.00],'TickLabels',{'0','20','40',...
-    '60','80','100'},'Location','east','Position',[0.46 0.13 0.01 0.7]);
-c1.Label.String = 'Selection Frequency';
-box off
-set(gca,'YColor','none','Color','none')
-xlim([xmin xmax])
-title('LASSO Features for Predicting Change in UEFM')
-xlabel('Coefficient')
-axis tight
+
 
 
 %% Plotting LASSO Wolf
@@ -167,12 +194,24 @@ xmin = floor(min(min(WO_LASSO)));
 % figure(1)
 % clf
 ax2 = subplot(1,2,2);
+colormap(ax2,map2)
+c2 = colorbar('Ticks',[0,.20,.40,.60,.80,1.00],'TickLabels',{'0','20','40',...
+    '60','80','100'},'Location','east','Position',[0.96 0.13 0.01 0.7]);
+c2.Label.String = 'Selection Frequency';
+box off
+set(gca,'YColor','none','Color','none')
+xlim([xmin xmax])
+title('LASSO Features for Predicting Change in Wolf Motor Function')
+xlabel('Coefficient')
+axis tight
 set(gca,'Position',[.52 .1 .43 .75])
+LL = xmax - xmin;
 hold on
 for i = 1:size(WO_LASSO,1)
     nrow = size(WO_LASSO,1);
     % center of box at nrow-i+0.5
-    ymid = (nrow-i)+0.5;   
+    ymid = (nrow-i)+0.5;  
+    xmin = xmax-((countWO(i)*LL)/100);
     xx = [xmin xmax xmax xmin];
     yy = [ymid-0.5 ymid-0.5 ymid+0.5 ymid+0.5];
     col = map2(countWO(i),:);
@@ -194,13 +233,3 @@ for i = 1:size(WO_LASSO,1)
     h1 = plot([0 0],[0 nrow],'Color',[0.016 0.184 0.184],'LineStyle','--');
     h1.Color(4) = 1;
 end
-colormap(ax2,map2)
-c2 = colorbar('Ticks',[0,.20,.40,.60,.80,1.00],'TickLabels',{'0','20','40',...
-    '60','80','100'},'Location','east','Position',[0.96 0.13 0.01 0.7]);
-c2.Label.String = 'Selection Frequency';
-box off
-set(gca,'YColor','none','Color','none')
-xlim([xmin xmax])
-title('LASSO Features for Predicting Change in Wolf Motor Function')
-xlabel('Coefficient')
-axis tight
