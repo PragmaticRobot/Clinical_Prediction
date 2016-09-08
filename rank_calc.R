@@ -20,8 +20,12 @@ source("create_df1_df2.R")
 registerDoParallel(cores=4) # 4 cores to do the simulations
 
 ####################################
-LASSO_res <- readMat("lasso_pred.mat", maxLength=NULL, fixNames=TRUE, Verbose=FALSE)
-RF_res <- readMat("RF_pred.mat", maxLength=NULL, fixNames=TRUE, Verbose=FALSE)
+# MAT Files:
+# LASSO_res <- readMat("lasso_pred.mat", maxLength=NULL, fixNames=TRUE, Verbose=FALSE)
+# RF_res <- readMat("RF_pred.mat", maxLength=NULL, fixNames=TRUE, Verbose=FALSE)
+# RDA Files
+load("lasso_pred_Sep16.rda")
+load("RF_pred_Sep16.rda")
 load("colnames.rda")
 ## restructure the data into a data frame
 # RF: Random Forests
@@ -44,13 +48,16 @@ RF_6 <- data.frame(matrix(vector(),1595,100), row.names = colnames(df2))
 ## after this, each matrix has features for rows, and cross-validation results in columns
 for (j in 1:100) # loop over cross-validations
 {
-  for (i in 1:dim(LASSO_res$LASSO.pred1[[2]])[1])
+  # for (i in 1:dim(LASSO_res$LASSO.pred1[[2]])[1])
+  for (i in 1:dim(LASSO_pred1[[2]])[1])
   {
-    if (is.na(LASSO_res$LASSO.pred1[[2]][i,j])) {
+    # if (is.na(LASSO_res$LASSO.pred1[[2]][i,j])) {
+    if (is.na(LASSO_pred1[[2]][i,j])) {
       next 
     }
     else {
-      LASSO_1[LASSO_res$LASSO.pred1[[2]][i,j],j] <- LASSO_res$LASSO.pred1[[3]][i,j]
+      # LASSO_1[LASSO_res$LASSO.pred1[[2]][i,j],j] <- LASSO_res$LASSO.pred1[[3]][i,j]
+      LASSO_1[LASSO_pred1[[2]][i,j],j] <- LASSO_pred1[[3]][i,j]
     }
   }
   ####################################################################
@@ -64,47 +71,56 @@ for (j in 1:100) # loop over cross-validations
   #   }
   # }
   # #####################################################################
-  for (i in 1:dim(LASSO_res$LASSO.pred3[[2]])[1])
+  # for (i in 1:dim(LASSO_res$LASSO.pred3[[2]])[1])
+  for (i in 1:dim(LASSO_pred3[[2]])[1])
   {
-    if (is.na(LASSO_res$LASSO.pred3[[2]][i,j])) {
+    # if (is.na(LASSO_res$LASSO.pred3[[2]][i,j])) {
+    if (is.na(LASSO_pred3[[2]][i,j])) {
       next 
     }
     else {
-      LASSO_3[LASSO_res$LASSO.pred3[[2]][i,j],j] <- LASSO_res$LASSO.pred3[[3]][i,j]
+      # LASSO_3[LASSO_res$LASSO.pred3[[2]][i,j],j] <- LASSO_res$LASSO.pred3[[3]][i,j]
+      LASSO_3[LASSO_pred3[[2]][i,j],j] <- LASSO_pred3[[3]][i,j]
     }
   }
   # #####################################################################
-  for (i in 1:dim(LASSO_res$LASSO.pred4[[2]])[1])
+  # for (i in 1:dim(LASSO_res$LASSO.pred4[[2]])[1])
+  for (i in 1:dim(LASSO_pred4[[2]])[1])
   {
-    if (is.na(LASSO_res$LASSO.pred4[[2]][i,j])) {
+    # if (is.na(LASSO_res$LASSO.pred4[[2]][i,j])) {
+    if (is.na(LASSO_pred4[[2]][i,j])) {
       next 
     }
     else {
-      LASSO_4[LASSO_res$LASSO.pred4[[2]][i,j],j] <- LASSO_res$LASSO.pred4[[3]][i,j]
+      # LASSO_4[LASSO_res$LASSO.pred4[[2]][i,j],j] <- LASSO_res$LASSO.pred4[[3]][i,j]
+      LASSO_4[LASSO_pred4[[2]][i,j],j] <- LASSO_pred4[[3]][i,j]
     }
   }
   # #####################################################################
-  for (i in 1:dim(LASSO_res$LASSO.pred6[[2]])[1])
+  # for (i in 1:dim(LASSO_res$LASSO.pred6[[2]])[1])
+  for (i in 1:dim(LASSO_pred6[[2]])[1])
   {
-    if (is.na(LASSO_res$LASSO.pred6[[2]][i,j])) {
+    # if (is.na(LASSO_res$LASSO.pred6[[2]][i,j])) {
+    if (is.na(LASSO_pred6[[2]][i,j])) {
       next 
     }
     else {
-      LASSO_6[LASSO_res$LASSO.pred6[[2]][i,j],j] <- LASSO_res$LASSO.pred6[[3]][i,j]
+      # LASSO_6[LASSO_res$LASSO.pred6[[2]][i,j],j] <- LASSO_res$LASSO.pred6[[3]][i,j]
+      LASSO_6[LASSO_pred6[[2]][i,j],j] <- LASSO_pred6[[3]][i,j]
     }
   }
   #####################################################################
   for (i in 1:55)
   {
-    RF_1[RF_res$RF.pred1[[2]][i,j],j] <- RF_res$RF.pred1[[3]][i,j]
+    RF_1[RF_pred1[[2]][i,j],j] <- RF_pred1[[3]][i,j]
     # RF_2[RF_res$RF.pred2[[2]][i,j],j] <- RF_res$RF.pred2[[3]][i,j]
-    RF_3[RF_res$RF.pred3[[2]][i,j],j] <- RF_res$RF.pred3[[3]][i,j]
+    RF_3[RF_pred3[[2]][i,j],j] <- RF_pred3[[3]][i,j]
   }
   for (i in 1:1595)
   {
-    RF_4[RF_res$RF.pred4[[2]][i,j],j] <- RF_res$RF.pred4[[3]][i,j]
+    RF_4[RF_pred4[[2]][i,j],j] <- RF_pred4[[3]][i,j]
     # RF_2[RF_res$RF.pred2[[2]][i,j],j] <- RF_res$RF.pred2[[3]][i,j]
-    RF_6[RF_res$RF.pred6[[2]][i,j],j] <- RF_res$RF.pred6[[3]][i,j]
+    RF_6[RF_pred6[[2]][i,j],j] <- RF_pred6[[3]][i,j]
   }
 }
 
@@ -282,33 +298,33 @@ tit3 <- "Wolf Quad LASSO Coefs"
 tit4 <- "Wolf Quad RF VI"
 plot_sideways(Wolf_Lin_LASSO_sort,0,tit1)
 plot_sideways(Wolf_Lin_RF_sort,15,tit2)
-plot_sideways(Wolf_Quad_LASSO_sort,0,tit1)
-plot_sideways(Wolf_Quad_RF_sort,15,tit2)
+# plot_sideways(Wolf_Quad_LASSO_sort,0,tit3)
+plot_sideways(Wolf_Quad_RF_sort,15,tit4)
 
 # writeMat("R_results.mat",FM_Lin_LASSO_sort=FM_Lin_LASSO_sort,FM_Lin_RF_sort=FM_Lin_RF_sort,
 #          Wolf_Lin_LASSO_sort=Wolf_Lin_LASSO_sort,Wolf_Lin_RF_sort=Wolf_Lin_RF_sort,rnam1=rownames(FM_Lin_LASSO_sort),
 #          rnam2=rownames(FM_Lin_RF_sort),rnam3=rownames(Wolf_Lin_LASSO_sort),
 #          rnam4=rownames(Wolf_Lin_RF_sort),countFM=sorted_FM$Count, countWO=sorted_WO$Count)
-writeMat("countsF.mat",countsFM = counts_FM, countsWO = counts_WO, countsqFM = counts_qFM,
-         countsqWO = counts_qWO)
-writeMat("Names.mat",
-         rnam1=rownames(FM_Lin_LASSO_sort),
-         rnam2=rownames(FM_Lin_RF_sort),
-         rnam3=rownames(FM_Quad_LASSO_sort),
-         rnam4=rownames(FM_Quad_RF_sort),
-         rnam5=rownames(Wolf_Lin_LASSO_sort),
-         rnam6=rownames(Wolf_Lin_RF_sort),
-         rnam7=rownames(Wolf_Quad_LASSO_sort),
-         rnam8=rownames(Wolf_Quad_RF_sort))
-write.csv(FM_Lin_LASSO_sort,"FM_Lin_LASSO.csv")
-write.csv(FM_Lin_RF_sort,"FM_Lin_RF.csv")
-write.csv(FM_Quad_LASSO_sort,"FM_Quad_LASSO.csv")
-write.csv(FM_Quad_RF_sort,"FM_Quad_RF.csv")
-write.csv(Wolf_Lin_LASSO_sort,"WO_Lin_LASSO.csv")
-write.csv(Wolf_Lin_RF_sort,"WO_Lin_RF.csv")
-write.csv(Wolf_Quad_LASSO_sort,"WO_Quad_LASSO.csv")
-write.csv(Wolf_Quad_RF_sort,"WO_Quad_RF.csv")
-
-save(FM_Lin_LASSO_sort,FM_Lin_RF_sort,FM_Quad_LASSO_sort,FM_Quad_RF_sort,
-     Wolf_Lin_LASSO_sort,Wolf_Lin_RF_sort,Wolf_Quad_LASSO_sort,Wolf_Quad_RF_sort,
-     counts_FM,counts_WO,counts_qFM,counts_qWO,file="LS_RF_Results.rda")
+# writeMat("countsF.mat",countsFM = counts_FM, countsWO = counts_WO, countsqFM = counts_qFM,
+#          countsqWO = counts_qWO)
+# writeMat("Names.mat",
+#          rnam1=rownames(FM_Lin_LASSO_sort),
+#          rnam2=rownames(FM_Lin_RF_sort),
+#          rnam3=rownames(FM_Quad_LASSO_sort),
+#          rnam4=rownames(FM_Quad_RF_sort),
+#          rnam5=rownames(Wolf_Lin_LASSO_sort),
+#          rnam6=rownames(Wolf_Lin_RF_sort),
+#          rnam7=rownames(Wolf_Quad_LASSO_sort),
+#          rnam8=rownames(Wolf_Quad_RF_sort))
+# write.csv(FM_Lin_LASSO_sort,"FM_Lin_LASSO.csv")
+# write.csv(FM_Lin_RF_sort,"FM_Lin_RF.csv")
+# write.csv(FM_Quad_LASSO_sort,"FM_Quad_LASSO.csv")
+# write.csv(FM_Quad_RF_sort,"FM_Quad_RF.csv")
+# write.csv(Wolf_Lin_LASSO_sort,"WO_Lin_LASSO.csv")
+# write.csv(Wolf_Lin_RF_sort,"WO_Lin_RF.csv")
+# write.csv(Wolf_Quad_LASSO_sort,"WO_Quad_LASSO.csv")
+# write.csv(Wolf_Quad_RF_sort,"WO_Quad_RF.csv")
+# 
+# save(FM_Lin_LASSO_sort,FM_Lin_RF_sort,FM_Quad_LASSO_sort,FM_Quad_RF_sort,
+#      Wolf_Lin_LASSO_sort,Wolf_Lin_RF_sort,Wolf_Quad_LASSO_sort,Wolf_Quad_RF_sort,
+#      counts_FM,counts_WO,counts_qFM,counts_qWO,file="LS_RF_Results.rda")

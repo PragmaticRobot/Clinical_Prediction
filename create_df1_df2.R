@@ -89,13 +89,13 @@ top <- dim(Features)[2]
 ############################################################
 VarNames <- colnames(Features)
 varsToFactor <- VarNames[43:52]
-FeaturesF <- Features # a copy of features with binary variables 
+# FeaturesF <- Features # a copy of features with binary variables 
 # turned into factors (so the original is fine)
-FeaturesF[varsToFactor] <- lapply(FeaturesF[varsToFactor], factor)
+Features[varsToFactor] <- lapply(Features[varsToFactor], factor)
 
 for (i in 43:52)
 {
-  FeaturesF[,i] <- as.factor(2-as.integer(FeaturesF[,i])) 
+  Features[,i] <- as.factor(2-as.integer(Features[,i]))
 }
 
 outs <- list()
@@ -109,19 +109,26 @@ yWO = Outcomes$Data.y.WO
 ###############################################
 ## 03 - Prepare for quadratic random forests ##
 ###############################################
-df1 <- Features 
+df1 <- Features
 # this is the original copy of Features, where binary variables 
 # are still treated as integers
 # this allows for the multiplication of binary variables with other variables
 
 df2 <- Features
+for (i in 43:52)
+{
+  df2[,i] <- as.integer(df2[,i])-1
+  Features[,i] <- as.integer(Features[,i])-1
+  df1[,i] <- as.integer(df1[,i])-1
+}
+df3 <- df2
 names2 <- c(colnames(Features))
 for (i in c(1:dim(df1)[2])) {
   for (j in c(i:dim(df1)[2])){
     name_new <- paste(colnames(df1)[i], '*',colnames(df1)[j], sep="")
     names2 <- c(names2,name_new)
     
-    df_new <- data.frame(new_name = t(t(df1[,i])*t(df1[,j])))
+    df_new <- data.frame(new_name = t(t(df3[,i])*t(df3[,j])))
     df2 <- cbind(df2,(df_new))
   }
 }

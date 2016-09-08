@@ -94,10 +94,12 @@ rnam8 <- rownames(Wolf_Quad_RF_sort)
 
 #### Get means and medians of feature sets ####
 
-mns1 <- apply(as.matrix(df1), 1, mean) 
-mns2 <- apply(as.matrix(df2), 1, mean)
-meds1 <- apply(as.matrix(df1), 1, median)
-meds2 <- apply(as.matrix(df2), 1, median)
+colnames(df1) <- rownames(counts_FM) 
+
+# mnsdf1 <- as.data.frame(apply(as.matrix(df1), 2, mean))
+# colnames(mnsdf1) <- "means"
+# mnsdf2 <- as.data.frame(apply(as.matrix(df2), 2, mean))
+# colnames(mnsdf2) <- "means"
 
 #### Notes at this point: ####
 # df1 contains original feature set
@@ -108,35 +110,154 @@ meds2 <- apply(as.matrix(df2), 1, median)
 
 #### Forest plot ####
 
-## Interwebz code:
-# library(forestplot)
-# # Cochrane data from the 'rmeta'-package
-# cochrane_from_rmeta <- 
-#   structure(list(
-#     mean  = c(NA, NA, 0.578, 0.165, 0.246, 0.700, 0.348, 0.139, 1.017, NA, 0.531), 
-#     lower = c(NA, NA, 0.372, 0.018, 0.072, 0.333, 0.083, 0.016, 0.365, NA, 0.386),
-#     upper = c(NA, NA, 0.898, 1.517, 0.833, 1.474, 1.455, 1.209, 2.831, NA, 0.731)),
-#     .Names = c("mean", "lower", "upper"), 
-#     row.names = c(NA, -11L), 
-#     class = "data.frame")
-# 
-# tabletext<-cbind(
-#   c("", "Study", "Auckland", "Block", 
-#     "Doran", "Gamsu", "Morrison", "Papageorgiou", 
-#     "Tauesch", NA, "Summary"),
-#   c("Deaths", "(steroid)", "36", "1", 
-#     "4", "14", "3", "1", 
-#     "8", NA, NA),
-#   c("Deaths", "(placebo)", "60", "5", 
-#     "11", "20", "7", "7", 
-#     "10", NA, NA),
-#   c("", "OR", "0.58", "0.16", 
-#     "0.25", "0.70", "0.35", "0.14", 
-#     "1.02", NA, "0.53"))
-# 
-# forestplot(tabletext, 
-#            cochrane_from_rmeta,new_page = TRUE,
-#            is.summary=c(TRUE,TRUE,rep(FALSE,8),TRUE),
-#            clip=c(0.1,2.5), 
-#            xlog=TRUE, 
-#            col=fpColors(box="royalblue",line="darkblue", summary="royalblue"))
+# Order of variables 1-8
+# FM_Lin_LASSO_sort
+# FM_Lin_RF_sort
+# FM_Quad_LASSO_sort
+# FM_Quad_RF_sort
+# Wolf_Lin_LASSO_sort
+# Wolf_Lin_RF_sort
+# Wolf_Quad_LASSO_sort
+# Wolf_Quad_RF_sort
+
+mids1 <- (low1 + high1)/2
+mids2 <- (low2 + high2)/2
+mids3 <- (low3 + high3)/2
+mids4 <- (low4 + high4)/2
+mids5 <- (low5 + high5)/2
+mids6 <- (low6 + high6)/2
+mids7 <- (low7 + high7)/2
+mids8 <- (low8 + high8)/2
+
+#### For Fugl-Meyer ####
+tabletext<-cbind(
+  c("Feature",rnam1[1:15]),
+  c(rep(NA,16)))
+
+forestplot(tabletext,
+           mean = c(NA,mids1[1:15]),
+           lower = c(NA, low1[1:15]), 
+           upper = c(NA,high1[1:15]),
+           new_page = TRUE,
+           is.summary=c(TRUE,rep(FALSE,16)),
+           clip=c(-9,14),
+           xlog=FALSE,
+           col=fpColors(box="royalblue",line="darkblue", summary="royalblue"),
+           xlab = "Coefficient",lwd.ci = 1.4,boxsize = 0.1)
+
+tabletext<-cbind(
+  c("Feature",rnam2[1:15]),
+  c(rep(NA,16)))
+max2 <- max(FM_Lin_RF_sort)
+low2 <- low2/max2
+high2 <- high2/max2
+mids2 <- mids2/max2
+forestplot(tabletext,
+           mean = c(NA,mids2[1:15]),
+           lower = c(NA, low2[1:15]), 
+           upper = c(NA,high2[1:15]),
+           new_page = TRUE,
+           is.summary=c(TRUE,rep(FALSE,16)),
+           clip=c(-0.1,1),
+           xlog=FALSE,
+           col=fpColors(box="royalblue",line="darkblue", summary="royalblue"),
+           xlab = "Relative Feature importance",lwd.ci = 1.4,boxsize = 0.1)
+
+tabletext<-cbind(
+  c("Feature",rnam3[1:15]),
+  c(rep(NA,16)))
+forestplot(tabletext,
+           mean = c(NA,mids3[1:15]),
+           lower = c(NA, low3[1:15]), 
+           upper = c(NA,high3[1:15]),
+           new_page = TRUE,
+           is.summary=c(TRUE,rep(FALSE,16)),
+           clip=c(-16,26),
+           xlog=FALSE,
+           col=fpColors(box="royalblue",line="darkblue", summary="royalblue"),
+           xlab = "Coefficient",lwd.ci = 1.4,boxsize = 0.1)
+
+tabletext<-cbind(
+  c("Feature",rnam4[1:15]),
+  c(rep(NA,16)))
+max4 <- max(FM_Quad_RF_sort)
+low4 <- low4/max4
+high4 <- high4/max4
+mids4 <- mids4/max4
+forestplot(tabletext,
+           mean = c(NA,mids4[1:15]),
+           lower = c(NA, low4[1:15]), 
+           upper = c(NA,high4[1:15]),
+           new_page = TRUE,
+           is.summary=c(TRUE,rep(FALSE,16)),
+           clip=c(-0.1,1),
+           xlog=FALSE,
+           col=fpColors(box="royalblue",line="darkblue", summary="royalblue"),
+           xlab = "Relative Feature importance",lwd.ci = 1.4,boxsize = 0.1)
+
+#### For Wolf ####
+
+tabletext<-cbind(
+  c("Feature",rnam5[1:15]),
+  c(rep(NA,16)))
+
+forestplot(tabletext,
+           mean = c(NA,mids5[1:15]),
+           lower = c(NA, low5[1:15]), 
+           upper = c(NA,high5[1:15]),
+           new_page = TRUE,
+           is.summary=c(TRUE,rep(FALSE,16)),
+           clip=c(-9,14),
+           xlog=FALSE,
+           col=fpColors(box="royalblue",line="darkblue", summary="royalblue"),
+           xlab = "Coefficient",lwd.ci = 1.4,boxsize = 0.1)
+
+tabletext<-cbind(
+  c("Feature",rnam6[1:15]),
+  c(rep(NA,16)))
+max6 <- max(Wolf_Lin_RF_sort)
+low6 <- low6/max6
+high6 <- high6/max6
+mids6 <- mids6/max6
+forestplot(tabletext,
+           mean = c(NA,mids6[1:15]),
+           lower = c(NA, low6[1:15]), 
+           upper = c(NA,high6[1:15]),
+           new_page = TRUE,
+           is.summary=c(TRUE,rep(FALSE,16)),
+           clip=c(-0.1,1),
+           xlog=FALSE,
+           col=fpColors(box="royalblue",line="darkblue", summary="royalblue"),
+           xlab = "Relative Feature importance",lwd.ci = 1.4,boxsize = 0.1)
+
+tabletext<-cbind(
+  c("Feature",rnam7[1:15]),
+  c(rep(NA,16)))
+forestplot(tabletext,
+           mean = c(NA,mids7[1:15]),
+           lower = c(NA, low7[1:15]), 
+           upper = c(NA,high7[1:15]),
+           new_page = TRUE,
+           is.summary=c(TRUE,rep(FALSE,16)),
+           clip=c(-16,26),
+           xlog=FALSE,
+           col=fpColors(box="royalblue",line="darkblue", summary="royalblue"),
+           xlab = "Coefficient",lwd.ci = 1.4,boxsize = 0.1)
+
+tabletext<-cbind(
+  c("Feature",rnam8[1:15]),
+  c(rep(NA,16)))
+max8 <- max(Wolf_Quad_RF_sort)
+low8 <- low8/max8
+high8 <- high8/max8
+mids8 <- mids8/max8
+forestplot(tabletext,
+           mean = c(NA,mids8[1:15]),
+           lower = c(NA, low8[1:15]), 
+           upper = c(NA,high8[1:15]),
+           new_page = TRUE,
+           is.summary=c(TRUE,rep(FALSE,16)),
+           clip=c(-0.1,1),
+           xlog=FALSE,
+           col=fpColors(box="royalblue",line="darkblue", summary="royalblue"),
+           xlab = "Relative Feature importance",lwd.ci = 1.4,boxsize = 0.1)

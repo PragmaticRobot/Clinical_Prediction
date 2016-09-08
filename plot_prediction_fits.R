@@ -22,35 +22,35 @@ registerDoParallel(cores=4) # 4 cores to do the simulations
 
 ##
 # Dpath <- file.path("C:","Users","Yaz","Dropbox","Research","NewDec2015","2016-04-19 - Second Run CV","lasso_pred.mat")
-LASSO_res <- readMat("lasso_pred.mat", maxLength=NULL, fixNames=TRUE, Verbose=FALSE)
-# load("lasso_pred_corrbias.rda")
+# LASSO_res <- readMat("lasso_pred.mat", maxLength=NULL, fixNames=TRUE, Verbose=FALSE)
+load("lasso_pred_Sep16.rda")
 # Dpath <- file.path("C:","Users","Yaz","Dropbox","Research","NewDec2015","2016-04-19 - Second Run CV","RF_pred.mat")
-RF_res <- readMat("RF_pred.mat", maxLength=NULL, fixNames=TRUE, Verbose=FALSE)
-# load("RF_pred_corrbias.rda")
+# RF_res <- readMat("RF_pred.mat", maxLength=NULL, fixNames=TRUE, Verbose=FALSE)
+load("RF_pred_Sep16.rda")
 
 ## LASSO
-FM_lin_lasso <-   LASSO_res$LASSO.pred1[[1]]
-# FM_lin_lasso <-   LASSO_pred1[[1]]
+# FM_lin_lasso <-   LASSO_res$LASSO.pred1[[1]]
+FM_lin_lasso <-   LASSO_pred1[[1]]
 # pFM_lin_lasso <-  LASSO_res$LASSO.pred2[[1]]
-WO_lin_lasso  <-  LASSO_res$LASSO.pred3[[1]]
-# WO_lin_lasso  <-  LASSO_pred3[[1]]
-FM_quad_lasso <-  LASSO_res$LASSO.pred4[[1]]
-# FM_quad_lasso <-  LASSO_pred4[[1]]
+# WO_lin_lasso  <-  LASSO_res$LASSO.pred3[[1]]
+WO_lin_lasso  <-  LASSO_pred3[[1]]
+# FM_quad_lasso <-  LASSO_res$LASSO.pred4[[1]]
+FM_quad_lasso <-  LASSO_pred4[[1]]
 # pFM_quad_lasso <- LASSO_res$LASSO.pred5[[1]]
-WO_quad_lasso <-  LASSO_res$LASSO.pred6[[1]]
-# WO_quad_lasso <-  LASSO_pred6[[1]]
+# WO_quad_lasso <-  LASSO_res$LASSO.pred6[[1]]
+WO_quad_lasso <-  LASSO_pred6[[1]]
 
 ## Random Forests
-FM_lin_RF <-   RF_res$RF.pred1[[1]]
-# FM_lin_RF <-   RF_pred1[[1]]
+# FM_lin_RF <-   RF_res$RF.pred1[[1]]
+FM_lin_RF <-   RF_pred1[[1]]
 # pFM_lin_RF <-  RF_res$RF.pred2[[1]]
-WO_lin_RF <-   RF_res$RF.pred3[[1]]
-# WO_lin_RF <-   RF_pred3[[1]]
-FM_quad_RF <-  RF_res$RF.pred4[[1]]
-# FM_quad_RF <-  RF_pred4[[1]]
+# WO_lin_RF <-   RF_res$RF.pred3[[1]]
+WO_lin_RF <-   RF_pred3[[1]]
+# FM_quad_RF <-  RF_res$RF.pred4[[1]]
+FM_quad_RF <-  RF_pred4[[1]]
 # pFM_quad_RF <- RF_res$RF.pred5[[1]]
-WO_quad_RF <-  RF_res$RF.pred6[[1]]
-# WO_quad_RF <-  RF_pred6[[1]]
+# WO_quad_RF <-  RF_res$RF.pred6[[1]]
+WO_quad_RF <-  RF_pred6[[1]]
 
 ## outcomes
 # yFM <- LASSO_res$yFM
