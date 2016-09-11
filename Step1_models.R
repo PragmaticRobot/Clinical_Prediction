@@ -74,7 +74,7 @@ LASSO_pred4 <- cleanup_LASSO(predLASSO4)
 # LASSO_pred5 <- cleanup_LASSO(predLASSO5)
 LASSO_pred6 <- cleanup_LASSO(predLASSO6)
 
-save(LASSO_pred1,LASSO_pred3,LASSO_pred4,LASSO_pred6,file = "lasso_pred_Sep16.rda")
+save(LASSO_pred1,LASSO_pred3,LASSO_pred4,LASSO_pred6,file = "lasso_pred_10Sep16.rda")
 
 #######################################
 ## 06 - Random Forests Bootstrapping ##
@@ -103,4 +103,4 @@ RF_pred4 <- cleanup_RF(predRF4)
 # RF_pred5 <- cleanup_RF(predRF5)
 RF_pred6 <- cleanup_RF(predRF6)
 
-save(RF_pred1, RF_pred3, RF_pred4, RF_pred6, file = "RF_pred_Sep16.rda")
+save(RF_pred1, RF_pred3, RF_pred4, RF_pred6, file = "RF_pred_10Sep16.rda")
