@@ -385,6 +385,41 @@ DoHists <- function(allins,out,outname)
             col=c("firebrick2","darkcyan","forestgreen","darkorange1"),
             legend=rownames(histData),beside=TRUE,ylim = c(0,max(counts)+1))
     sks <- apply(counts,2,e1071::skewness,na.rm=TRUE)
+  } else if (ncol(allins)==6){
+    difFM <- matrix(, nrow = 26, ncol = 6)
+    difFM[,1] <- abs(allins[,1]-out)
+    difFM[,2] <- abs(allins[,2]-out)
+    difFM[,3] <- abs(allins[,3]-out)
+    difFM[,4] <- abs(allins[,4]-out)
+    difFM[,5] <- abs(allins[,5]-out)
+    difFM[,6] <- abs(allins[,6]-out)
+    bks <- ceiling(apply(difFM,2,max,na.rm = TRUE)) # find the xlim of each hist
+    D1 <- hist(difFM[,1], breaks = c(0:bks[1]), xlim = c(0,bks[1]+1), ylim = c(0,12),plot=FALSE)
+    D2 <- hist(difFM[,2], breaks = c(0:bks[2]), xlim = c(0,bks[2]+1), ylim = c(0,12),plot=FALSE)
+    D3 <- hist(difFM[,3], breaks = c(0:bks[3]), xlim = c(0,bks[3]+1), ylim = c(0,12),plot=FALSE)
+    D4 <- hist(difFM[,4], breaks = c(0:bks[4]), xlim = c(0,bks[4]+1), ylim = c(0,12),plot=FALSE)
+    D5 <- hist(difFM[,5], breaks = c(0:bks[5]), xlim = c(0,bks[5]+1), ylim = c(0,12),plot=FALSE)
+    D6 <- hist(difFM[,6], breaks = c(0:bks[6]), xlim = c(0,bks[6]+1), ylim = c(0,12),plot=FALSE)
+    # Grouped Bar Plot
+    counts <- matrix(, nrow = max(bks), ncol = 6)
+    counts[,1] <- padzeros(D1$counts,max(bks)-bks[1],"right")
+    counts[,2] <- padzeros(D2$counts,max(bks)-bks[2],"right")
+    counts[,3] <- padzeros(D3$counts,max(bks)-bks[3],"right")
+    counts[,4] <- padzeros(D4$counts,max(bks)-bks[4],"right")
+    counts[,5] <- padzeros(D5$counts,max(bks)-bks[5],"right")
+    counts[,6] <- padzeros(D6$counts,max(bks)-bks[6],"right")
+    histData <- matrix(counts,ncol = max(bks), byrow=T)
+    rownames(histData) <- c("Linear LASSO","Quadratic LASSO",
+                            "Linear Random Forests","Quadratic RandomForests",
+                            "NoExtrap LASSO","NoExtrap Random Forests")
+    colns <- c("0-1","1-2","2-3","3-4","4-5","5-6","6-7","7-8","8-9","9-10","10-11","11-12")
+    colnames(histData) <- colns[1:max(bks)]
+    barplot(histData, main=paste("Prediction Accuracy for",outname),
+            xlab=paste("Absolute prediction error (in units of)",outname,")"),
+            ylab = "number of subjects",
+            col=c("firebrick2","darkcyan","forestgreen","darkorange1","khaki4","slateblue2"),
+            legend=rownames(histData),beside=TRUE,ylim = c(0,max(counts)+1))
+    sks <- apply(counts,2,e1071::skewness,na.rm=TRUE)
   } else {
     message("Unsupported input size")
   }
@@ -468,7 +503,64 @@ DoLines <- function(allins,out,outname)
                         paste(rownames(histData)[3],", skew = ",as.character(sks2[3])),
                         paste(rownames(histData)[4],", skew = ",as.character(sks2[4]))),
            cex = 1, col=c('firebrick2','darkcyan','forestgreen','darkorange1'),
-           lty=c(1,1,1,1),lwd=c(3,3,3,3,3,3),bty="n")
+           lty=c(1,1,1,1),lwd=c(3,3,3,3),bty="n")
+  } else if (ncol(allins)==6){
+    difFM <- matrix(, nrow = 26, ncol = 6)
+    difFM[,1] <- abs(allins[,1]-out)
+    difFM[,2] <- abs(allins[,2]-out)
+    difFM[,3] <- abs(allins[,3]-out)
+    difFM[,4] <- abs(allins[,4]-out)
+    difFM[,5] <- abs(allins[,5]-out)
+    difFM[,6] <- abs(allins[,6]-out)
+    bks <- ceiling(apply(difFM,2,max,na.rm = TRUE)) # find the xlim of each hist
+    D1 <- hist(difFM[,1], breaks = c(0:bks[1]), xlim = c(0,bks[1]+1), ylim = c(0,12),plot=FALSE)
+    D2 <- hist(difFM[,2], breaks = c(0:bks[2]), xlim = c(0,bks[2]+1), ylim = c(0,12),plot=FALSE)
+    D3 <- hist(difFM[,3], breaks = c(0:bks[3]), xlim = c(0,bks[3]+1), ylim = c(0,12),plot=FALSE)
+    D4 <- hist(difFM[,4], breaks = c(0:bks[4]), xlim = c(0,bks[4]+1), ylim = c(0,12),plot=FALSE)
+    D5 <- hist(difFM[,5], breaks = c(0:bks[5]), xlim = c(0,bks[5]+1), ylim = c(0,12),plot=FALSE)
+    D6 <- hist(difFM[,6], breaks = c(0:bks[6]), xlim = c(0,bks[6]+1), ylim = c(0,12),plot=FALSE)
+    # Line Plot
+    counts <- matrix(, nrow = max(bks), ncol = 6)
+    counts[,1] <- padzeros(D1$counts,max(bks)-bks[1],"right")
+    counts[,2] <- padzeros(D2$counts,max(bks)-bks[2],"right")
+    counts[,3] <- padzeros(D3$counts,max(bks)-bks[3],"right")
+    counts[,4] <- padzeros(D4$counts,max(bks)-bks[4],"right")
+    counts[,5] <- padzeros(D5$counts,max(bks)-bks[5],"right")
+    counts[,6] <- padzeros(D6$counts,max(bks)-bks[6],"right")
+    histData <- matrix(counts,ncol = max(bks), byrow=T)
+    rownames(histData) <- c("Linear LASSO","Quadratic LASSO",
+                            "Linear Random Forests","Quadratic RandomForests",
+                            "NoExtrap LASSO","NoExtrap Random Forests")
+    colns <- c("0-1","1-2","2-3","3-4","4-5","5-6","6-7","7-8","8-9","9-10","10-11","11-12")
+    colnames(histData) <- colns[1:max(bks)]
+    xx1 <- seq(0.5,ncol(histData)-0.5,by = 1)
+    plot(xx1,histData[1,], pch=21, lwd=3,col="firebrick2", 
+         xlim=c(0,ncol(histData)),ylim=c(0,max(histData,na.rm = TRUE)),
+         xaxt="n",xlab=paste("Absolute prediction error (in units of",outname,")"),
+         main=paste("Prediction Accuracy for",outname),
+         ylab = "number of subjects")
+    lines(xx1,histData[1,],lwd=3,lty=1,col="firebrick2")
+    points(xx1,histData[2,],pch=22,lwd=3,col="darkcyan")
+    lines(xx1,histData[2,],lwd=3,lty=1,col="darkcyan")
+    points(xx1,histData[3,],pch=24,lwd=3,col="forestgreen")
+    lines(xx1,histData[3,],lwd=3,lty=1,col="forestgreen")
+    points(xx1,histData[4,],pch=25,lwd=3,col="darkorange1")
+    lines(xx1,histData[4,],lwd=3,lty=1,col="darkorange1")
+    points(xx1,histData[5,],pch=3,lwd=3,col="khaki4")
+    lines(xx1,histData[5,],lwd=3,lty=1,col="khaki4")
+    points(xx1,histData[6,],pch=8,lwd=3,col="slateblue2")
+    lines(xx1,histData[6,],lwd=3,lty=1,col="slateblue2")
+    axis(side=1,at=xx1,labels=colnames(histData))
+    sks <- apply(counts,2,e1071::skewness,na.rm=TRUE)
+    sks2 <- round(sks,digits = 2)
+    legend("topright",c(paste(rownames(histData)[1],", skew = ",as.character(sks2[1])),
+                        paste(rownames(histData)[2],", skew = ",as.character(sks2[2])),
+                        paste(rownames(histData)[3],", skew = ",as.character(sks2[3])),
+                        paste(rownames(histData)[4],", skew = ",as.character(sks2[4])),
+                        paste(rownames(histData)[5],", skew = ",as.character(sks2[5])),
+                        paste(rownames(histData)[6],", skew = ",as.character(sks2[6]))),
+           cex = 1, col=c('firebrick2','darkcyan','forestgreen','darkorange1','khaki4','slateblue2'),
+           lty=c(1,1,1,1,1,1),lwd=c(3,3,3,3,3,3),bty="n")
   } else {
     message("Unsupported input size")
   }

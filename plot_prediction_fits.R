@@ -115,10 +115,10 @@ plot_LSRF_fits(InsWO,modListWO,relative=0,yWO,'Wolf',1)
 
 ## Create and use a DoHists function here
 
-# skFM <- DoHists(InsFM,yFM,'Fugl-Meyer')
-# # skpFM <- DoHists(InsPFM,ypFM,'Arm-Only Fugl-Meyer')
-# skWO <- DoHists(InsWO,yWO,'Wolf')
-# 
-# skFM2 <- DoLines(InsFM,yFM,'Fugl-Meyer')
-# skWO2 <- DoLines(InsWO,yWO,'Wolf')
-# # skpFM <- DoHists(InsPFM,ypFM,'Arm-Only Fugl-Meyer')
+skFM <- DoHists(InsFM,yFM,'Fugl-Meyer')
+# skpFM <- DoHists(InsPFM,ypFM,'Arm-Only Fugl-Meyer')
+skWO <- DoHists(InsWO,yWO,'Wolf')
+
+skFM2 <- DoLines(InsFM,yFM,'Fugl-Meyer')
+skWO2 <- DoLines(InsWO,yWO,'Wolf')
+# skpFM <- DoHists(InsPFM,ypFM,'Arm-Only Fugl-Meyer')
