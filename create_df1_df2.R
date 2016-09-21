@@ -114,31 +114,75 @@ df1 <- Features
 # are still treated as integers
 # this allows for the multiplication of binary variables with other variables
 
-df2 <- Features
-for (i in 43:52)
-{
-  df2[,i] <- as.integer(df2[,i])-1
-  Features[,i] <- as.integer(Features[,i])-1
-  df1[,i] <- as.integer(df1[,i])-1
-}
-df3 <- df2
+df2 <- df1
+# for (i in 43:52)
+# {
+#   df2[,i] <- as.integer(df2[,i])-1
+#   Features[,i] <- as.integer(Features[,i])-1
+#   df1[,i] <- as.integer(df1[,i])-1
+# }
+df3 <- df1
 names2 <- c(colnames(Features))
+names3 <- names2
+
 for (i in c(1:dim(df1)[2])) {
   for (j in c(i:dim(df1)[2])){
-    name_new <- paste(colnames(df1)[i], '*',colnames(df1)[j], sep="")
-    names2 <- c(names2,name_new)
-    
-    df_new <- data.frame(new_name = t(t(df3[,i])*t(df3[,j])))
-    df2 <- cbind(df2,(df_new))
+    if (is.factor(df1[,i]) & is.factor(df1[,j]) & identical(df1[,i],df1[,j])) # If they're the same and both factors, skip
+    {
+      next
+    } else if (is.factor(df1[,i]) & is.factor(df1[,j]) & !identical(df1[,i],df1[,j])) # If not the same and both factors, interact
+    {
+      name_new <- paste(colnames(df1)[i], ':',colnames(df1)[j], sep="")
+      names2 <- c(names2,name_new)
+      trash <- interaction(df1[,i],df1[,j],sep = ":")
+      df_new <- data.frame(new_name = (trash))
+      df2 <- cbind(df2,(df_new))
+      # now check for df3, whether any of the "cells" in the table are empty
+      if (min(table(df_new))==0){
+        next
+      } else {
+        df3 <- cbind(df3,(df_new))
+        names3 <- c(names3,name_new)
+      }
+    } else if ((is.factor(df1[,i]) & !is.factor(df1[,j])) | (!is.factor(df1[,i]) & is.factor(df1[,j])))
+    {
+      name_new <- paste(colnames(df1)[i], ':',colnames(df1)[j], sep="")
+      names2 <- c(names2,name_new)
+      trash <- interaction(df1[,i],df1[,j],sep = ":")
+      df_new <- data.frame(new_name = (trash))
+      df2 <- cbind(df2,(df_new))
+      # now check for df3, whether any of the "cells" in the table are empty
+      if (min(table(df_new))==0){
+        next
+      } else {
+        df3 <- cbind(df3,(df_new))
+        names3 <- c(names3,name_new)
+      }
+    } else
+    {
+      name_new <- paste(colnames(df1)[i], ':',colnames(df1)[j], sep="")
+      names2 <- c(names2,name_new)
+      trash <- (df1[,i]*df1[,j])
+      df_new <- data.frame(new_name = (trash))
+      df2 <- cbind(df2,(df_new))
+      # now check for df3, whether any of the "cells" in the table are empty
+      if (min(table(df_new))==0){
+        next
+      } else {
+        df3 <- cbind(df3,(df_new))
+        names3 <- c(names3,name_new)
+      }
+    }
   }
 }
 colnames(df2) <- c(names2)
-FeaturesQ <- df2               
-# a new data frame containing quadratic predictors with correct column
-# names (thanks Peter!)
-FeaturesQ[varsToFactor] <- lapply(FeaturesQ[varsToFactor], factor)
-
-for (i in 43:52)
-{
-  FeaturesQ[,i] <- as.factor(2-as.integer(FeaturesQ[,i])) 
-}
+colnames(df3) <- c(names3)
+# FeaturesQ <- df2               
+# # a new data frame containing quadratic predictors with correct column
+# # names (thanks Peter!)
+# FeaturesQ[varsToFactor] <- lapply(FeaturesQ[varsToFactor], factor)
+# 
+# for (i in 43:52)
+# {
+#   FeaturesQ[,i] <- as.factor(2-as.integer(FeaturesQ[,i])) 
+# }

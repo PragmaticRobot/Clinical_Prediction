@@ -1,9 +1,10 @@
 % This script takes the results of the R models (LASSO, RF) with ranks for
 % both Fugl-Meyer (FM) and Wolf (WO).
-
+clear all
+clc
 %% data prep
-load('R_results.mat')
-load('counts.mat')
+load('R_results_4FoldSep16.mat')
+load('countsF_4FoldSep16.mat')
 Features = readtable('FeatureSet.csv');
 Features(:,1) = [];
 
@@ -13,8 +14,8 @@ WO_count = countsWO.Count;
 [BFM,IFM] = sort(FM_count,'descend');
 [BWO,IWO] = sort(WO_count,'descend');
 
-IFM = IFM(1:17);
-IWO = IWO(1:23);
+IFM = IFM(1:21);
+IWO = IWO(1:1);
 
 FM_Feats = Features(:,IFM);
 WO_Feats = Features(:,IWO);
@@ -36,18 +37,18 @@ FM_RF = cell2mat(gg);
 gg = struct2cell(Wolf_Lin_LASSO_sort);
 gg = gg';
 WO_LASSO = cell2mat(gg);
-trash = WO_LASSO(2,:);
-WO_LASSO(2,:) = WO_LASSO(11,:);
-WO_LASSO(11,:) = trash;
-trash = meansWO(2);
-meansWO(2) = meansWO(11);
-meansWO(11) = trash;
+% trash = WO_LASSO(2,:);
+% WO_LASSO(2,:) = WO_LASSO(11,:);
+% WO_LASSO(11,:) = trash;
+% trash = meansWO(2);
+% meansWO(2) = meansWO(11);
+% meansWO(11) = trash;
 trash = repmat(meansWO',1,100);
 WO_LASSO = WO_LASSO.*trash;
 
-trash = rnam3{2};
-rnam3{2} = rnam3{11};
-rnam3{11} = trash;
+% trash = rnam3{2};
+% rnam3{2} = rnam3{11};
+% rnam3{11} = trash;
 
 gg = struct2cell(Wolf_Lin_RF_sort);
 gg = gg';
@@ -55,61 +56,61 @@ WO_RF = cell2mat(gg);
 FMLS = FM_LASSO;
 WOLS = WO_LASSO;
 % do logs for FM_LASSO and WO_LASSO
-% for i = 1:size(FM_LASSO,1)
-%     for j = 1:size(FM_LASSO,2)
-%         if FM_LASSO(i,j) > 1
-%             FM_LASSO(i,j) = log(FM_LASSO(i,j));
-%         elseif FM_LASSO(i,j) < 1 && FM_LASSO(i,j) > 0
-%             FM_LASSO(i,j) = -log(FM_LASSO(i,j));
-%         elseif FM_LASSO(i,j) < 0 && FM_LASSO(i,j) > -1
-%             FM_LASSO(i,j) = log(abs(FM_LASSO(i,j)));
-%         elseif FM_LASSO(i,j) < -1
-%             FM_LASSO(i,j) = -log(abs(FM_LASSO(i,j)));
-%         elseif isnan(FM_LASSO(i,j))
-%             FM_LASSO(i,j) = NaN;
-%         end
-%     end
-% end
-% 
-% for i = 1:size(WO_LASSO,1)
-%     for j = 1:size(WO_LASSO,2)
-%         if WO_LASSO(i,j) > 1
-%             WO_LASSO(i,j) = log(WO_LASSO(i,j));
-%         elseif WO_LASSO(i,j) < 1 && WO_LASSO(i,j) > 0
-%             WO_LASSO(i,j) = -log(WO_LASSO(i,j));
-%         elseif WO_LASSO(i,j) < 0 && WO_LASSO(i,j) > -1
-%             WO_LASSO(i,j) = log(abs(WO_LASSO(i,j)));
-%         elseif WO_LASSO(i,j) < -1
-%             WO_LASSO(i,j) = -log(abs(WO_LASSO(i,j)));
-%         elseif isnan(WO_LASSO(i,j))
-%             WO_LASSO(i,j) = NaN;
-%         end
-%     end
-% end
-% Use name abbreviations:
-rnam1{6} = 'Max NSP (-)';
-rnam1{7} = 'Init BB (+)';
-rnam1{11} = 'Mean PMS';
-rnam1{12} = 'Mean IDE';
-rnam1{13} = 'Max MAPR';
-rnam1{14} = 'Var MAPR';
-rnam1{15} = 'EA';
-rnam1{16} = 'Mean PMTD';
-rnam1{8} = 'Months Post-Stroke (-)';
+for i = 1:size(FM_LASSO,1)
+    for j = 1:size(FM_LASSO,2)
+        if FM_LASSO(i,j) > 1
+            FM_LASSO(i,j) = log(FM_LASSO(i,j));
+        elseif FM_LASSO(i,j) < 1 && FM_LASSO(i,j) > 0
+            FM_LASSO(i,j) = -log(FM_LASSO(i,j));
+        elseif FM_LASSO(i,j) < 0 && FM_LASSO(i,j) > -1
+            FM_LASSO(i,j) = log(abs(FM_LASSO(i,j)));
+        elseif FM_LASSO(i,j) < -1
+            FM_LASSO(i,j) = -log(abs(FM_LASSO(i,j)));
+        elseif isnan(FM_LASSO(i,j))
+            FM_LASSO(i,j) = NaN;
+        end
+    end
+end
 
-rnam3{1} = 'Init WO';
-rnam3{6} = 'Age (+)';
-rnam3{7} = 'Var NSP (+)';
-rnam3{8} = 'Max PLR (+)';
-rnam3{9} = 'Max HPL';
-rnam3{10} = 'Mean MAPR';
-rnam3{12} = 'Var MAPR';
-rnam3{16} = 'Max IDE';
-rnam3{17} = 'Hemorrhagic Stroke (+)';
-rnam3{19} = 'Mean PMTD';
-rnam3{20} = 'EA';
-rnam3{22} = 'Var PMS';
-rnam3{23} = 'Init BB';
+for i = 1:size(WO_LASSO,1)
+    for j = 1:size(WO_LASSO,2)
+        if WO_LASSO(i,j) > 1
+            WO_LASSO(i,j) = log(WO_LASSO(i,j));
+        elseif WO_LASSO(i,j) < 1 && WO_LASSO(i,j) > 0
+            WO_LASSO(i,j) = -log(WO_LASSO(i,j));
+        elseif WO_LASSO(i,j) < 0 && WO_LASSO(i,j) > -1
+            WO_LASSO(i,j) = log(abs(WO_LASSO(i,j)));
+        elseif WO_LASSO(i,j) < -1
+            WO_LASSO(i,j) = -log(abs(WO_LASSO(i,j)));
+        elseif isnan(WO_LASSO(i,j))
+            WO_LASSO(i,j) = NaN;
+        end
+    end
+end
+% Use name abbreviations:
+% rnam1{6} = 'Max NSP (-)';
+% rnam1{7} = 'Init BB (+)';
+% rnam1{11} = 'Mean PMS';
+% rnam1{12} = 'Mean IDE';
+% rnam1{13} = 'Max MAPR';
+% rnam1{14} = 'Var MAPR';
+% rnam1{15} = 'EA';
+% rnam1{16} = 'Mean PMTD';
+% rnam1{8} = 'Months Post-Stroke (-)';
+% 
+% rnam3{1} = 'Init WO';
+% rnam3{6} = 'Age (+)';
+% rnam3{7} = 'Var NSP (+)';
+% rnam3{8} = 'Max PLR (+)';
+% rnam3{9} = 'Max HPL';
+% rnam3{10} = 'Mean MAPR';
+% rnam3{12} = 'Var MAPR';
+% rnam3{16} = 'Max IDE';
+% rnam3{17} = 'Hemorrhagic Stroke (+)';
+% rnam3{19} = 'Mean PMTD';
+% rnam3{20} = 'EA';
+% rnam3{22} = 'Var PMS';
+% rnam3{23} = 'Init BB';
 
 %% colormaps
 % Frequency of selection will be conveyed through patches behind the plot,

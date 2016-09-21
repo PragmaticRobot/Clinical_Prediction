@@ -7,21 +7,12 @@
 #########################
 
 rm(list = ls())
+par.o <- par()
+library(pacman)
+pacman::p_load(MASS, R.matlab, devtools,rgl, nFactors, FactoMineR,GGally,e1071,
+               psych, foreach, randomForest, doParallel, inTrees,tableone,
+               lars,glmnet,coefplot, qpcR, qqman,corrplot,ptw,ggplot2,tcltk2)
 # options(error=recover)
-library(MASS)
-library(R.matlab)
-library(corrplot)
-library(GGally)
-library(tableone)
-library(lars)
-library(glmnet)
-library(coefplot)
-library(ggplot2)
-library(foreach)
-library(randomForest)
-library(doParallel)
-library(inTrees)
-library(qpcR)
 
 ## set up the parallel pool
 registerDoParallel(cores=4) # 4 cores to do the simulations
@@ -43,6 +34,8 @@ write.csv(file="FeatureSet.csv",x=Features)
 ##  # 4: Quadratic Model, Fugl-Meyer                ##
 ##  # 5: Quadratic Model, partial Fugl-Meyer        ##
 ##  # 6: Quadratic Model, Wolf                      ##
+##  # 7: NoExtrap Model, FM                         ##
+##  # 8: NoExtrap Model, Wolf
 ######################################################
 
 #################################################
@@ -50,21 +43,25 @@ write.csv(file="FeatureSet.csv",x=Features)
 #################################################
 ## Mod 1: linear
 ## Mod 2: quadratic
-predLASSO1<-NULL
-# predLASSO2<-NULL
-predLASSO3<-NULL
-predLASSO4<-NULL
-# predLASSO5<-NULL
-predLASSO6<-NULL
+predLASSO1      <- NULL
+# predLASSO2    <-NULL
+predLASSO3      <-NULL
+predLASSO4      <-NULL
+# predLASSO5    <-NULL
+predLASSO6      <-NULL
+predLASSO7      <- NULL
+predLASSO8      <- NULL
 
 for (i in 1:100)
 {
-  predLASSO1[[i]] <- cv_mod(feat=df1,out=yFM,stand=1,isWO = 0)
+  predLASSO1[[i]] <- cv_mod(feat=df1,out=yFM,stand=1,isWO = 0, nf = 4)
   # predLASSO2[[i]] <- cv_mod(feat=df1,out=yPartFM,stand=1,isWO = 0)
-  predLASSO3[[i]] <- cv_mod(feat=df1,out=yWO,stand=1,isWO = 1)
-  predLASSO4[[i]] <- cv_mod(feat=df2,out=yFM,stand=1,isWO = 0)
+  predLASSO3[[i]] <- cv_mod(feat=df1,out=yWO,stand=1,isWO = 1, nf = 4)
+  predLASSO4[[i]] <- cv_mod(feat=df2,out=yFM,stand=1,isWO = 0, nf = 4)
   # predLASSO5[[i]] <- cv_mod(feat=df2,out=yPartFM,stand=1,isWO = 0)
-  predLASSO6[[i]] <- cv_mod(feat=df2,out=yWO,stand=1,isWO = 1)
+  predLASSO6[[i]] <- cv_mod(feat=df2,out=yWO,stand=1,isWO = 1, nf = 4)
+  predLASSO7[[i]] <- cv_mod(feat=df3, out=yFM, stand=1,isWO = 0, nf=4)
+  predLASSO8[[i]] <- cv_mod(feat=df3, out=yWO, stand=1,isWO = 1, nf=4)
 }
 
 LASSO_pred1 <- cleanup_LASSO(predLASSO1)
@@ -73,8 +70,11 @@ LASSO_pred3 <- cleanup_LASSO(predLASSO3)
 LASSO_pred4 <- cleanup_LASSO(predLASSO4)
 # LASSO_pred5 <- cleanup_LASSO(predLASSO5)
 LASSO_pred6 <- cleanup_LASSO(predLASSO6)
+LASSO_pred7 <- cleanup_LASSO(predLASSO7)
+LASSO_pred8 <- cleanup_LASSO(predLASSO8)
 
-save(LASSO_pred1,LASSO_pred3,LASSO_pred4,LASSO_pred6,file = "lasso_pred_10Sep16.rda")
+save(LASSO_pred1,LASSO_pred3,LASSO_pred4,LASSO_pred6,
+     LASSO_pred7,LASSO_pred8,file = "lasso_pred_4FoldNoExtrap.rda")
 
 #######################################
 ## 06 - Random Forests Bootstrapping ##
@@ -85,6 +85,8 @@ predRF3 <- NULL
 predRF4 <- NULL
 # predRF5 <- NULL
 predRF6 <- NULL
+predRF7 <- NULL
+predRF8 <- NULL
 
 for (i in 1:100)
 {
@@ -94,6 +96,8 @@ for (i in 1:100)
   predRF4[[i]] <- cv_RF(feat=df2, out=yFM)
   # predRF5[[i]] <- cv_RF(feat=df2, out=yPartFM)
   predRF6[[i]] <- cv_RF(feat=df2, out=yWO)
+  predRF7[[i]] <- cv_RF(feat=df3, out=yFM)
+  predRF8[[i]] <- cv_RF(feat=df3, out=yWO)
 }
 
 RF_pred1 <- cleanup_RF(predRF1)
@@ -102,5 +106,7 @@ RF_pred3 <- cleanup_RF(predRF3)
 RF_pred4 <- cleanup_RF(predRF4)
 # RF_pred5 <- cleanup_RF(predRF5)
 RF_pred6 <- cleanup_RF(predRF6)
+RF_pred7 <- cleanup_RF(predRF7)
+RF_pred8 <- cleanup_RF(predRF8)
 
-save(RF_pred1, RF_pred3, RF_pred4, RF_pred6, file = "RF_pred_10Sep16.rda")
+save(RF_pred1, RF_pred3, RF_pred4, RF_pred6,RF_pred7,RF_pred8, file = "RF_pred_4FoldNoExtrap.rda")

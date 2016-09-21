@@ -4,7 +4,7 @@
 
 cv_RF <- function(feat,out)
 {
-  RF_model <- foreach(ntree = rep(10000,4), .combine = combine, .multicombine=TRUE, 
+  RF_model <- foreach(ntree = rep(25000,4), .combine = combine, .multicombine=TRUE, 
                       .packages = "randomForest") %dopar% randomForest(feat,out,ntree=ntree, corr.bias=FALSE)
   imp <- sort(RF_model$importance, partial=NULL,decreasing=TRUE, index.return=TRUE)
   predict <- predict(RF_model, feat, type = "response" , predict.all=FALSE)
@@ -20,23 +20,23 @@ rf_just_pred <- function(feat,out)
   return(predict)
 }
 
-cv_mod <- function(feat, out, stand, isWO)
+cv_mod <- function(feat, out, stand, isWO, nf)
 {
   if(stand == 1)
   {
-    lassoMOD <- cv.glmnet(x=as.matrix(feat),y=out, standardize = TRUE)
+    lassoMOD <- cv.glmnet(data.matrix(feat),out, standardize = TRUE, alpha = 1, nlambda = 1000, nfolds = nf)
   } else {
-    lassoMOD <- cv.glmnet(x=as.matrix(feat),y=out, standardize = FALSE)
+    lassoMOD <- cv.glmnet(data.matrix(feat),out, standardize = FALSE, alpha = 1, nlambda = 1000, nfolds = nf)
   }
   cutoff <- min(lassoMOD$cvup)
   means <- lassoMOD$cvm
   if(isWO == 1)
   {
-    ind <- min(which(means<cutoff)) # now we know which model won
+    ind <- max(which(means<cutoff)) # now we know which model won
   } else {
     ind <- max(which(means<cutoff)) # now we know which model won
   }
-  predict <- predict(lassoMOD, newx=as.matrix(feat), s= lassoMOD$lambda[ind])
+  predict <- predict(lassoMOD, newx=data.matrix(feat), s= lassoMOD$lambda[ind])
   cc <- coef(lassoMOD$glmnet.fit, s = lassoMOD$lambda[ind])
   summ <- summary(cc)
   GRE <- list(predict=predict, Index = summ$i, coefs = summ$x)
@@ -254,6 +254,79 @@ plot_LSRF_fits <- function(allins,modlist,relative,out,outname,measure)
                        paste('Quadratic Random Forests ',meString,' = ',as.character(r4))),
            cex=0.8, col=c('firebrick2','darkcyan','forestgreen','darkorange1'),
            lty=c(1,1,1,1),lwd=c(2.5,2.5,2.5,2.5),bty="n")
+  } else if (ncol(allins)==6) {
+    if (relative==1){
+      plot(out,allins[,1], ylim = c(round(min(out),1), round(max(out),1)), 
+           xlim = c(round(min(out),1), round(max(out),1)), col='firebrick2',
+           xlab=paste('Actual Relative Change in',outname),
+           ylab=paste('Predicted Relative Change in',outname),
+           cex.lab=0.8,pch=21, cex=0.8,lwd=2)
+    } else {
+      plot(out,allins[,1], ylim = c(round(min(out),1), round(max(out),1)), 
+           xlim = c(round(min(out),1), round(max(out),1)), col='firebrick2',
+           xlab=paste('Actual Change in',outname),
+           ylab=paste('Predicted Change in',outname),
+           cex.lab=0.8,pch=21, cex=0.8,lwd=2)
+    }
+    abline(modlist[[1]], col='firebrick2',lwd=3)
+    points(out,allins[,2], col = 'darkcyan',pch=22, cex=0.8)
+    abline(modlist[[2]], col='darkcyan',lwd=3)
+    points(out,allins[,3], col = 'forestgreen',pch=24, cex=0.8)
+    abline(modlist[[3]], col='forestgreen',lwd=3)
+    points(out,allins[,4], col = 'darkorange1',pch=25, cex=0.8)
+    abline(modlist[[4]], col='darkorange1',lwd=3)
+    points(out,allins[,5], col = 'khaki4',pch=3, cex=0.8)
+    abline(modlist[[5]], col='khaki4',lwd=3)
+    points(out,allins[,6], col = 'slateblue2',pch=8, cex=0.8)
+    abline(modlist[[6]], col='slateblue2',lwd=3)
+    abline(0,1, col='black',pch=16,cex=0.6,lwd=2)
+    if (measure == 1){
+      r1 <- round(sqrt(mean((out-allins[,1])^2)), digits = 2)
+      r2 <- round(sqrt(mean((out-allins[,2])^2)), digits = 2)
+      r3 <- round(sqrt(mean((out-allins[,3])^2)), digits = 2)
+      r4 <- round(sqrt(mean((out-allins[,4])^2)), digits = 2)
+      r5 <- round(sqrt(mean((out-allins[,5])^2)), digits = 2)
+      r6 <- round(sqrt(mean((out-allins[,6])^2)), digits = 2)
+      meString <- 'RMSE'
+    } else if (measure == 2){
+      blah <- summary(modlist[[1]],correlation=TRUE)
+      r1 <- round(blah$correlation, digits = 2)
+      blah <- summary(modlist[[2]],correlation=TRUE)
+      r2 <- round(blah$correlation, digits = 2)
+      blah <- summary(modlist[[3]],correlation=TRUE)
+      r3 <- round(blah$correlation, digits = 2)
+      blah <- summary(modlist[[4]],correlation=TRUE)
+      r4 <- round(blah$correlation, digits = 2)
+      blah <- summary(modlist[[5]],correlation=TRUE)
+      r5 <- round(blah$correlation, digits = 2)
+      blah <- summary(modlist[[6]],correlation=TRUE)
+      r6 <- round(blah$correlation, digits = 2)
+      meString <- 'Corr'
+    } else if (measure == 3){
+      blah <- summary(modlist[[1]])
+      r1 <- round(blah$adj.r.squared, digits = 2)
+      blah <- summary(modlist[[2]])
+      r2 <- round(blah$adj.r.squared, digits = 2)
+      blah <- summary(modlist[[3]])
+      r3 <- round(blah$adj.r.squared, digits = 2)
+      blah <- summary(modlist[[4]])
+      r4 <- round(blah$adj.r.squared, digits = 2)
+      blah <- summary(modlist[[5]])
+      r5 <- round(blah$adj.r.squared, digits = 2)
+      blah <- summary(modlist[[6]])
+      r6 <- round(blah$adj.r.squared, digits = 2)
+      meString <- 'R^2'
+    } else {
+      message('unknown outcome measure')
+    }
+    legend("topleft",c(paste('Linear LASSO ',meString,' = ',as.character(r1)),
+                       paste('Quadratic LASSO ',meString,' = ',as.character(r2)),
+                       paste('Linear Random Forests ',meString,' = ',as.character(r3)),
+                       paste('Quadratic Random Forests ',meString,' = ',as.character(r4)),
+                       paste('NoExtrap LASSO ',meString,' = ',as.character(r5)),
+                       paste('NoExtrap Random Forests ',meString,' = ',as.character(r6))),
+           cex=0.8, col=c('firebrick2','darkcyan','forestgreen','darkorange1','khaki4','slateblue2'),
+           lty=c(1,1,1,1,1,1),lwd=c(3,3,3,3,3,3),bty="n")
   } else {
     message("Unsupported input size")
   }
@@ -395,7 +468,7 @@ DoLines <- function(allins,out,outname)
                         paste(rownames(histData)[3],", skew = ",as.character(sks2[3])),
                         paste(rownames(histData)[4],", skew = ",as.character(sks2[4]))),
            cex = 1, col=c('firebrick2','darkcyan','forestgreen','darkorange1'),
-           lty=c(1,1,1,1),lwd=c(2.5,2.5,2.5,2.5),bty="n")
+           lty=c(1,1,1,1),lwd=c(3,3,3,3,3,3),bty="n")
   } else {
     message("Unsupported input size")
   }

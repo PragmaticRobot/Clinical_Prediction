@@ -23,10 +23,10 @@ registerDoParallel(cores=4) # 4 cores to do the simulations
 ##
 # Dpath <- file.path("C:","Users","Yaz","Dropbox","Research","NewDec2015","2016-04-19 - Second Run CV","lasso_pred.mat")
 # LASSO_res <- readMat("lasso_pred.mat", maxLength=NULL, fixNames=TRUE, Verbose=FALSE)
-load("lasso_pred_Sep16.rda")
+load("lasso_pred_4FoldNoExtrap.rda")
 # Dpath <- file.path("C:","Users","Yaz","Dropbox","Research","NewDec2015","2016-04-19 - Second Run CV","RF_pred.mat")
 # RF_res <- readMat("RF_pred.mat", maxLength=NULL, fixNames=TRUE, Verbose=FALSE)
-load("RF_pred_Sep16.rda")
+load("RF_pred_4FoldNoExtrap.rda")
 
 ## LASSO
 # FM_lin_lasso <-   LASSO_res$LASSO.pred1[[1]]
@@ -40,6 +40,9 @@ FM_quad_lasso <-  LASSO_pred4[[1]]
 # WO_quad_lasso <-  LASSO_res$LASSO.pred6[[1]]
 WO_quad_lasso <-  LASSO_pred6[[1]]
 
+FM_NoExtrap_lasso <- LASSO_pred7[[1]]
+WO_NoExtrap_lasso <- LASSO_pred8[[1]]
+
 ## Random Forests
 # FM_lin_RF <-   RF_res$RF.pred1[[1]]
 FM_lin_RF <-   RF_pred1[[1]]
@@ -52,6 +55,9 @@ FM_quad_RF <-  RF_pred4[[1]]
 # WO_quad_RF <-  RF_res$RF.pred6[[1]]
 WO_quad_RF <-  RF_pred6[[1]]
 
+FM_NoExtrap_RF <- RF_pred7[[1]]
+WO_NoExtrap_RF <- RF_pred8[[1]]
+
 ## outcomes
 # yFM <- LASSO_res$yFM
 # ypFM <- LASSO_res$yPartFM
@@ -62,6 +68,8 @@ fm_lin_lasso_mod <- lm(rowMeans(FM_lin_lasso)~yFM)
 fm_quad_lasso_mod <- lm(rowMeans(FM_quad_lasso)~yFM)
 fm_lin_rf_mod <- lm(rowMeans(FM_lin_RF)~yFM)
 fm_quad_rf_mod <- lm(rowMeans(FM_quad_RF)~yFM)
+fm_noextrap_lasso_mod <- lm(rowMeans(FM_NoExtrap_lasso)~yFM)
+fm_noextrap_rf_mod <- lm(rowMeans(FM_NoExtrap_RF)~yFM)
 
 # pfm_lin_lasso_mod <- lm(rowMeans(pFM_lin_lasso)~ypFM)
 # pfm_quad_lasso_mod <- lm(rowMeans(pFM_quad_lasso)~ypFM)
@@ -72,25 +80,30 @@ wo_lin_lasso_mod <- lm(rowMeans(WO_lin_lasso)~yWO)
 wo_quad_lasso_mod <- lm(rowMeans(WO_quad_lasso)~yWO)
 wo_lin_rf_mod <- lm(rowMeans(WO_lin_RF)~yWO)
 wo_quad_rf_mod <- lm(rowMeans(WO_quad_RF)~yWO)
-
+wo_noextrap_lasso_mod <- lm(rowMeans(WO_NoExtrap_lasso)~yWO)
+wo_noextrap_rf_mod <- lm(rowMeans(WO_NoExtrap_RF)~yWO)
 
 # put all the inputs (rowMeans) in a matrix for passing to the plotting function
 
 InsFM <- cbind(rowMeans(FM_lin_lasso),rowMeans(FM_quad_lasso),
-                 rowMeans(FM_lin_RF), rowMeans(FM_quad_RF)) # this is for UEFM
+                 rowMeans(FM_lin_RF), rowMeans(FM_quad_RF),
+               rowMeans(FM_NoExtrap_lasso), rowMeans(FM_NoExtrap_RF)) # this is for UEFM
 
 # InsPFM <- cbind(rowMeans(pFM_lin_lasso),rowMeans(pFM_quad_lasso),
 #                rowMeans(pFM_lin_RF), rowMeans(pFM_quad_RF)) # this is for Arm FM
 
 InsWO <- cbind(rowMeans(WO_lin_lasso),rowMeans(WO_quad_lasso),
-                 rowMeans(WO_lin_RF), rowMeans(WO_quad_RF)) # this is for Wolf
+                 rowMeans(WO_lin_RF), rowMeans(WO_quad_RF),
+               rowMeans(WO_NoExtrap_lasso), rowMeans(WO_NoExtrap_RF)) # this is for Wolf
 
 modListFM <- list(fm_lin_lasso_mod,fm_quad_lasso_mod,
-                  fm_lin_rf_mod,fm_quad_rf_mod)
+                  fm_lin_rf_mod,fm_quad_rf_mod,
+                  fm_noextrap_lasso_mod,fm_noextrap_rf_mod)
 # modListPFM <- list(pfm_lin_lasso_mod,pfm_quad_lasso_mod,
                   # pfm_lin_rf_mod,pfm_quad_rf_mod)
 modListWO <- list(wo_lin_lasso_mod,wo_quad_lasso_mod,
-                  wo_lin_rf_mod,wo_quad_rf_mod)
+                  wo_lin_rf_mod,wo_quad_rf_mod,
+                  wo_noextrap_lasso_mod, wo_noextrap_rf_mod)
 
 # last input to following function:
 # 1: Use RMSE
@@ -102,10 +115,10 @@ plot_LSRF_fits(InsWO,modListWO,relative=0,yWO,'Wolf',1)
 
 ## Create and use a DoHists function here
 
-skFM <- DoHists(InsFM,yFM,'Fugl-Meyer')
-# skpFM <- DoHists(InsPFM,ypFM,'Arm-Only Fugl-Meyer')
-skWO <- DoHists(InsWO,yWO,'Wolf')
-
-skFM2 <- DoLines(InsFM,yFM,'Fugl-Meyer')
-skWO2 <- DoLines(InsWO,yWO,'Wolf')
-# skpFM <- DoHists(InsPFM,ypFM,'Arm-Only Fugl-Meyer')
+# skFM <- DoHists(InsFM,yFM,'Fugl-Meyer')
+# # skpFM <- DoHists(InsPFM,ypFM,'Arm-Only Fugl-Meyer')
+# skWO <- DoHists(InsWO,yWO,'Wolf')
+# 
+# skFM2 <- DoLines(InsFM,yFM,'Fugl-Meyer')
+# skWO2 <- DoLines(InsWO,yWO,'Wolf')
+# # skpFM <- DoHists(InsPFM,ypFM,'Arm-Only Fugl-Meyer')
