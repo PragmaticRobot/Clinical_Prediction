@@ -400,41 +400,42 @@ plot_sideways(Wolf_NoExtrap_LASSO_sort,0,tit5)
 plot_sideways(Wolf_NoExtrap_RF_sort,25,tit6)
 
 
-writeMat("R_Lin_results_4FoldNoExtrap.mat",FM_Lin_LASSO_sort=FM_Lin_LASSO_sort,FM_Lin_RF_sort=FM_Lin_RF_sort,
-         Wolf_Lin_LASSO_sort=Wolf_Lin_LASSO_sort,Wolf_Lin_RF_sort=Wolf_Lin_RF_sort,rnam1=rownames(FM_Lin_LASSO_sort),
-         rnam2=rownames(FM_Lin_RF_sort),rnam3=rownames(Wolf_Lin_LASSO_sort),
-         rnam4=rownames(Wolf_Lin_RF_sort),countFM=sorted_FM$Count, countWO=sorted_WO$Count)
-writeMat("countsF_4FoldNoExtrap.mat",countsFM = counts_FM, countsWO = counts_WO, countsqFM = counts_qFM,
-         countsqWO = counts_qWO, countseFM = counts_eFM, countseWO = counts_eWO)
-writeMat("Names_4FoldNoExtrap.mat",
-         rnam1=rownames(FM_Lin_LASSO_sort),
-         rnam2=rownames(FM_Lin_RF_sort),
-         rnam3=rownames(FM_Quad_LASSO_sort),
-         rnam4=rownames(FM_Quad_RF_sort),
-         rnam5=rownames(Wolf_Lin_LASSO_sort),
-         rnam6=rownames(Wolf_Lin_RF_sort),
-         rnam7=rownames(Wolf_Quad_LASSO_sort),
-         rnam8=rownames(Wolf_Quad_RF_sort),
-         rnam9=rownames(FM_NoExtrap_LASSO_sort),
-         rnam10=rownames(FM_NoExtrap_RF_sort),
-         rnam11=rownames(Wolf_NoExtrap_LASSO_sort),
-         rnam12=rownames(Wolf_NoExtrap_RF_sort))
-write.csv(FM_Lin_LASSO_sort,"FM_Lin_LASSO_4FoldNoExtrap.csv")
-write.csv(FM_Lin_RF_sort,"FM_Lin_RF_4FoldNoExtrap.csv")
-write.csv(FM_Quad_LASSO_sort,"FM_Quad_LASSO_4FoldNoExtrap.csv")
-write.csv(FM_Quad_RF_sort,"FM_Quad_RF_4FoldNoExtrap.csv")
-write.csv(Wolf_Lin_LASSO_sort,"WO_Lin_LASSO_4FoldNoExtrap.csv")
-write.csv(Wolf_Lin_RF_sort,"WO_Lin_RF_4FoldNoExtrap.csv")
-write.csv(Wolf_Quad_LASSO_sort,"WO_Quad_LASSO_4FoldNoExtrap.csv")
-write.csv(Wolf_Quad_RF_sort,"WO_Quad_RF_4FoldNoExtrap.csv")
 
-write.csv(FM_NoExtrap_LASSO_sort,"FM_NoExtrap_LASSO_4FoldNoExtrap.csv")
-write.csv(FM_NoExtrap_RF_sort,"FM_NoExtrap_RF_4FoldNoExtrap.csv")
-write.csv(Wolf_NoExtrap_LASSO_sort,"WO_NoExtrap_LASSO_4FoldNoExtrap.csv")
-write.csv(Wolf_NoExtrap_RF_sort,"WO_NoExtrap_RF_4FoldNoExtrap.csv")
-
-save(FM_Lin_LASSO_sort,FM_Lin_RF_sort,FM_Quad_LASSO_sort,FM_Quad_RF_sort,
-     Wolf_Lin_LASSO_sort,Wolf_Lin_RF_sort,Wolf_Quad_LASSO_sort,Wolf_Quad_RF_sort,
-     FM_NoExtrap_LASSO_sort,FM_NoExtrap_RF_sort,Wolf_NoExtrap_LASSO_sort,
-     Wolf_NoExtrap_RF_sort, counts_eFM, counts_eWO,
-     counts_FM,counts_WO,counts_qFM,counts_qWO,file="LS_RF_Results_4FoldNoExtrap.rda")
+# writeMat("R_Lin_results_4FoldNoExtrap.mat",FM_Lin_LASSO_sort=FM_Lin_LASSO_sort,FM_Lin_RF_sort=FM_Lin_RF_sort,
+#          Wolf_Lin_LASSO_sort=Wolf_Lin_LASSO_sort,Wolf_Lin_RF_sort=Wolf_Lin_RF_sort,rnam1=rownames(FM_Lin_LASSO_sort),
+#          rnam2=rownames(FM_Lin_RF_sort),rnam3=rownames(Wolf_Lin_LASSO_sort),
+#          rnam4=rownames(Wolf_Lin_RF_sort),countFM=sorted_FM$Count, countWO=sorted_WO$Count)
+# writeMat("countsF_4FoldNoExtrap.mat",countsFM = counts_FM, countsWO = counts_WO, countsqFM = counts_qFM,
+#          countsqWO = counts_qWO, countseFM = counts_eFM, countseWO = counts_eWO)
+# writeMat("Names_4FoldNoExtrap.mat",
+#          rnam1=rownames(FM_Lin_LASSO_sort),
+#          rnam2=rownames(FM_Lin_RF_sort),
+#          rnam3=rownames(FM_Quad_LASSO_sort),
+#          rnam4=rownames(FM_Quad_RF_sort),
+#          rnam5=rownames(Wolf_Lin_LASSO_sort),
+#          rnam6=rownames(Wolf_Lin_RF_sort),
+#          rnam7=rownames(Wolf_Quad_LASSO_sort),
+#          rnam8=rownames(Wolf_Quad_RF_sort),
+#          rnam9=rownames(FM_NoExtrap_LASSO_sort),
+#          rnam10=rownames(FM_NoExtrap_RF_sort),
+#          rnam11=rownames(Wolf_NoExtrap_LASSO_sort),
+#          rnam12=rownames(Wolf_NoExtrap_RF_sort))
+# write.csv(FM_Lin_LASSO_sort,"FM_Lin_LASSO_4FoldNoExtrap.csv")
+# write.csv(FM_Lin_RF_sort,"FM_Lin_RF_4FoldNoExtrap.csv")
+# write.csv(FM_Quad_LASSO_sort,"FM_Quad_LASSO_4FoldNoExtrap.csv")
+# write.csv(FM_Quad_RF_sort,"FM_Quad_RF_4FoldNoExtrap.csv")
+# write.csv(Wolf_Lin_LASSO_sort,"WO_Lin_LASSO_4FoldNoExtrap.csv")
+# write.csv(Wolf_Lin_RF_sort,"WO_Lin_RF_4FoldNoExtrap.csv")
+# write.csv(Wolf_Quad_LASSO_sort,"WO_Quad_LASSO_4FoldNoExtrap.csv")
+# write.csv(Wolf_Quad_RF_sort,"WO_Quad_RF_4FoldNoExtrap.csv")
+# 
+# write.csv(FM_NoExtrap_LASSO_sort,"FM_NoExtrap_LASSO_4FoldNoExtrap.csv")
+# write.csv(FM_NoExtrap_RF_sort,"FM_NoExtrap_RF_4FoldNoExtrap.csv")
+# write.csv(Wolf_NoExtrap_LASSO_sort,"WO_NoExtrap_LASSO_4FoldNoExtrap.csv")
+# write.csv(Wolf_NoExtrap_RF_sort,"WO_NoExtrap_RF_4FoldNoExtrap.csv")
+# 
+# save(FM_Lin_LASSO_sort,FM_Lin_RF_sort,FM_Quad_LASSO_sort,FM_Quad_RF_sort,
+#      Wolf_Lin_LASSO_sort,Wolf_Lin_RF_sort,Wolf_Quad_LASSO_sort,Wolf_Quad_RF_sort,
+#      FM_NoExtrap_LASSO_sort,FM_NoExtrap_RF_sort,Wolf_NoExtrap_LASSO_sort,
+#      Wolf_NoExtrap_RF_sort, counts_eFM, counts_eWO,
+#      counts_FM,counts_WO,counts_qFM,counts_qWO,file="LS_RF_Results_4FoldNoExtrap.rda")
