@@ -7,10 +7,11 @@ function [ gg ] = loadmodres( ez )
 % each column is a cell array with a cross-validation run
 fid = fopen(ez);
 pit = textscan(fid,'%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s','delimiter',',');
+% pit = pit(2:end,:);
 fclose(fid);
 gg = zeros(26,100);
 for i = 1:100
-    gg(:,i) = cell2mat(pit{i+1}(2:end));
+    gg(:,i) = str2double(pit{i+1}(2:end));
 end
 
 end

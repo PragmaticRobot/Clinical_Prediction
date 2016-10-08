@@ -4,7 +4,7 @@
 
 cv_RF <- function(feat,out)
 {
-  RF_model <- foreach(ntree = rep(25000,4), .combine = combine, .multicombine=TRUE, 
+  RF_model <- foreach(ntree = rep(12500,4), .combine = combine, .multicombine=TRUE, 
                       .packages = "randomForest") %dopar% randomForest(feat,out,ntree=ntree, corr.bias=FALSE)
   imp <- sort(RF_model$importance, partial=NULL,decreasing=TRUE, index.return=TRUE)
   predict <- predict(RF_model, feat, type = "response" , predict.all=FALSE)
@@ -12,12 +12,14 @@ cv_RF <- function(feat,out)
   return(GRE)
 }
 
-rf_just_pred <- function(feat,out)
+rf_crossvd <- function(feat,out)
 {
-  RF_model <- foreach(ntree = rep(5000,8), .combine = combine, .multicombine=TRUE, 
-                      .packages = "randomForest") %dopar% randomForest(feat,out,ntree=ntree,replace = FALSE)
-  predict <- predict(RF_model, feat, type = "response" , predict.all=FALSE)
-  return(predict)
+  RF_model <- foreach(ntree = rep(12500,4), .combine = combine, .multicombine=TRUE, 
+                      .packages = "randomForest") %dopar% rfcv(feat,out,ntree=ntree, cv.fold=4)
+  # imp <- sort(RF_model$importance, partial=NULL,decreasing=TRUE, index.return=TRUE)
+  # predict <- predict(RF_model, feat, type = "response" , predict.all=FALSE)
+  # GRE <- list(predict=predict, Index=imp$ix, imps=imp$x)
+  return(RF_model)
 }
 
 cv_mod <- function(feat, out, stand, isWO, nf)
