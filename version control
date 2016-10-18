@@ -1,0 +1,19 @@
+Analysis steps:
+1- Construct first and second order data sets, second order contains interaction terms
+2- Run 10-fold cross validation 100x (lasso) and run variable importance 100x (rf)
+3- Extract ranks from each model, frequency of feature selection (lasso) and relative variable importance in terms of RSS (rf)
+4- Run rank product to get feature ranks
+
+Version Control:
+
+v3: did 4-fold cross-validation on lasso (still using cv.glmnet)
+v4: Added noExtrap models, will later become THE quadratic model
+v5: 6 models, run again to double-check the results
+v6: removed quadratic models that had extrapolation, back to 4 models, 2 linear, 2 quad with noExtrap
+v7: Implemented extrenally-controlled cross-validation in random forests
+v8: Implement externally-controlled cv in lasso and use glmnet. control picked model using model$dev.ratio reaching 95% (still 4 fold, 100 repeats)
+v9: Implement LOO-CV
+v10: Implement 100 repeats of 13 fold cv (leave 2 out)
+v11: only lasso. best it can do for 4 fold cv (100 repeats)
+v12: only lasso. best it can do for LOO-cv (1 repeat)
+v13: only lasso. best it can do for 13 fold cv (100 repeats)
