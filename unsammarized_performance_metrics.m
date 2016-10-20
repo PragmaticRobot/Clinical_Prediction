@@ -135,4 +135,5 @@ figure
 %         plot1DDistribution(RMSE{i,j}(:),'b')
 %     end
 % end
-plot1DDistribution(RMSE{1,1}(:))
+subplot(1,2,1); plot1DDistribution(RMSE{9,1}(:))
+subplot(1,2,2); plot1DDistribution(RMSE{7,1}(:))

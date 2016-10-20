@@ -34,8 +34,10 @@ yFM(:,1) = [];
 yWO(:,1) = [];
 
 %% plot the top 5 for each
+% from lasso used to predict
 % top5FM = [39,46,33,27,40];
 % top5WO = [53,45,40,38,19];
+% from RF used to affect
 top5FM = [5,33,42,39,18];
 top5WO = [53,54,52,12,24];
 
