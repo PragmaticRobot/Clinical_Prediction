@@ -2,7 +2,7 @@
 # can be averaged and mean and std can be calculated for these
 # predictions, then we plot the fits and calculate R^2 (coef of determination)
 
-# rm(list = ls()) # clear the environment
+rm(list = ls()) # clear the environment
 
 #################################
 ########## Libraries ############
@@ -21,36 +21,37 @@ registerDoParallel(cores=4) # 4 cores to do the simulations
 
 
 ##
+load('Basics.rda')
 # Dpath <- file.path("C:","Users","Yaz","Dropbox","Research","NewDec2015","2016-04-19 - Second Run CV","lasso_pred.mat")
 # LASSO_res <- readMat("lasso_pred.mat", maxLength=NULL, fixNames=TRUE, Verbose=FALSE)
-load("lasso_pred_v6.rda")
+load("LS_v11.rda")
 # Dpath <- file.path("C:","Users","Yaz","Dropbox","Research","NewDec2015","2016-04-19 - Second Run CV","RF_pred.mat")
 # RF_res <- readMat("RF_pred.mat", maxLength=NULL, fixNames=TRUE, Verbose=FALSE)
-load("RF_pred_v6.rda")
-
-## LASSO
-# FM_lin_lasso <-   LASSO_res$LASSO.pred1[[1]]
-FM_lin_lasso <-   LASSO_pred1[[1]]
-# pFM_lin_lasso <-  LASSO_res$LASSO.pred2[[1]]
-# WO_lin_lasso  <-  LASSO_res$LASSO.pred3[[1]]
-WO_lin_lasso  <-  LASSO_pred5[[1]]
-# FM_quad_lasso <-  LASSO_res$LASSO.pred4[[1]]
-FM_quad_lasso <-  LASSO_pred2[[1]]
-# pFM_quad_lasso <- LASSO_res$LASSO.pred5[[1]]
-# WO_quad_lasso <-  LASSO_res$LASSO.pred6[[1]]
-WO_quad_lasso <-  LASSO_pred6[[1]]
-
-## Random Forests
-# FM_lin_RF <-   RF_res$RF.pred1[[1]]
-FM_lin_RF <-   RF_pred3[[1]]
-# pFM_lin_RF <-  RF_res$RF.pred2[[1]]
-# WO_lin_RF <-   RF_res$RF.pred3[[1]]
-WO_lin_RF <-   RF_pred7[[1]]
-# FM_quad_RF <-  RF_res$RF.pred4[[1]]
-FM_quad_RF <-  RF_pred4[[1]]
-# pFM_quad_RF <- RF_res$RF.pred5[[1]]
-# WO_quad_RF <-  RF_res$RF.pred6[[1]]
-WO_quad_RF <-  RF_pred8[[1]]
+load("RF_v8_CB_F.rda")
+# 
+# ## LASSO
+# # FM_lin_lasso <-   LASSO_res$LASSO.pred1[[1]]
+# FM_lin_lasso <-   LASSO_pred1[[1]]
+# # pFM_lin_lasso <-  LASSO_res$LASSO.pred2[[1]]
+# # WO_lin_lasso  <-  LASSO_res$LASSO.pred3[[1]]
+# WO_lin_lasso  <-  LASSO_pred5[[1]]
+# # FM_quad_lasso <-  LASSO_res$LASSO.pred4[[1]]
+# FM_quad_lasso <-  LASSO_pred2[[1]]
+# # pFM_quad_lasso <- LASSO_res$LASSO.pred5[[1]]
+# # WO_quad_lasso <-  LASSO_res$LASSO.pred6[[1]]
+# WO_quad_lasso <-  LASSO_pred6[[1]]
+# 
+# ## Random Forests
+# # FM_lin_RF <-   RF_res$RF.pred1[[1]]
+# FM_lin_RF <-   RF_pred3[[1]]
+# # pFM_lin_RF <-  RF_res$RF.pred2[[1]]
+# # WO_lin_RF <-   RF_res$RF.pred3[[1]]
+# WO_lin_RF <-   RF_pred7[[1]]
+# # FM_quad_RF <-  RF_res$RF.pred4[[1]]
+# FM_quad_RF <-  RF_pred4[[1]]
+# # pFM_quad_RF <- RF_res$RF.pred5[[1]]
+# # WO_quad_RF <-  RF_res$RF.pred6[[1]]
+# WO_quad_RF <-  RF_pred8[[1]]
 
 ## outcomes
 # yFM <- LASSO_res$yFM
@@ -58,10 +59,10 @@ WO_quad_RF <-  RF_pred8[[1]]
 # yWO <- LASSO_res$yWO
 
 ## fitting the linear models
-fm_lin_lasso_mod <- lm(rowMeans(FM_lin_lasso)~yFM)
-fm_quad_lasso_mod <- lm(rowMeans(FM_quad_lasso)~yFM)
-fm_lin_rf_mod <- lm(rowMeans(FM_lin_RF)~yFM)
-fm_quad_rf_mod <- lm(rowMeans(FM_quad_RF)~yFM)
+fm_lin_lasso_mod <- lm(yFM~rowMeans(FM_LS_L))
+fm_quad_lasso_mod <- lm(yFM~rowMeans(FM_LS_Q))
+fm_lin_rf_mod <- lm(yFM~rowMeans(FM_RF_L))
+fm_quad_rf_mod <- lm(yFM~rowMeans(FM_RF_Q))
 # fm_noextrap_lasso_mod <- lm(rowMeans(FM_NoExtrap_lasso)~yFM)
 # fm_noextrap_rf_mod <- lm(rowMeans(FM_NoExtrap_RF)~yFM)
 
@@ -70,24 +71,24 @@ fm_quad_rf_mod <- lm(rowMeans(FM_quad_RF)~yFM)
 # pfm_lin_rf_mod <- lm(rowMeans(pFM_lin_RF)~ypFM)
 # pfm_quad_rf_mod <- lm(rowMeans(pFM_quad_RF)~ypFM)
 
-wo_lin_lasso_mod <- lm(rowMeans(WO_lin_lasso)~yWO)
-wo_quad_lasso_mod <- lm(rowMeans(WO_quad_lasso)~yWO)
-wo_lin_rf_mod <- lm(rowMeans(WO_lin_RF)~yWO)
-wo_quad_rf_mod <- lm(rowMeans(WO_quad_RF)~yWO)
+wo_lin_lasso_mod <- lm(yWO~rowMeans(WO_LS_L))
+wo_quad_lasso_mod <- lm(yWO~rowMeans(WO_LS_Q))
+wo_lin_rf_mod <- lm(yWO~rowMeans(WO_RF_L))
+wo_quad_rf_mod <- lm(yWO~rowMeans(WO_RF_Q))
 # wo_noextrap_lasso_mod <- lm(rowMeans(WO_NoExtrap_lasso)~yWO)
 # wo_noextrap_rf_mod <- lm(rowMeans(WO_NoExtrap_RF)~yWO)
 
 # put all the inputs (rowMeans) in a matrix for passing to the plotting function
 
-InsFM <- cbind(rowMeans(FM_lin_lasso),rowMeans(FM_quad_lasso),
-                 rowMeans(FM_lin_RF), rowMeans(FM_quad_RF))
+InsFM <- cbind(rowMeans(FM_LS_L),rowMeans(FM_LS_Q),
+                 rowMeans(FM_RF_L), rowMeans(FM_RF_Q))
                # rowMeans(FM_NoExtrap_lasso), rowMeans(FM_NoExtrap_RF)) # this is for UEFM
 
 # InsPFM <- cbind(rowMeans(pFM_lin_lasso),rowMeans(pFM_quad_lasso),
 #                rowMeans(pFM_lin_RF), rowMeans(pFM_quad_RF)) # this is for Arm FM
 
-InsWO <- cbind(rowMeans(WO_lin_lasso),rowMeans(WO_quad_lasso),
-                 rowMeans(WO_lin_RF), rowMeans(WO_quad_RF))
+InsWO <- cbind(rowMeans(WO_LS_L),rowMeans(WO_LS_Q),
+                 rowMeans(WO_RF_L), rowMeans(WO_RF_Q))
                # rowMeans(WO_NoExtrap_lasso), rowMeans(WO_NoExtrap_RF)) # this is for Wolf
 
 modListFM <- list(fm_lin_lasso_mod,fm_quad_lasso_mod,

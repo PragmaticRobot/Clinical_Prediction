@@ -3,7 +3,9 @@ function [ ] = plot_comparison_bars( Means, Stds,yl)
 %   Detailed explanation goes here
 
 colors = zeros(4,3);
-colors(1,:) = [0.933 0.172 0.172]; colors(2,:) = [0 0.545 0.545]; colors(3,:) = [1 0.5 0]; colors(4,:) = [110, 152, 135]/255;
+colors(1,:) = [1 0 0]; colors(2,:) = [0 0 1]; colors(3,:) = [1 0.7 0]; colors(4,:) = [0 1 0];
+
+% colors(1,:) = [0.933 0.172 0.172]; colors(2,:) = [0 0.545 0.545]; colors(3,:) = [1 0.5 0]; colors(4,:) = [110, 152, 135]/255;
 
 figure
 hold on
@@ -33,12 +35,12 @@ ax.XTickLabel = {'Fugl-Meyer','Wolf Motor Function'};
 set(ax,'FontSize',18)
 ylabel(yl)
 text(0.98,0.02,'First order lasso','Rotation',90,'FontSize',15)
-text(1.98,0.02,'Second order lasso','Rotation',90,'FontSize',15)
+text(1.98,0.02,'Second order lasso','Rotation',90,'FontSize',15,'Color','w')
 text(2.98,0.02,'First order random forests','Rotation',90,'FontSize',15)
 text(3.98,0.02,'Second order random forests','Rotation',90,'FontSize',15)
 
 text(5.98,0.02,'First order lasso','Rotation',90,'FontSize',15)
-text(6.98,0.02,'Second order lasso','Rotation',90,'FontSize',15)
+text(6.98,0.02,'Second order lasso','Rotation',90,'FontSize',15,'Color','w')
 text(7.98,0.02,'First order random forests','Rotation',90,'FontSize',15)
 text(8.98,0.02,'Second order forests','Rotation',90,'FontSize',15)
 

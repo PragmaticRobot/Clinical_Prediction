@@ -103,31 +103,31 @@ for i = 1:2        % loop over columns
     end
 end
 
-save('UnsummarizedRMSE.mat')
-% 
-% locs = [1,2,4,5,7,8,12,13,15,16,18,19];
-% means = RMSE_M(1:12,1);
-% stds = RMSE_STD(1:12,1);
-% plot_performance_bars(means, stds,locs,1,1,1)
-% 
-% % Now let's compare best lasso and RF performance in both RMSE and R2
-% locs = [1,2,3,4,6,7,8,9,11,12,13,14];
-% means = RMSE_M([7,8,13,14,9,10,15,16,11,12,17,18],1);
-% stds = RMSE_STD([7,8,13,14,9,10,15,16,11,12,17,18],1);
-% plot_performance_bars(means, stds,locs,1,2,1)
-% 
-% % Do the same for Wolf
-% locs = [1,2,4,5,7,8,12,13,15,16,18,19];
-% means = RMSE_M(1:12,2);
-% stds = RMSE_STD(1:12,2);
-% plot_performance_bars(means, stds,locs,1,1,2)
-% 
-% % Now let's compare best lasso and RF performance in both RMSE and R2
-% locs = [1,2,3,4,6,7,8,9,11,12,13,14];
-% means = RMSE_M([7,8,13,14,9,10,15,16,11,12,17,18],2);
-% stds = RMSE_STD([7,8,13,14,9,10,15,16,11,12,17,18],2);
-% plot_performance_bars(means, stds,locs,1,2,2)
-figure
+% save('UnsummarizedRMSE.mat')
+
+locs = [1,2,4,5,7,8,12,13,15,16,18,19];
+means = RMSE_M(1:12,1);
+stds = RMSE_STD(1:12,1);
+plot_performance_bars(means, stds,locs,1,1,1)
+
+% Now let's compare best lasso and RF performance in both RMSE and R2
+locs = [1,2,3,4,6,7,8,9,11,12,13,14];
+means = RMSE_M([7,8,13,14,9,10,15,16,11,12,17,18],1);
+stds = RMSE_STD([7,8,13,14,9,10,15,16,11,12,17,18],1);
+plot_performance_bars(means, stds,locs,1,2,1)
+
+% Do the same for Wolf
+locs = [1,2,4,5,7,8,12,13,15,16,18,19];
+means = RMSE_M(1:12,2);
+stds = RMSE_STD(1:12,2);
+plot_performance_bars(means, stds,locs,1,1,2)
+
+% Now let's compare best lasso and RF performance in both RMSE and R2
+locs = [1,2,3,4,6,7,8,9,11,12,13,14];
+means = RMSE_M([7,8,13,14,9,10,15,16,11,12,17,18],2);
+stds = RMSE_STD([7,8,13,14,9,10,15,16,11,12,17,18],2);
+plot_performance_bars(means, stds,locs,1,2,2)
+% figure
 % hold on
 % for i = 1:18
 %     for j = 1:2
@@ -135,5 +135,12 @@ figure
 %         plot1DDistribution(RMSE{i,j}(:),'b')
 %     end
 % end
-subplot(1,2,1); plot1DDistribution(RMSE{9,1}(:))
-subplot(1,2,2); plot1DDistribution(RMSE{7,1}(:))
+% subplot(1,2,1); plot1DDistribution(RMSE{9,1}(:))
+% ax = gca;
+% ax.XTick = [];
+% ax.XTickLabel = [];
+% subplot(1,2,2); plot1DDistribution(RMSE{7,1}(:))
+% ax = gca;
+% ax.XTick = [];
+% ax.XTickLabel = [];
+

@@ -35,5 +35,5 @@ for sub = 1:26
     AllMets(theRows,18:34) = repmat(table2array(Features(sub,39:end)),20,1);
 end
 
-save('pqfile.mat','AllMets','FeatNames')
+% save('pqfile.mat','AllMets','FeatNames')
 

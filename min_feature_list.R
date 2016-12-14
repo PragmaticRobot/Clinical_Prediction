@@ -5,72 +5,72 @@
 
 #### V8 ####
 
-load('LS_v8.rda')
-
-nReps = length(FM_LS_L_beta)
-nFolds = length(FM_LS_L_beta[[1]])
-nFeat = length(FM_LS_L_beta[[1]][[1]])
-
-FM_LS_L_coef_v8 <- as.data.frame(matrix(0,nFeat,nReps*nFolds))
-rownames(FM_LS_L_coef_v8) <- names(FM_LS_L_beta[[1]][[1]])
-
-for (i in 1:nReps)
-{
-  for (kk in 1:nFolds)
-  {
-    coln <- (nFolds*(i-1))+kk # column number
-    FM_LS_L_coef_v8[,coln] <- FM_LS_L_beta[[i]][[kk]]
-  }
-}
-
-counts_v8 <- rowSums(FM_LS_L_coef_v8 != 0)
-counts_v8 <- as.data.frame(counts_v8)
+# load('LS_v8.rda')
+# 
+# nReps = length(FM_LS_L_beta)
+# nFolds = length(FM_LS_L_beta[[1]])
+# nFeat = length(FM_LS_L_beta[[1]][[1]])
+# 
+# FM_LS_L_coef_v8 <- as.data.frame(matrix(0,nFeat,nReps*nFolds))
+# rownames(FM_LS_L_coef_v8) <- names(FM_LS_L_beta[[1]][[1]])
+# 
+# for (i in 1:nReps)
+# {
+#   for (kk in 1:nFolds)
+#   {
+#     coln <- (nFolds*(i-1))+kk # column number
+#     FM_LS_L_coef_v8[,coln] <- FM_LS_L_beta[[i]][[kk]]
+#   }
+# }
+# 
+# counts_v8 <- rowSums(FM_LS_L_coef_v8 != 0)
+# counts_v8 <- as.data.frame(counts_v8)
 
 #### V9 ####
-
-load('LS_v9.rda')
-
-nReps = length(FM_LS_L_beta)
-nFolds = length(FM_LS_L_beta[[1]])
-nFeat = length(FM_LS_L_beta[[1]][[1]])
-
-FM_LS_L_coef_v9 <- as.data.frame(matrix(0,nFeat,nReps*nFolds))
-rownames(FM_LS_L_coef_v9) <- names(FM_LS_L_beta[[1]][[1]])
-
-for (i in 1:nReps)
-{
-  for (kk in 1:nFolds)
-  {
-    coln <- (nFolds*(i-1))+kk # column number
-    FM_LS_L_coef_v9[,coln] <- FM_LS_L_beta[[i]][[kk]]
-  }
-}
-
-counts_v9 <- rowSums(FM_LS_L_coef_v9 != 0)
-counts_v9 <- as.data.frame(counts_v9)
+# 
+# load('LS_v9.rda')
+# 
+# nReps = length(FM_LS_L_beta)
+# nFolds = length(FM_LS_L_beta[[1]])
+# nFeat = length(FM_LS_L_beta[[1]][[1]])
+# 
+# FM_LS_L_coef_v9 <- as.data.frame(matrix(0,nFeat,nReps*nFolds))
+# rownames(FM_LS_L_coef_v9) <- names(FM_LS_L_beta[[1]][[1]])
+# 
+# for (i in 1:nReps)
+# {
+#   for (kk in 1:nFolds)
+#   {
+#     coln <- (nFolds*(i-1))+kk # column number
+#     FM_LS_L_coef_v9[,coln] <- FM_LS_L_beta[[i]][[kk]]
+#   }
+# }
+# 
+# counts_v9 <- rowSums(FM_LS_L_coef_v9 != 0)
+# counts_v9 <- as.data.frame(counts_v9)
 
 #### V10 ####
-
-load('LS_v10.rda')
-
-nReps = length(FM_LS_L_beta)
-nFolds = length(FM_LS_L_beta[[1]])
-nFeat = length(FM_LS_L_beta[[1]][[1]])
-
-FM_LS_L_coef_v10 <- as.data.frame(matrix(0,nFeat,nReps*nFolds))
-rownames(FM_LS_L_coef_v10) <- names(FM_LS_L_beta[[1]][[1]])
-
-for (i in 1:nReps)
-{
-  for (kk in 1:nFolds)
-  {
-    coln <- (nFolds*(i-1))+kk # column number
-    FM_LS_L_coef_v10[,coln] <- FM_LS_L_beta[[i]][[kk]]
-  }
-}
-
-counts_v10 <- rowSums(FM_LS_L_coef_v10 != 0)
-counts_v10 <- as.data.frame(counts_v10)
+# 
+# load('LS_v10.rda')
+# 
+# nReps = length(FM_LS_L_beta)
+# nFolds = length(FM_LS_L_beta[[1]])
+# nFeat = length(FM_LS_L_beta[[1]][[1]])
+# 
+# FM_LS_L_coef_v10 <- as.data.frame(matrix(0,nFeat,nReps*nFolds))
+# rownames(FM_LS_L_coef_v10) <- names(FM_LS_L_beta[[1]][[1]])
+# 
+# for (i in 1:nReps)
+# {
+#   for (kk in 1:nFolds)
+#   {
+#     coln <- (nFolds*(i-1))+kk # column number
+#     FM_LS_L_coef_v10[,coln] <- FM_LS_L_beta[[i]][[kk]]
+#   }
+# }
+# 
+# counts_v10 <- rowSums(FM_LS_L_coef_v10 != 0)
+# counts_v10 <- as.data.frame(counts_v10)
 #### v11 ####
 
 load('LS_v11.rda')

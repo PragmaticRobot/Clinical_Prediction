@@ -16,37 +16,39 @@ gverb <- gm                 # verbose version of feature names
 ######### Making feature names verbose (looong list) #############
 gverb[1] <- "Mean Reaction Time"; gverb[2] <- "Mean Trial Time"
 gverb[3] <- "Mean Initial Direction Error"; gverb[4] <- "Mean Pre-Movement Speed"
-gverb[5] <- "Mean Max Speed"; gverb[6] <- "Mean Hand Path Length"
-gverb[7] <- "Mean Initial Movement Ratio"; gverb[8] <- "Mean Speed Ratio"
-gverb[9] <- "Mean Path Length Ratio"; gverb[10] <- "Mean Number of Speed Peaks"
-gverb[11] <- "Mean Max Perpendicular Distance"; 
-gverb[12] <- "Mean Percent of Movement in the Target Direction"
-gverb[13] <- "Mean Mean Arrest Period Ratio"; gverb[14] <- "Max Reaction Time"
-gverb[15] <- "Max Trial Time"; gverb[16] <- "Max Initial Direction Error"
-gverb[17] <- "Max Pre-Movement Speed"; gverb[18] <- "Max Max Speed"
-gverb[19] <- "Max Hand Path Length"; gverb[20] <- "Max Initial Movement Ratio"
-gverb[21] <- "Max Path Length Ratio"; gverb[22] <- "Max Number of Speed Peaks"
-gverb[23] <- "Max Max Perpendicular Distance"; 
-gverb[24] <- "Max Percent of Movement in the Target Direction"
-gverb[25] <- "Max Mean Arrest Period Ratio"; gverb[26] <- "Var Reaction Time"
-gverb[27] <- "Var Trial Time"; gverb[28] <- "Var Initial Direction Error"
-gverb[29] <- "Var Pre-Movement Speed"; gverb[30] <- "Var Max Speed"
-gverb[31] <- "Var Hand Path Length"; gverb[32] <- "Var Initial Movement Ratio"
-gverb[33] <- "Var Speed Ratio"; gverb[34] <- "Var Path Length Ratio"
-gverb[35] <- "Var Number of Speed Peaks"; 
-gverb[36] <- "Var Max Perpendicular Distance"
-gverb[37] <- "Var Percent of Movement in the Target Direction"; 
-gverb[38] <- "Var Mean Arrest Period Ratio"
-gverb[39] <- "Age"; gverb[40] <- "Height"; gverb[41] <- "Mass"; 
-gverb[42] <- "Months Post-Stroke"; gverb[43] <- "Sex"; 
-gverb[44] <- "Left Hand Dominant?"
-gverb[45] <- "Left Side Affected?"; gverb[46] <- "Dominant Side Affected?"
-gverb[47] <- "Hemorrhagic Stroke?"; gverb[48] <- "Unknown Stroke Location?"
-gverb[49] <- "Cortical Stroke?"; gverb[50] <- "Subcortical Stroke?"
-gverb[51] <- "Brainstem Stroke?"; gverb[52] <- "Error-Augmentation Treatment?"
-gverb[53] <- "Initial Fugl-Meyer Score"; 
-gverb[54] <- "Initial Wolf Motor Function Score"
-gverb[55] <- "Initial Box-and-Blocks Score"
+gverb[5] <- "Mean Max Speed"; # gverb[6] <- "Mean Hand Path Length"
+gverb[6] <- "Mean Initial Movement Ratio"; gverb[7] <- "Mean Speed Ratio"
+gverb[8] <- "Mean Path Length Ratio"; gverb[9] <- "Mean Number of Speed Peaks"
+gverb[10] <- "Mean Max Perpendicular Distance"; 
+gverb[11] <- "Mean Percent of Movement in the Target Direction"
+gverb[12] <- "Mean Mean Arrest Period Ratio"; gverb[13] <- "Max Reaction Time"
+gverb[14] <- "Max Trial Time"; gverb[15] <- "Max Initial Direction Error"
+gverb[16] <- "Max Pre-Movement Speed"; gverb[17] <- "Max Max Speed"
+# gverb[18] <- "Max Hand Path Length"; 
+gverb[18] <- "Max Initial Movement Ratio"
+gverb[19] <- "Max Path Length Ratio"; gverb[20] <- "Max Number of Speed Peaks"
+gverb[21] <- "Max Max Perpendicular Distance"; 
+gverb[22] <- "Max Percent of Movement in the Target Direction"
+gverb[23] <- "Max Mean Arrest Period Ratio"; gverb[24] <- "Var Reaction Time"
+gverb[25] <- "Var Trial Time"; gverb[26] <- "Var Initial Direction Error"
+gverb[27] <- "Var Pre-Movement Speed"; gverb[28] <- "Var Max Speed"
+# gverb[31] <- "Var Hand Path Length"; 
+gverb[29] <- "Var Initial Movement Ratio"
+gverb[30] <- "Var Speed Ratio"; gverb[31] <- "Var Path Length Ratio"
+gverb[32] <- "Var Number of Speed Peaks"; 
+gverb[33] <- "Var Max Perpendicular Distance"
+gverb[34] <- "Var Percent of Movement in the Target Direction"; 
+gverb[35] <- "Var Mean Arrest Period Ratio"
+gverb[36] <- "Age"; gverb[37] <- "Height"; gverb[38] <- "Mass"; 
+gverb[39] <- "Months Post-Stroke"; gverb[40] <- "Sex"; 
+gverb[41] <- "Left Hand Dominant?"
+gverb[42] <- "Left Side Affected?"; gverb[43] <- "Dominant Side Affected?"
+gverb[44] <- "Hemorrhagic Stroke?"; gverb[45] <- "Unknown Stroke Location?"
+gverb[46] <- "Cortical Stroke?"; gverb[47] <- "Subcortical Stroke?"
+gverb[48] <- "Brainstem Stroke?"; gverb[49] <- "Error-Augmentation Treatment?"
+gverb[50] <- "Initial Fugl-Meyer Score"; 
+gverb[51] <- "Initial Wolf Motor Function Score"
+gverb[52] <- "Initial Box-and-Blocks Score"
 
 ##
 gverb2 <- c("Intercept",gverb) # add intercept
@@ -110,11 +112,19 @@ yWO = Outcomes$Data.y.WO
 ## 03 - Prepare for quadratic random forests ##
 ###############################################
 df1 <- Features
+
 # this is the original copy of Features, where binary variables 
 # are still treated as integers
 # this allows for the multiplication of binary variables with other variables
 
-df1 <- df1[,-48]
+df1 <- df1[,-48] # remove (unknown stroke location column)
+
+# to remove all hand path length features (3 columns), uncomment next line
+# columns to remove: 6, 19, 31, removed one at a time would be 6, 18, 29
+df1 <- df1[, -6] # remove mean HPL
+df1 <- df1[, -18] # remove max HPL
+df1 <- df1[, -29] # remove var HPL
+
 df2 <- df1
 # for (i in 43:52)
 # {

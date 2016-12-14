@@ -1,6 +1,53 @@
 ####################################
 ######### 99 - Functions ###########
 ####################################
+SecondOrderThis <- function(FirstOrder)
+{
+  SecondOrder <- FirstOrder
+  names2 <- c(colnames(FirstOrder))
+  for (i in c(1:dim(FirstOrder)[2])) {
+    for (j in c(i:dim(FirstOrder)[2])){
+      if (is.factor(FirstOrder[,i]) & is.factor(FirstOrder[,j]) & identical(FirstOrder[,i],FirstOrder[,j])) # If they're the same and both factors, skip
+      {
+        next
+      } else if (is.factor(FirstOrder[,i]) & is.factor(FirstOrder[,j]) & !identical(FirstOrder[,i],FirstOrder[,j])) # If not the same and both factors, interact
+      {
+        name_new <- paste(colnames(FirstOrder)[i], ':',colnames(FirstOrder)[j], sep="")
+        trash <- interaction(FirstOrder[,i],FirstOrder[,j],sep = ":")
+        df_new <- data.frame(new_name = (trash))
+        colnames(df_new) <- name_new
+        # now check for df3, whether any of the "cells" in the table are empty
+        if (min(table(df_new))==0){
+          next
+        } else {
+          SecondOrder <- cbind(SecondOrder,(df_new))
+          names2 <- c(names2,name_new)
+        }
+      } else if ((is.factor(FirstOrder[,i]) & !is.factor(FirstOrder[,j])) | 
+                 (!is.factor(FirstOrder[,i]) & is.factor(FirstOrder[,j])))
+      {
+        name_new <- paste(colnames(FirstOrder)[i], ':',colnames(FirstOrder)[j], sep="")
+        trash <- interaction(FirstOrder[,i],FirstOrder[,j],sep = ":")
+        df_new <- data.frame(new_name = (trash))
+        colnames(df_new) <- name_new
+        # now check for df3, whether any of the "cells" in the table are empty
+        SecondOrder <- cbind(SecondOrder,(df_new))
+        names2 <- c(names2,name_new)
+      } else
+      {
+        name_new <- paste(colnames(FirstOrder)[i], ':',colnames(FirstOrder)[j], sep="")
+        trash <- (FirstOrder[,i]*FirstOrder[,j])
+        df_new <- data.frame(name_new = (trash))
+        colnames(df_new) <- name_new
+        # now check for df3, whether any of the "cells" in the table are empty
+        SecondOrder <- cbind(SecondOrder,(df_new))
+        names2 <- c(names2,name_new)
+      }
+    }
+  }
+  colnames(SecondOrder) <- c(names2)
+  return(SecondOrder)
+}
 
 cv_RF <- function(feat,out)
 {
@@ -160,20 +207,20 @@ plot_LSRF_fits <- function(allins,modlist,relative,out,outname,measure)
 {
   if (ncol(allins)==2){
     if (relative == 1){
-      plot(out,allins[,1], ylim = c(round(min(out),1), round(max(out),1)), 
-           xlim = c(round(min(out),1), round(max(out),1)), col='firebrick2',
-           xlab=paste('Actual Relative Change in',outname),
-           ylab=paste('Predicted Relative Change in',outname),
+      plot(allins[,1],out, xlim = c(round(min(out),1), round(max(out),1)), 
+           ylim = c(round(min(out),1), round(max(out),1)), col='firebrick2',
+           ylab=paste('Actual Relative Change in',outname),
+           xlab=paste('Predicted Relative Change in',outname),
            cex.lab=0.8,pch=21, cex=0.8,lwd=2)
     } else {
-      plot(out,allins[,1], ylim = c(round(min(out),1), round(max(out),1)), 
-           xlim = c(round(min(out),1), round(max(out),1)), col='firebrick2',
-           xlab=paste('Actual Change in',outname),
-           ylab=paste('Predicted Change in',outname),
+      plot(allins[,1],out, xlim = c(round(min(out),1), round(max(out),1)), 
+           ylim = c(round(min(out),1), round(max(out),1)), col='firebrick2',
+           ylab=paste('Actual Change in',outname),
+           xlab=paste('Predicted Change in',outname),
            cex.lab=0.8,pch=21, cex=0.8,lwd=2)
     }
     abline(modlist[[1]], col='firebrick2',lwd=2)
-    points(out,allins[,2], col = 'forestgreen',pch=22, cex=0.8,lwd=2)
+    points(allins[,2],out, col = 'forestgreen',pch=22, cex=0.8,lwd=2)
     abline(modlist[[2]], col='forestgreen',lwd=2)
     abline(0,1, col='black',pch=16,cex=0.6,lwd=2)
     if (measure == 1){
@@ -201,24 +248,24 @@ plot_LSRF_fits <- function(allins,modlist,relative,out,outname,measure)
            lwd=c(2.5,2.5),lty=c(1,1),bty="n")
   } else if (ncol(allins)==4) {
     if (relative==1){
-      plot(out,allins[,1], ylim = c(round(min(out),1), round(max(out),1)), 
-           xlim = c(round(min(out),1), round(max(out),1)), col='firebrick2',
-           xlab=paste('Actual Relative Change in',outname),
-           ylab=paste('Predicted Relative Change in',outname),
+      plot(allins[,1],out, xlim = c(round(min(out),1), round(max(out),1)), 
+           ylim = c(round(min(out),1), round(max(out),1)), col='firebrick2',
+           ylab=paste('Actual Relative Change in',outname),
+           xlab=paste('Predicted Relative Change in',outname),
            cex.lab=0.8,pch=21, cex=0.8,lwd=2)
     } else {
-      plot(out,allins[,1], ylim = c(round(min(out),1), round(max(out),1)), 
-           xlim = c(round(min(out),1), round(max(out),1)), col='firebrick2',
-           xlab=paste('Actual Change in',outname),
-           ylab=paste('Predicted Change in',outname),
+      plot(allins[,1],out, xlim = c(round(min(out),1), round(max(out),1)), 
+           ylim = c(round(min(out),1), round(max(out),1)), col='firebrick2',
+           ylab=paste('Actual Change in',outname),
+           xlab=paste('Predicted Change in',outname),
            cex.lab=0.8,pch=21, cex=0.8,lwd=2)
     }
     abline(modlist[[1]], col='firebrick2')
-    points(out,allins[,2], col = 'darkcyan',pch=22, cex=0.8)
+    points(allins[,2],out, col = 'darkcyan',pch=22, cex=0.8)
     abline(modlist[[2]], col='darkcyan')
-    points(out,allins[,3], col = 'forestgreen',pch=24, cex=0.8)
+    points(allins[,3],out, col = 'forestgreen',pch=24, cex=0.8)
     abline(modlist[[3]], col='forestgreen')
-    points(out,allins[,4], col = 'darkorange1',pch=25, cex=0.8)
+    points(allins[,4],out, col = 'darkorange1',pch=25, cex=0.8)
     abline(modlist[[4]], col='darkorange1')
     abline(0,1, col='black',pch=16,cex=0.6,lwd=2)
     if (measure == 1){
@@ -258,28 +305,28 @@ plot_LSRF_fits <- function(allins,modlist,relative,out,outname,measure)
            lty=c(1,1,1,1),lwd=c(2.5,2.5,2.5,2.5),bty="n")
   } else if (ncol(allins)==6) {
     if (relative==1){
-      plot(out,allins[,1], ylim = c(round(min(out),1), round(max(out),1)), 
-           xlim = c(round(min(out),1), round(max(out),1)), col='firebrick2',
-           xlab=paste('Actual Relative Change in',outname),
-           ylab=paste('Predicted Relative Change in',outname),
+      plot(allins[,1],out, xlim = c(round(min(out),1), round(max(out),1)), 
+           ylim = c(round(min(out),1), round(max(out),1)), col='firebrick2',
+           ylab=paste('Actual Relative Change in',outname),
+           xlab=paste('Predicted Relative Change in',outname),
            cex.lab=0.8,pch=21, cex=0.8,lwd=2)
     } else {
-      plot(out,allins[,1], ylim = c(round(min(out),1), round(max(out),1)), 
-           xlim = c(round(min(out),1), round(max(out),1)), col='firebrick2',
-           xlab=paste('Actual Change in',outname),
-           ylab=paste('Predicted Change in',outname),
+      plot(allins[,1],out, xlim = c(round(min(out),1), round(max(out),1)), 
+           ylim = c(round(min(out),1), round(max(out),1)), col='firebrick2',
+           ylab=paste('Actual Change in',outname),
+           xlab=paste('Predicted Change in',outname),
            cex.lab=0.8,pch=21, cex=0.8,lwd=2)
     }
     abline(modlist[[1]], col='firebrick2',lwd=3)
-    points(out,allins[,2], col = 'darkcyan',pch=22, cex=0.8)
+    points(allins[,2],out, col = 'darkcyan',pch=22, cex=0.8)
     abline(modlist[[2]], col='darkcyan',lwd=3)
-    points(out,allins[,3], col = 'forestgreen',pch=24, cex=0.8)
+    points(allins[,3],out, col = 'forestgreen',pch=24, cex=0.8)
     abline(modlist[[3]], col='forestgreen',lwd=3)
-    points(out,allins[,4], col = 'darkorange1',pch=25, cex=0.8)
+    points(allins[,4],out, col = 'darkorange1',pch=25, cex=0.8)
     abline(modlist[[4]], col='darkorange1',lwd=3)
-    points(out,allins[,5], col = 'khaki4',pch=3, cex=0.8)
+    points(allins[,5],out, col = 'khaki4',pch=3, cex=0.8)
     abline(modlist[[5]], col='khaki4',lwd=3)
-    points(out,allins[,6], col = 'slateblue2',pch=8, cex=0.8)
+    points(allins[,6],out, col = 'slateblue2',pch=8, cex=0.8)
     abline(modlist[[6]], col='slateblue2',lwd=3)
     abline(0,1, col='black',pch=16,cex=0.6,lwd=2)
     if (measure == 1){
