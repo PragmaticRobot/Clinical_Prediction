@@ -2,7 +2,7 @@
 # can be averaged and mean and std can be calculated for these
 # predictions, the results will be forwarded to matlab for plotting
 
-# rm(list = ls()) # clear the environment
+rm(list = ls()) # clear the environment
 
 #################################
 ########## Libraries ############
@@ -15,7 +15,7 @@ pacman::p_load(MASS, R.matlab, devtools,rgl, nFactors, FactoMineR,GGally,
                lars,glmnet,coefplot, qpcR, qqman,corrplot,ptw,ggplot2,tcltk2)
 source("functions.R")
 # source("functions2.R")
-source("create_df1_df2_no_unknown.R")
+load("2016dec12_Basics.rda")
 
 ## set up the parallel pool
 registerDoParallel(cores=4) # 4 cores to do the simulations
@@ -25,26 +25,26 @@ registerDoParallel(cores=4) # 4 cores to do the simulations
 # LASSO_res <- readMat("lasso_pred.mat", maxLength=NULL, fixNames=TRUE, Verbose=FALSE)
 # RF_res <- readMat("RF_pred.mat", maxLength=NULL, fixNames=TRUE, Verbose=FALSE)
 # RDA Files
-load("lasso_pred_v6.rda")
-load("RF_pred_v6.rda")
-load("colnames.rda")
+load("2016dec12_RF_nReps100_nFolds4.rda")
+load("2016dec12_LS_nReps100_nFolds4.rda")
+# load("colnames.rda")
 ## restructure the data into a data frame
 # RF: Random Forests
 # LS: LASSO
 # initialize data frames with the correct sizes and add row names for features
 colnmquad <- c("Intercept",colnames(df2)) #colnames for quadratic models
 colnmNoExtrap <- c("Intercept",colnames(df3))
-gverb2 <- gverb2[-c(49)] # remove unknown stroke location feature
-gverb <- gverb[-c(48)]
-LASSO_1 <- data.frame(matrix(vector(),55,100), row.names = gverb2)
-LASSO_2 <- data.frame(matrix(vector(),55,100), row.names = gverb2)
-LASSO_5 <- data.frame(matrix(vector(),1123,100),row.names = colnmNoExtrap)
-LASSO_6 <- data.frame(matrix(vector(),1123,100),row.names = colnmNoExtrap)
+# gverb2 <- gverb2[-c(49)] # remove unknown stroke location feature
+# gverb <- gverb[-c(48)]
+LASSO_1 <- data.frame(matrix(vector(),52,100), row.names = gverb2)
+LASSO_2 <- data.frame(matrix(vector(),52,100), row.names = gverb2)
+LASSO_5 <- data.frame(matrix(vector(),1366,100),row.names = colnmNoExtrap)
+LASSO_6 <- data.frame(matrix(vector(),1366,100),row.names = colnmNoExtrap)
 
-RF_3 <- data.frame(matrix(vector(),54,100), row.names = gverb)
-RF_4 <- data.frame(matrix(vector(),54,100), row.names = gverb)
-RF_7 <- data.frame(matrix(vector(),1122,100), row.names = colnames(df3))
-RF_8 <- data.frame(matrix(vector(),1122,100), row.names = colnames(df3))
+RF_3 <- data.frame(matrix(vector(),51,100), row.names = gverb)
+RF_4 <- data.frame(matrix(vector(),51,100), row.names = gverb)
+RF_7 <- data.frame(matrix(vector(),1365,100), row.names = colnames(df3))
+RF_8 <- data.frame(matrix(vector(),1365,100), row.names = colnames(df3))
 
 ## put the features in the right order with coefficients (LASSO) and variable importance (RF)
 ## after this, each matrix has features for rows, and cross-validation results in columns
@@ -278,44 +278,44 @@ plot_sideways(Wolf_Quad_LASSO_sort,0,tit3)
 plot_sideways(Wolf_Quad_RF_sort,25,tit4)
 
 
-# writeMat("R_Lin_results_v6.mat",FM_Lin_LASSO_sort=FM_Lin_LASSO_sort,FM_Lin_RF_sort=FM_Lin_RF_sort,
-#          Wolf_Lin_LASSO_sort=Wolf_Lin_LASSO_sort,Wolf_Lin_RF_sort=Wolf_Lin_RF_sort,rnam1=rownames(FM_Lin_LASSO_sort),
-#          rnam2=rownames(FM_Lin_RF_sort),rnam3=rownames(Wolf_Lin_LASSO_sort),
-#          rnam4=rownames(Wolf_Lin_RF_sort),countFM=sorted_FM$Count, countWO=sorted_WO$Count)
-# writeMat("countsF_v6.mat",countsFM = counts_FM, countsWO = counts_WO, countsqFM = counts_qFM,
-#          countsqWO = counts_qWO, countseFM = counts_eFM, countseWO = counts_eWO)
-# writeMat("Names_v6.mat",
-#          rnam1=rownames(FM_Lin_LASSO_sort),
-#          rnam2=rownames(FM_Lin_RF_sort),
-#          rnam3=rownames(FM_Quad_LASSO_sort),
-#          rnam4=rownames(FM_Quad_RF_sort),
-#          rnam5=rownames(Wolf_Lin_LASSO_sort),
-#          rnam6=rownames(Wolf_Lin_RF_sort),
-#          rnam7=rownames(Wolf_Quad_LASSO_sort),
-#          rnam8=rownames(Wolf_Quad_RF_sort),
-#          rnam9=rownames(FM_NoExtrap_LASSO_sort),
-#          rnam10=rownames(FM_NoExtrap_RF_sort),
-#          rnam11=rownames(Wolf_NoExtrap_LASSO_sort),
-#          rnam12=rownames(Wolf_NoExtrap_RF_sort))
-# write.csv(FM_Lin_LASSO_sort,"FM_Lin_LASSO_v6.csv")
-# write.csv(FM_Lin_RF_sort,"FM_Lin_RF_v6.csv")
-# write.csv(FM_Quad_LASSO_sort,"FM_Quad_LASSO_v6.csv")
-# write.csv(FM_Quad_RF_sort,"FM_Quad_RF_v6.csv")
-# write.csv(Wolf_Lin_LASSO_sort,"WO_Lin_LASSO_v6.csv")
-# write.csv(Wolf_Lin_RF_sort,"WO_Lin_RF_v6.csv")
-# write.csv(Wolf_Quad_LASSO_sort,"WO_Quad_LASSO_v6.csv")
-# write.csv(Wolf_Quad_RF_sort,"WO_Quad_RF_v6.csv")
-# 
-# write.csv(FM_NoExtrap_LASSO_sort,"FM_NoExtrap_LASSO_v6.csv")
-# write.csv(FM_NoExtrap_RF_sort,"FM_NoExtrap_RF_v6.csv")
-# write.csv(Wolf_NoExtrap_LASSO_sort,"WO_NoExtrap_LASSO_v6.csv")
-# write.csv(Wolf_NoExtrap_RF_sort,"WO_NoExtrap_RF_v6.csv")
-# 
-# save(FM_Lin_LASSO_sort,FM_Lin_RF_sort,FM_Quad_LASSO_sort,FM_Quad_RF_sort,
-#      Wolf_Lin_LASSO_sort,Wolf_Lin_RF_sort,Wolf_Quad_LASSO_sort,Wolf_Quad_RF_sort,
-#      FM_NoExtrap_LASSO_sort,FM_NoExtrap_RF_sort,Wolf_NoExtrap_LASSO_sort,
-#      Wolf_NoExtrap_RF_sort, counts_eFM, counts_eWO,
-#      counts_FM,counts_WO,counts_qFM,counts_qWO,file="LS_RF_Results_v6.rda")
+writeMat("R_Lin_results_v6.mat",FM_Lin_LASSO_sort=FM_Lin_LASSO_sort,FM_Lin_RF_sort=FM_Lin_RF_sort,
+         Wolf_Lin_LASSO_sort=Wolf_Lin_LASSO_sort,Wolf_Lin_RF_sort=Wolf_Lin_RF_sort,rnam1=rownames(FM_Lin_LASSO_sort),
+         rnam2=rownames(FM_Lin_RF_sort),rnam3=rownames(Wolf_Lin_LASSO_sort),
+         rnam4=rownames(Wolf_Lin_RF_sort),countFM=sorted_FM$Count, countWO=sorted_WO$Count)
+writeMat("countsF_v6.mat",countsFM = counts_FM, countsWO = counts_WO, countsqFM = counts_qFM,
+         countsqWO = counts_qWO, countseFM = counts_eFM, countseWO = counts_eWO)
+writeMat("Names_v6.mat",
+         rnam1=rownames(FM_Lin_LASSO_sort),
+         rnam2=rownames(FM_Lin_RF_sort),
+         rnam3=rownames(FM_Quad_LASSO_sort),
+         rnam4=rownames(FM_Quad_RF_sort),
+         rnam5=rownames(Wolf_Lin_LASSO_sort),
+         rnam6=rownames(Wolf_Lin_RF_sort),
+         rnam7=rownames(Wolf_Quad_LASSO_sort),
+         rnam8=rownames(Wolf_Quad_RF_sort),
+         rnam9=rownames(FM_NoExtrap_LASSO_sort),
+         rnam10=rownames(FM_NoExtrap_RF_sort),
+         rnam11=rownames(Wolf_NoExtrap_LASSO_sort),
+         rnam12=rownames(Wolf_NoExtrap_RF_sort))
+write.csv(FM_Lin_LASSO_sort,"FM_Lin_LASSO_v6.csv")
+write.csv(FM_Lin_RF_sort,"FM_Lin_RF_v6.csv")
+write.csv(FM_Quad_LASSO_sort,"FM_Quad_LASSO_v6.csv")
+write.csv(FM_Quad_RF_sort,"FM_Quad_RF_v6.csv")
+write.csv(Wolf_Lin_LASSO_sort,"WO_Lin_LASSO_v6.csv")
+write.csv(Wolf_Lin_RF_sort,"WO_Lin_RF_v6.csv")
+write.csv(Wolf_Quad_LASSO_sort,"WO_Quad_LASSO_v6.csv")
+write.csv(Wolf_Quad_RF_sort,"WO_Quad_RF_v6.csv")
+
+write.csv(FM_NoExtrap_LASSO_sort,"FM_NoExtrap_LASSO_v6.csv")
+write.csv(FM_NoExtrap_RF_sort,"FM_NoExtrap_RF_v6.csv")
+write.csv(Wolf_NoExtrap_LASSO_sort,"WO_NoExtrap_LASSO_v6.csv")
+write.csv(Wolf_NoExtrap_RF_sort,"WO_NoExtrap_RF_v6.csv")
+
+save(FM_Lin_LASSO_sort,FM_Lin_RF_sort,FM_Quad_LASSO_sort,FM_Quad_RF_sort,
+     Wolf_Lin_LASSO_sort,Wolf_Lin_RF_sort,Wolf_Quad_LASSO_sort,Wolf_Quad_RF_sort,
+     FM_NoExtrap_LASSO_sort,FM_NoExtrap_RF_sort,Wolf_NoExtrap_LASSO_sort,
+     Wolf_NoExtrap_RF_sort, counts_eFM, counts_eWO,
+     counts_FM,counts_WO,counts_qFM,counts_qWO,file="LS_RF_Results_v6.rda")
 
 #### Discarded Code ####
 # 

@@ -58,7 +58,7 @@ Y = prctile(FM_RF,[25 50 75],2); % calculate 25% 50% 75% for each feature
 xmax = ceil(max(max(FM_RF)));
 xmin = floor(min(min(FM_RF(1:15,:))));
 Y = Y/xmax;
-figure(1)
+figure
 clf
 subplot(1,2,1);
 set(gca,'Position',[0.05 .1 .45 .8])

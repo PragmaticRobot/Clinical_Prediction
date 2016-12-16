@@ -10,9 +10,9 @@ load("colnames.rda")
 #### This section ONLY deals with LINEAR results, 
 #### quadratic models are not included!
 
-gm2 <- c("Intercept",gm)    # add "intercept" to the list of feature names for LASSO
-gverb <- gm                 # verbose version of feature names
-
+# gm2 <- c("Intercept",gm)    # add "intercept" to the list of feature names for LASSO
+# gverb <- gm                 # verbose version of feature names
+gverb <- NULL
 ######### Making feature names verbose (looong list) #############
 gverb[1] <- "Mean Reaction Time"; gverb[2] <- "Mean Trial Time"
 gverb[3] <- "Mean Initial Direction Error"; gverb[4] <- "Mean Pre-Movement Speed"
@@ -43,12 +43,12 @@ gverb[36] <- "Age"; gverb[37] <- "Height"; gverb[38] <- "Mass";
 gverb[39] <- "Months Post-Stroke"; gverb[40] <- "Sex"; 
 gverb[41] <- "Left Hand Dominant?"
 gverb[42] <- "Left Side Affected?"; gverb[43] <- "Dominant Side Affected?"
-gverb[44] <- "Hemorrhagic Stroke?"; gverb[45] <- "Unknown Stroke Location?"
-gverb[46] <- "Cortical Stroke?"; gverb[47] <- "Subcortical Stroke?"
-gverb[48] <- "Brainstem Stroke?"; gverb[49] <- "Error-Augmentation Treatment?"
-gverb[50] <- "Initial Fugl-Meyer Score"; 
-gverb[51] <- "Initial Wolf Motor Function Score"
-gverb[52] <- "Initial Box-and-Blocks Score"
+gverb[44] <- "Hemorrhagic Stroke?"; # gverb[45] <- "Unknown Stroke Location?"
+gverb[45] <- "Cortical Stroke?"; gverb[46] <- "Subcortical Stroke?"
+gverb[47] <- "Brainstem Stroke?"; gverb[48] <- "Error-Augmentation Treatment?"
+gverb[49] <- "Initial Fugl-Meyer Score"; 
+gverb[50] <- "Initial Wolf Motor Function Score"
+gverb[51] <- "Initial Box-and-Blocks Score"
 
 ##
 gverb2 <- c("Intercept",gverb) # add intercept
@@ -192,3 +192,4 @@ colnames(df3) <- c(names3)
 # {
 #   FeaturesQ[,i] <- as.factor(2-as.integer(FeaturesQ[,i])) 
 # }
+# save(df1,df3,yFM,yWO, file = '2016dec12_Basics.rda')

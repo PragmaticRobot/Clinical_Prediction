@@ -3,10 +3,10 @@ clear all
 clc
 %% This script will do a simple plot of percentage of times a feature was selected by lasso, and also the 
 
-[FM_order_data,~,~] = xlsread('LS_FM_order.csv');
-[WO_order_data,~,~] = xlsread('LS_WO_order.csv');
+[FM_order_data,Rownames,~] = xlsread('2016dec12_LS_FM_order.csv');
+[WO_order_data,~,~] = xlsread('2016dec12_LS_WO_order.csv');
 
-[FM_VIs_data,Rownames,~] = xlsread('RF_VIs_FM_Raw_v8.csv');
+[FM_VIs_data,~,~] = xlsread('RF_VIs_FM_Raw_v8.csv');
 [WO_VIs_data,~,~] = xlsread('RF_VIs_WO_Raw_v8.csv');
 Rownames(1,:) = [];
 Rownames(:,2:end) = [];

@@ -72,15 +72,15 @@
 # counts_v10 <- rowSums(FM_LS_L_coef_v10 != 0)
 # counts_v10 <- as.data.frame(counts_v10)
 #### v11 ####
-
-load('LS_v11.rda')
+source('create_df1_df2_no_unknown.R')
+load('2016dec12_LS_nReps100_nFolds4.rda')
 
 nReps = length(FM_LS_L_beta)
 nFolds = 1 # even though this is 4 fold cv, for each repeat only 1 model is used
-nFeat = 55 # 54 features + intercept 
+nFeat = 52 # 52 features + intercept
 
 FM_LS_L_coef_v11 <- as.data.frame(matrix(0,nFeat,nReps))
-rownames(FM_LS_L_coef_v11) <- c('intercept',rownames(FM_LS_L_coef_v8))
+rownames(FM_LS_L_coef_v11) <- c(gverb2)
 
 for (jj in 1:nReps)
 {
@@ -92,14 +92,12 @@ counts_v11 <- as.data.frame(counts_v11)
 
 #### v12 ####
 
-load('LS_v12.rda')
+load('2016dec12_LS_nReps1_nFolds26.rda')
 
 nReps = length(FM_LS_L_beta)
-nFolds = 1
-nFeat = 55
 
 FM_LS_L_coef_v12 <- as.data.frame(matrix(0,nFeat,nReps))
-rownames(FM_LS_L_coef_v12) <- c('intercept',rownames(FM_LS_L_coef_v8))
+rownames(FM_LS_L_coef_v12) <- c(gverb2)
 
 for (jj in 1:nReps)
 {
@@ -110,14 +108,12 @@ counts_v12 <- rowSums(FM_LS_L_coef_v12 != 0)
 counts_v12 <- as.data.frame(counts_v12)
 #### v13 ####
 
-load('LS_v13.rda')
+load('2016dec12_LS_nReps100_nFolds13.rda')
 
 nReps = length(FM_LS_L_beta)
-nFolds = 1
-nFeat = 55
 
 FM_LS_L_coef_v13 <- as.data.frame(matrix(0,nFeat,nReps))
-rownames(FM_LS_L_coef_v13) <- c('intercept',rownames(FM_LS_L_coef_v8))
+rownames(FM_LS_L_coef_v13) <- c(gverb2)
 
 for (jj in 1:nReps)
 {
@@ -127,35 +123,25 @@ for (jj in 1:nReps)
 counts_v13 <- rowSums(FM_LS_L_coef_v13 != 0)
 counts_v13 <- as.data.frame(counts_v13)
 
-trash <- counts_v11[-c(1),]
-trash <- as.data.frame(trash)
-rownames(trash) <- rownames(counts_v8)
-colnames(trash) <- 'counts_v11'
-counts_v11 <- trash
+# next remove the first row (intercept) from all counts
+counts_v11 <- counts_v11[-c(1), , drop=FALSE]
+counts_v12 <- counts_v12[-c(1), , drop=FALSE]
+counts_v13 <- counts_v13[-c(1), , drop=FALSE]
 
-trash <- counts_v12[-c(1),]
-trash <- as.data.frame(trash)
-rownames(trash) <- rownames(counts_v8)
-colnames(trash) <- 'counts_v12'
-counts_v12 <- trash
-
-trash <- counts_v13[-c(1),]
-trash <- as.data.frame(trash)
-rownames(trash) <- rownames(counts_v8)
-colnames(trash) <- 'counts_v13'
-counts_v13 <- trash
-
-counts_total <- cbind(counts_v8,counts_v9,counts_v10, counts_v11, counts_v12, counts_v13)
+# counts_total <- cbind(counts_v8,counts_v9,counts_v10, counts_v11, counts_v12, counts_v13)
+counts_total <- cbind(counts_v11, counts_v12, counts_v13)
 # now we need to normalize counts so we can compare
 
-counts_total$counts_v8 <- counts_total$counts_v8/400
-counts_total$counts_v9 <- counts_total$counts_v9/26
-counts_total$counts_v10 <- counts_total$counts_v10/1300
+# counts_total$counts_v8 <- counts_total$counts_v8/400
+# counts_total$counts_v9 <- counts_total$counts_v9/26
+# counts_total$counts_v10 <- counts_total$counts_v10/1300
 counts_total$counts_v11 <- counts_total$counts_v11/100
 counts_total$counts_v12 <- counts_total$counts_v12/1
 counts_total$counts_v13 <- counts_total$counts_v13/100
 
-write.csv(counts_total,"FM_lasso_counts.csv")
+write.csv(counts_total,"2016dec12_FM_lasso_counts.csv")
 
-save(counts_v8,counts_v9,counts_v10,counts_v11,counts_v12,counts_v13,counts_total,
-     file = 'lasso_FM_counts.rda')
+# save(counts_v8,counts_v9,counts_v10,counts_v11,counts_v12,counts_v13,counts_total,
+     # file = 'lasso_FM_counts.rda')
+save(counts_v11,counts_v12,counts_v13,counts_total,
+     file = '2016dec12_lasso_FM_counts.rda')

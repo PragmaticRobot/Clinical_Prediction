@@ -24,10 +24,10 @@ registerDoParallel(cores=4) # 4 cores to do the simulations
 load('Basics.rda')
 # Dpath <- file.path("C:","Users","Yaz","Dropbox","Research","NewDec2015","2016-04-19 - Second Run CV","lasso_pred.mat")
 # LASSO_res <- readMat("lasso_pred.mat", maxLength=NULL, fixNames=TRUE, Verbose=FALSE)
-load("LS_v11.rda")
+load("2016dec12_LS_nReps1_nFolds26.rda")
 # Dpath <- file.path("C:","Users","Yaz","Dropbox","Research","NewDec2015","2016-04-19 - Second Run CV","RF_pred.mat")
 # RF_res <- readMat("RF_pred.mat", maxLength=NULL, fixNames=TRUE, Verbose=FALSE)
-load("RF_v8_CB_F.rda")
+load("2016dec12_RF_nReps1_nFolds26.rda")
 # 
 # ## LASSO
 # # FM_lin_lasso <-   LASSO_res$LASSO.pred1[[1]]

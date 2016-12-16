@@ -143,10 +143,10 @@ for (i in 1:nReps)
   WO_LS_Q_beta[[i]] <- summary(cc)
 }
 
-write.csv(FM_LS_L,"2016dec12_mod1_FM_LS_L_nReps1_nFolds26.csv")
-write.csv(FM_LS_Q,"2016dec12_mod2_FM_LS_Q_nReps1_nFolds26.csv")
-write.csv(WO_LS_L,"2016dec12_mod5_WO_LS_L_nReps1_nFolds26.csv")
-write.csv(WO_LS_Q,"2016dec12_mod6_WO_LS_Q_nReps1_nFolds26.csv")
+write.csv(FM_LS_L,"2016dec12_FM_LS_L_nReps1_nFolds26.csv")
+write.csv(FM_LS_Q,"2016dec12_FM_LS_Q_nReps1_nFolds26.csv")
+write.csv(WO_LS_L,"2016dec12_WO_LS_L_nReps1_nFolds26.csv")
+write.csv(WO_LS_Q,"2016dec12_WO_LS_Q_nReps1_nFolds26.csv")
 
 # # for outside cv on lasso (worst it can do):
 # # save(FM_LS_L_a0, FM_LS_L_beta, FM_LS_Q_a0,FM_LS_Q_beta,WO_LS_L_a0,WO_LS_L_beta,WO_LS_Q_a0,WO_LS_Q_beta,

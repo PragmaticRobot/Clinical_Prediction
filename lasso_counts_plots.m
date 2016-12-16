@@ -3,20 +3,20 @@ clc
 colormap winter
 % load the lasso counts results
 
-[FM_LS, txt_FM_LS,~] = xlsread('FM_lasso_counts.csv');
-[WO_LS, ~,~] = xlsread('WO_lasso_counts.csv');
+[FM_LS, txt_FM_LS,~] = xlsread('2016dec12_FM_lasso_counts.csv');
+[WO_LS, ~,~] = xlsread('2016dec12_WO_lasso_counts.csv');
 featNames = txt_FM_LS(2:end,1);
 colnames = txt_FM_LS(1,2:end);
 
-FM_counts = table(FM_LS(:,1),FM_LS(:,2),FM_LS(:,3),FM_LS(:,4),FM_LS(:,5),FM_LS(:,6), 'VariableNames',colnames,'RowNames',featNames);
-WO_counts = table(WO_LS(:,1),WO_LS(:,2),WO_LS(:,3),WO_LS(:,4),WO_LS(:,5),WO_LS(:,6), 'VariableNames',colnames,'RowNames',featNames);
+FM_counts = table(FM_LS(:,1),FM_LS(:,2),FM_LS(:,3), 'VariableNames',colnames,'RowNames',featNames);
+WO_counts = table(WO_LS(:,1),WO_LS(:,2),WO_LS(:,3), 'VariableNames',colnames,'RowNames',featNames);
 
 % clearvars -except FM_counts WO_counts
 
 bar(FM_LS)
-legend('4 Fold bad','LOO bad','13 fold bad','4 fold good','LOO good','13 fold good')
+legend('4 fold good','LOO good','13 fold good')
 ax = gca;
-ax.XTick = 1:1:54;
+ax.XTick = 1:1:52;
 ax.XTickLabel = featNames;
 ax.XTickLabelRotation = 90;
 title('lasso features picked by different cross-validations')

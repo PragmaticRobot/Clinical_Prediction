@@ -1,0 +1,52 @@
+"","counts_v11","counts_v12","counts_v13"
+"Mean Reaction Time",0.69,1,1
+"Mean Trial Time",0,0,0
+"Mean Initial Direction Error",0,0,0
+"Mean Pre-Movement Speed",0.15,0,0
+"Mean Max Speed",0.99,1,1
+"Mean Initial Movement Ratio",0,0,0
+"Mean Speed Ratio",0,0,0
+"Mean Path Length Ratio",0,0,0
+"Mean Number of Speed Peaks",0,0,0
+"Mean Max Perpendicular Distance",0,0,0
+"Mean Percent of Movement in the Target Direction",0.03,0,0
+"Mean Mean Arrest Period Ratio",0.98,1,1
+"Max Reaction Time",0.12,0,0
+"Max Trial Time",0,0,0
+"Max Initial Direction Error",0,0,0
+"Max Pre-Movement Speed",0,0,0
+"Max Max Speed",0,0,0
+"Max Initial Movement Ratio",0,0,0
+"Max Path Length Ratio",1,1,1
+"Max Number of Speed Peaks",0.11,0,0
+"Max Max Perpendicular Distance",0,0,0
+"Max Percent of Movement in the Target Direction",0,0,0
+"Max Mean Arrest Period Ratio",0.38,1,0.42
+"Var Reaction Time",0,0,0
+"Var Trial Time",0,0,0
+"Var Initial Direction Error",0,0,0
+"Var Pre-Movement Speed",0,0,0
+"Var Max Speed",0,0,0
+"Var Initial Movement Ratio",0.03,0,0
+"Var Speed Ratio",0,0,0
+"Var Path Length Ratio",0,0,0
+"Var Number of Speed Peaks",1,1,1
+"Var Max Perpendicular Distance",0,0,0
+"Var Percent of Movement in the Target Direction",0,0,0
+"Var Mean Arrest Period Ratio",0.86,1,1
+"Age",0.94,1,1
+"Height",0.99,1,1
+"Mass",0,0,0
+"Months Post-Stroke",0,0,0
+"Sex",0.47,1,0.88
+"Left Hand Dominant?",0.07,0,0
+"Left Side Affected?",1,1,1
+"Dominant Side Affected?",0.92,1,1
+"Hemorrhagic Stroke?",0.93,1,1
+"Cortical Stroke?",0,0,0
+"Subcortical Stroke?",0.1,0,0
+"Brainstem Stroke?",0.66,1,1
+"Error-Augmentation Treatment?",0.49,1,0.91
+"Initial Fugl-Meyer Score",0.08,0,0
+"Initial Wolf Motor Function Score",1,1,1
+"Initial Box-and-Blocks Score",0.12,0,0

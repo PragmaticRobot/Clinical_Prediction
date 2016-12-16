@@ -11,13 +11,15 @@
 %   x=[rand(500,1); 3+randn(1000,1); -1+randn(2000,1)]; % create random values with bizzare distribution
 %   plot1DDistribution(x)
 % MODIFIED: 2013-Nov-21 created by patton
+% MODIFIED: 2016-Dec-16 Yaz: added scf input as scale factor to the
+% distribution, when there are few points, it gets weird in the scattering.
 % === BEGIN: ===
 
-function plot1DDistributionV2(y,c,xLims,coldots)
+function plot1DDistributionV2(y,c,xLims,coldots,scf)
 
 %% setup
 fcnName='plot1DDistribution';
-Gr=.7*ones(3,1); % RGB color grey
+Gr=.4*ones(3,1); % RGB color grey
 fprintf(['~ ' fcnName ' ~ '])
 if ~exist('y','var');
   fprintf('\n  ! no input !');
@@ -36,9 +38,9 @@ if ~exist('xLims','var'),
 else
   x=(xLims(1)+((0:1/(N-1):1)).*range(xLims))'; % staggered x
 end
-xRange=abs(xLims(2)-xLims(1));
+% xRange=abs(xLims(2)-xLims(1));
 xCenter=mean(xLims); 
-x1=[(x-xRange/40) (x+xRange/40)]; % raster line limits
+% x1=[(x-xRange/40) (x+xRange/40)]; % raster line limits
 %plot(x,y,['g.'],'markersize', 1); hold on; % plot raw 
 %y=y+rand(size(y))*range(y)/500;   % slight noisify y for visibility
 
@@ -51,12 +53,12 @@ x1=[(x-xRange/40) (x+xRange/40)]; % raster line limits
 %smoothing - see https://en.wikipedia.org/wiki/Kernel_density_estimation
 % https://en.wikipedia.org/wiki/Kernel_(statistics)#Kernel_functions_in_common_use
 yPD = fitdist(y,'Kernel','Kernel','Epanechnikov'); % multi w/epanechnikov smoothing
-X=(min(y):(max(y)-min(y))/30:max(y))';
-FofX=pdf(yPD,X);
-xx=[xCenter+FofX/2; xCenter-flipud(FofX)/2]; yy=[X; flipud(X)]; 
-hh=patch(xx,yy,'y');  
-myYellow=[1 1 .9]; % bacground shading color
-set(hh,'FaceColor',myYellow,'FaceAlpha',.5,'EdgeColor','none')
+% X=(min(y):(max(y)-min(y))/30:max(y))';
+% FofX=pdf(yPD,X);
+% xx=[xCenter+FofX/2; xCenter-flipud(FofX)/2]; yy=[X; flipud(X)]; 
+% hh=patch(xx,yy,'y');  
+% myYellow=[1 1 .9]; % bacground shading color
+% set(hh,'FaceColor',myYellow,'FaceAlpha',.5,'EdgeColor','none')
 
 hold on
 
@@ -103,7 +105,7 @@ end
 % raster Lines
 for i=1:N; 
   %plot(x1(i,:),y(i)*[1 1],'b-','linewidth',.001); hold on
-   plot(xCenter+(rand(1)-.5)*pdf(yPD,y(i)),y(i),'.','Color',coldots,'linewidth',.001); hold on
+   plot((xCenter+(rand(1)-.5)/scf*pdf(yPD,y(i))),y(i),'.','Color',coldots,'linewidth',.001); hold on
    %plot(x1(i,:),y(i)*[1 1],[c '-'],'linewidth',.001); hold on
 end
 
@@ -112,13 +114,14 @@ wing=confidence(y,.95);
 plot(mean(x)*[1 1],mean(y)+[wing -wing],c, 'linewidth',6, 'Color',Gr); 
 hold on
 plot(mean(x)*[1 1],mean(y)+[std(y) -std(y)],c, 'linewidth',3, 'Color',Gr); 
-plot(mean(x)*[1 1],mean(y)+[std(y) -std(y)],'w', 'linewidth',1); 
-plot(mean(x),mean(y),['k.'],'markersize', 8); 
+plot(mean(x)*[1 1],mean(y)+[std(y) -std(y)],c, 'linewidth',1); 
+plot(mean(x),mean(y),'k.','markersize', 8); 
 
 text(mean(x),mean(y),'     Mean','fontSize',6, 'Color',Gr);
 text(mean(x),mean(y)+wing,'     95% confidence','fontSize',6, 'Color',Gr);
 text(mean(x),mean(y)+std(y),'   +1 Stan. Dev.','fontSize',6, 'Color',Gr);
-
+Meany = mean(y)
+standdev = std(y)
 % bound window if no bounds given
 if ~exist('xLims','var');
     ax=axis; % get limits
