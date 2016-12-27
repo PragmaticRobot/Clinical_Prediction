@@ -19,7 +19,7 @@ function plot1DDistributionV2(y,c,xLims,coldots,scf)
 
 %% setup
 fcnName='plot1DDistribution';
-Gr=.4*ones(3,1); % RGB color grey
+Gr=.7*ones(3,1); % RGB color grey
 fprintf(['~ ' fcnName ' ~ '])
 if ~exist('y','var');
   fprintf('\n  ! no input !');
@@ -129,6 +129,7 @@ if ~exist('xLims','var');
     %axis([-.3,.3,0,20])
 end
 %set(gca,'xTick',[],'box','off')
+
 
 %% wrapup
 drawnow

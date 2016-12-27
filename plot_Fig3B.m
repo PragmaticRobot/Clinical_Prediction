@@ -116,6 +116,11 @@ RMSE{16,1}(:,1) = abs(FM_RF_Q_v9(:,1) - yFM);   RMSE{16,2}(:,1) = abs(WO_RF_Q_v9
 col= zeros(4,3);
 col(1,:) = [1 0 0]; col(2,:) = [0 0 1]; col(3,:) = [1 0.7 0]; col(4,:) = [0 1 0];
 
+figure
+clf
+axes('Position',[0.05 0.02 0.95 0.95])
+hold on
+
 scf = 1;
 plot1DDistributionV2(RMSE{7,1}(:),'w',[0.8,1.2],col(1,:),scf)
 plot1DDistributionV2(RMSE{8,1}(:),'w',[1.8,2.2],col(2,:),scf)

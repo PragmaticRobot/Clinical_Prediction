@@ -16,6 +16,7 @@ pacman::p_load(MASS, R.matlab, devtools,rgl, nFactors, FactoMineR,GGally,
 source("functions.R")
 # source("functions2.R")
 load("2016dec12_Basics.rda")
+source('create_df1_df2_no_unknown.R')
 
 ## set up the parallel pool
 registerDoParallel(cores=4) # 4 cores to do the simulations

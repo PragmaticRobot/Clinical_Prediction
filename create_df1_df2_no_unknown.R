@@ -192,4 +192,4 @@ colnames(df3) <- c(names3)
 # {
 #   FeaturesQ[,i] <- as.factor(2-as.integer(FeaturesQ[,i])) 
 # }
-# save(df1,df3,yFM,yWO, file = '2016dec12_Basics.rda')
+save(df1,df3,yFM,yWO,gverb,gverb2, file = '2016dec12_Basics.rda')

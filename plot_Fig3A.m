@@ -87,6 +87,7 @@ col= zeros(4,3);
 col(1,:) = [1 0 0]; col(2,:) = [0 0 1]; col(3,:) = [1 0.7 0]; col(4,:) = [0 1 0];
 
 figure
+axes('Position',[0.05 0.02 0.95 0.95])
 hold on
 
 FullFMAR2Mat = [AR2.FM_LS_L;AR2.FM_LS_Q;AR2.FM_RF_L;AR2.FM_RF_Q];
@@ -115,16 +116,16 @@ ax.XTick = [];
 set(ax,'FontSize',18)
 ylabel('Adjusted Coefficient of Determination R^2')
 % ylabel('R^2 (light)/ Adjusted R^2 (dark)')
-ylim([0 1.2])
+ylim([0 1.1])
 xlim([0 10])
-text(1,0.81,'First order lasso','Rotation',60,'FontSize',17,'HorizontalAlignment','left')
-text(2,0.84,'Second order lasso','Rotation',60,'FontSize',17,'HorizontalAlignment','left')
-text(3,0.15,'First order random forests','Rotation',60,'FontSize',17,'HorizontalAlignment','left')
-text(4,0.15,'Second order random forests','Rotation',60,'FontSize',17,'HorizontalAlignment','left')
-
-text(6,0.95,'First order lasso','Rotation',60,'FontSize',17,'HorizontalAlignment','left')
-text(7,0.9,'Second order lasso','Rotation',60,'FontSize',17,'HorizontalAlignment','left')
-text(8,0.15,'First order random forests','Rotation',60,'FontSize',17,'HorizontalAlignment','left')
-text(9,0.15,'Second order random forests','Rotation',60,'FontSize',17,'HorizontalAlignment','left')
+% text(1,0.95,'First order lasso','Rotation',90,'FontSize',21,'HorizontalAlignment','left')
+% text(2,0.95,'Second order lasso','Rotation',90,'FontSize',21,'HorizontalAlignment','left')
+% text(3,0.95,'First order random forests','Rotation',90,'FontSize',21,'HorizontalAlignment','left')
+% text(4,0.95,'Second order random forests','Rotation',90,'FontSize',21,'HorizontalAlignment','left')
+% 
+% text(6,0.95,'First order lasso','Rotation',90,'FontSize',21,'HorizontalAlignment','left')
+% text(7,0.95,'Second order lasso','Rotation',90,'FontSize',21,'HorizontalAlignment','left')
+% text(8,0.95,'First order random forests','Rotation',90,'FontSize',21,'HorizontalAlignment','left')
+% text(9,0.95,'Second order random forests','Rotation',90,'FontSize',21,'HorizontalAlignment','left')
 
 

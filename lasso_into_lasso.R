@@ -13,19 +13,18 @@ pacman::p_load(MASS, R.matlab, devtools,rgl, nFactors, FactoMineR,GGally,e1071,c
 ## set up the parallel pool
 registerDoParallel(cores=4) # 4 cores to do the simulations
 # load df1 (linear feature set), df3 (quad feature set), yFM, and yWO 
-load('Basics.rda')
+load('2016dec12_Basics.rda')
 source("functions.R") # load all functions we might need
 
 ## Find the feature order and set up parameters
-LS_FM_order <- read.csv('LS_FM_order.csv')
-LS_WO_order <- read.csv('LS_WO_order.csv')
+LS_FM_order <- read.csv('2016dec12_LS_FM_order.csv')
+LS_WO_order <- read.csv('2016dec12_LS_WO_order.csv')
 nSubj   <- 26                  # how many subjects in your dataset?
 nFeats  <- 20                  # max number of features on x-axis of final plot
 x       <- 1                   # how many do you want to leave out?
 xx      <- 1:26                # this will be trashed soon
 Folds   <- combn(nSubj,x)      # all the possible combination of Leave x out
 nReps   <- dim(Folds)[2]       # make sure to cover all possibilities
-nFold   <- 26                  # nFold cross validation for lasso
 rm(xx)                         # remove the trash
 
 ## sort the top features in decreasing importance, and store the sorted indices
@@ -106,6 +105,6 @@ for (i in 1:nFeats)
   }
 }
 
-save(WO_LS_Q,WO_LS_L,WO_LS_ind,file = 'WO_meta_26C1.rda')
-write.csv(WO_LS_L,file = 'WO_LS_L_26C1.csv')
-write.csv(WO_LS_Q,file = 'WO_LS_Q_26C1.csv')
+save(WO_LS_Q,WO_LS_L,WO_LS_ind,file = '2016dec12_WO_meta_26C1.rda')
+write.csv(WO_LS_L,file = '2016dec12_WO_LS_L_R2_meta_26C1.csv')
+write.csv(WO_LS_Q,file = '2016dec12_WO_LS_Q_R2_meta_26C1.csv')

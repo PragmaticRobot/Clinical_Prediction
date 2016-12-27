@@ -58,14 +58,10 @@ for (i in 1:nReps)
   print(paste("Created forests for repeat ",i))
   
   # Calculate variable importance
-  imp <- sort(RF_model1$importance, partial=NULL,decreasing=TRUE, index.return=TRUE)
-  FM_RF_L_VI[,i] <- imp$x
-  imp <- sort(RF_model2$importance, partial=NULL,decreasing=TRUE, index.return=TRUE)
-  FM_RF_Q_VI[,i] <- imp$x
-  imp <- sort(RF_model3$importance, partial=NULL,decreasing=TRUE, index.return=TRUE)
-  WO_RF_L_VI[,i] <- imp$x
-  imp <- sort(RF_model4$importance, partial=NULL,decreasing=TRUE, index.return=TRUE)
-  WO_RF_Q_VI[,i] <- imp$x
+  FM_RF_L_VI[,i] <- RF_model1$importance
+  FM_RF_Q_VI[,i] <- RF_model2$importance
+  WO_RF_L_VI[,i] <- RF_model3$importance
+  WO_RF_Q_VI[,i] <- RF_model4$importance
   print(paste("Calculated Variable Importance for repeat ",i))
   
   # Calculate predictions for each run
