@@ -4,18 +4,22 @@ clear all
 clc
 
 %% data prep
-[FM_VI_data,RownamesFM,~] = xlsread('2016dec12_FM_RF_VI_sorted.csv');
-[WO_VI_data,RownamesWO,~] = xlsread('2016dec12_WO_RF_VI_sorted.csv');
+[FM_VI_data,RownamesFM,~] = xlsread('2016dec12_RF_Best_FM_VI.csv');
+[WO_VI_data,RownamesWO,~] = xlsread('2016dec12_RF_Best_WO_VI.csv');
 
-[FM_RF_order,~,~] = xlsread('2016dec12_FM_RF_Order.csv');
-[WO_RF_order,~,~] = xlsread('2016dec12_WO_RF_Order.csv');
+[~,FM_RF_order] = sort(mean(FM_VI_data,2),'descend');
+[~,WO_RF_order] = sort(mean(WO_VI_data,2),'descend');
 
 [DF1, txt_DF1, ~] = xlsread('2016dec12_df1.csv'); DF1(:,1) = [];
 yFM = xlsread('yFM.csv'); yFM(:,1) = [];
 yWO = xlsread('yWO.csv'); yWO(:,1) = [];
 Names_df1 = txt_DF1(1,:);
-top5FM = FM_RF_order(1:5,2);
-top5WO = WO_RF_order(1:5,2);
+top5FM = FM_RF_order(1:5);
+top5WO = WO_RF_order(1:5);
+
+% import lasso results
+[FM_LS_counts,~,~] = xlsread('2016dec12_LS_FM_order.csv');
+[WO_LS_counts,~,~] = xlsread('2016dec12_LS_WO_order.csv');
 
 %% Cleanup headings for name fields
 RownamesFM(1,:) = [];
@@ -29,32 +33,6 @@ RownamesWO(:,2:end) = [];
 FM_RF = FM_VI_data;
 WO_RF = WO_VI_data;
 
-%% colormaps
-% Frequency of selection will be conveyed through patches behind the plot,
-% with the darker patches correlating with more frequent selection. so
-% first we need to create a colormap:
-
-% start values are the base values for colors here
-% Red for Fugl-Meyer (matching R plots)
-% start 238 59 59
-% end 251 208 208
-map = zeros(100,3);
-map(:,1) = linspace(251/255,238/255,100);
-map(:,2) = linspace(208/255,150/255,100);
-map(:,3) = linspace(208/255,150/255,100);
-mapComp = ones(100,3)-map;
-% Green for Wolf (to match R plots)
-% start 85 107 47
-% end 232 239 220
-map2 = zeros(100,3);
-map2(:,1) = linspace(232/255,176/255,100);
-map2(:,2) = linspace(222/255,200/255,100);
-map2(:,3) = linspace(220/255,97/255,100);
-map2Comp = ones(100,3)-map2;
-
-col = 0.7*[1 0 0];
-col2 = 0.7*[0 0 1];
-
 %% plotting Random Forests Fugl-Meyer
 
 % box limits
@@ -62,122 +40,84 @@ Y = prctile(FM_RF,[25 50 75],2); % calculate 25% 50% 75% for each feature
 xmax = ceil(max(max(FM_RF)));
 xmin = floor(min(min(FM_RF)));
 Y = Y/xmax;
+nrow = size(FM_RF,1);
 
-figure
+fig = figure;
+fig.PaperType = 'usletter';
+fig.PaperOrientation = 'portrait';
 clf
-subplot(1,2,1);
-set(gca,'Position',[0.05 .1 .45 .9])
+% subplot(1,2,1);
+axes('Position',[0.04 .05 .44 .94])
 hold on
+ylim([0 nrow+0.5])
+% text(0.84,47.6,RownamesFM(1),'HorizontalAlignment','right');
 
-% box around each feature
-line([0.85 0.94],[46.5 46.5],'Color',0.2*[1 1 1]);
-line([0.94 0.94],[46.5 48.8],'Color',0.2*[1 1 1]);
-line([0.94 0.85],[48.8 48.8],'Color',0.2*[1 1 1]);
-line([0.85 0.85],[48.8 46.5],'Color',0.2*[1 1 1]);
-
-line([0.85 0.94],[46.3 46.3],'Color',0.2*[1 1 1]);
-line([0.94 0.94],[46.3 44.0],'Color',0.2*[1 1 1]);
-line([0.94 0.85],[44.0 44.0],'Color',0.2*[1 1 1]);
-line([0.85 0.85],[44.0 46.3],'Color',0.2*[1 1 1]);
-
-line([0.85 0.94],[43.8 43.8],'Color',0.2*[1 1 1]);
-line([0.94 0.94],[43.8 41.5],'Color',0.2*[1 1 1]);
-line([0.94 0.85],[41.5 41.5],'Color',0.2*[1 1 1]);
-line([0.85 0.85],[41.5 43.8],'Color',0.2*[1 1 1]);
-
-line([0.85 0.94],[41.3 41.3],'Color',0.2*[1 1 1]);
-line([0.94 0.94],[41.3 39.0],'Color',0.2*[1 1 1]);
-line([0.94 0.85],[39.0 39.0],'Color',0.2*[1 1 1]);
-line([0.85 0.85],[39.0 41.3],'Color',0.2*[1 1 1]);
-
-line([0.85 0.94],[38.8 38.8],'Color',0.2*[1 1 1]);
-line([0.94 0.94],[38.8 36.5],'Color',0.2*[1 1 1]);
-line([0.94 0.85],[36.5 36.5],'Color',0.2*[1 1 1]);
-line([0.85 0.85],[36.5 38.8],'Color',0.2*[1 1 1]);
-
-% surrounding box
-line([0.7 0.95],[36.3 36.3],'Color',0.2*[1 1 1]);
-line([0.95 0.95],[36.3 49.0],'Color',0.2*[1 1 1]);
-line([0.95 0.7],[49.0 49.0],'Color',0.2*[1 1 1]);
-line([0.7 0.7],[49.0 36.3],'Color',0.2*[1 1 1]);
-
-text(0.84,47.6,RownamesFM(1),'HorizontalAlignment','right');
-text(0.84,45.1,RownamesFM(2),'HorizontalAlignment','right');
-text(0.84,42.6,RownamesFM(3),'HorizontalAlignment','right');
-text(0.84,40.1,RownamesFM(4),'HorizontalAlignment','right');
-text(0.84,37.6,RownamesFM(5),'HorizontalAlignment','right');
-
-for i = 1:51
-    nrow = size(FM_RF,1);
+for i = 1:nrow
     % center of box at nrow-i+0.5
     ymid = (nrow-i)+0.5;
+    
+    % add the dot from lasso, fraction of cross-validations where
+    % this feature was used
+    plot(FM_LS_counts(FM_RF_order(i)),ymid,'bd','MarkerSize',7,'MarkerFaceColor',[92,171,181]/255,'MarkerEdgeColor','none');
+    
+    % plot RF ranks
     for j = 1:100
         yy = ymid + ((rand-0.5)*.7); % add noise to y-value
-        plot(FM_RF(i,j)/xmax,yy,'.','Color',[0 139/255 139/255],'MarkerSize',5);
+        plot(FM_RF(FM_RF_order(i),j)/xmax,yy,'.','Color',0.2*[1 1 1],'MarkerSize',4);
     end
-%     text(xmin/xmax*2.1,ymid,rnam2{i},'HorizontalAlignment','left');
     % now plot the box for each value
-    line([Y(i,1) Y(i,3)],[ymid-0.25 ymid-0.25],'Color',[205/255 102/255 0]);
-    line([Y(i,1) Y(i,1)],[ymid-0.25 ymid+0.25],'Color',[205/255 102/255 0]);
-    line([Y(i,3) Y(i,3)],[ymid-0.25 ymid+0.25],'Color',[205/255 102/255 0]);
-    line([Y(i,3) Y(i,1)],[ymid+0.25 ymid+0.25],'Color',[205/255 102/255 0]);
-    line([Y(i,2) Y(i,2)],[ymid-0.25 ymid+0.25],'Color',[205/255 102/255 0]); % Median
-    if i >= 9
-        text(Y(i,2)+0.03, ymid, RownamesFM(i),'HorizontalAlignment','left');
+    line([Y(FM_RF_order(i),1) Y(FM_RF_order(i),3)],[ymid-0.25 ymid-0.25],'Color',0.8*[1 0.7 0],'LineWidth',1);
+    line([Y(FM_RF_order(i),1) Y(FM_RF_order(i),1)],[ymid-0.25 ymid+0.25],'Color',0.8*[1 0.7 0],'LineWidth',1);
+    line([Y(FM_RF_order(i),3) Y(FM_RF_order(i),3)],[ymid-0.25 ymid+0.25],'Color',0.8*[1 0.7 0],'LineWidth',1);
+    line([Y(FM_RF_order(i),3) Y(FM_RF_order(i),1)],[ymid+0.25 ymid+0.25],'Color',0.8*[1 0.7 0],'LineWidth',1);
+    line([Y(FM_RF_order(i),2) Y(FM_RF_order(i),2)],[ymid-0.25 ymid+0.25],'Color',0.8*[1 0.7 0],'LineWidth',1); % Median
+
+    % text with the feature name
+    if i == 1
+        text(Y(FM_RF_order(i),2)-0.03, ymid, RownamesFM(FM_RF_order(i)),'HorizontalAlignment','right');
     else
-        text(Y(i,2)-0.03, ymid, RownamesFM(i),'HorizontalAlignment','right');
+        text(Y(FM_RF_order(i),2)+0.03, ymid, RownamesFM(FM_RF_order(i)),'HorizontalAlignment','left');
     end
+
 end
 box off
-set(gca,'color','none','YColor','none','Ticklength', [0 0])
+set(gca,'color','none','YColor','none')%,'Ticklength', [0 0])
+set(gca,'XTick',[0 0.2 0.4 0.6 0.8 1])
 xlim([xmin/xmax 1])
 xlabel('Normalized Feature Importance')
-% title('Variable Importance for Change in Fugl-Meyer')
+% draw the extra axis for lasso
+line([0 1],[51 51],'Color',[92,171,181]/255); 
+line([1 1],[51 51.3],'Color',[92,171,181]/255);        text(1,51.5,'1','Color',[92,171,181]/255,'HorizontalAlignment','center');
+line([0.8 0.8],[51 51.3],'Color',[92,171,181]/255);    text(0.8,51.5,'0.8','Color',[92,171,181]/255,'HorizontalAlignment','center');
+line([0.6 0.6],[51 51.3],'Color',[92,171,181]/255);    text(0.6,51.5,'0.6','Color',[92,171,181]/255,'HorizontalAlignment','center');
+line([0.4 0.4],[51 51.3],'Color',[92,171,181]/255);    text(0.4,51.5,'0.4','Color',[92,171,181]/255,'HorizontalAlignment','center');
+line([0.2 0.2],[51 51.3],'Color',[92,171,181]/255);    text(0.2,51.5,'0.2','Color',[92,171,181]/255,'HorizontalAlignment','center');
+line([0 0],[51 51.3],'Color',[92,171,181]/255);        text(0,51.5,'0','Color',[92,171,181]/255,'HorizontalAlignment','center');
 
-% plot individual top features
-axes('Position',[0.395 0.7 0.062 0.11])
-X = [ones(26,1),DF1(:,top5FM(1))]; b = X\yFM; CalcFM = X*b;
-scatter(DF1(:,top5FM(1)),yFM,30,'MarkerFaceColor',col,'MarkerEdgeColor',col);
-hold on
-box on
-plot(DF1(:,top5FM(1)),CalcFM,'Color',col2,'LineWidth',1)
-axis off
-ax = gca; ax.XTick = []; ax.YTick = [];
+% scale yFM for the smaller plots, divide by max yFM
+maxFM = max(yFM);
+yFM_sc = yFM./maxFM; % this scales it between -1 and 1
+yFM_sc = yFM_sc./2; % this scales it between -0.5 and 0.5
 
-axes('Position',[0.413 0.56 0.065 0.11])
-X = [ones(26,1),DF1(:,top5FM(2))]; b = X\yFM; CalcFM = X*b;
-scatter(DF1(:,top5FM(2)),yFM,30,'MarkerFaceColor',col,'MarkerEdgeColor',col);
+% plot individual small plots
+axes('Position',[0.02 .05 .01 0.94])
 hold on
-box on
-plot(DF1(:,top5FM(2)),CalcFM,'Color',col2,'LineWidth',1)
+ylim([0 nrow+0.5])
+xlim([-0.5 0.8])
+for i = 1:nrow
+    ymid = (nrow-i)+0.5;
+    % plot individual top features
+    this_feat = DF1(:,FM_RF_order(i)); % the feature to be plotted at position i (counting from the top)
+    this_feat_sc = this_feat./max(this_feat); % scale the feature between -1 and 1
+    X = [ones(26,1),this_feat]; b = X\yFM; CalcFM = X*b;
+    scatter(this_feat_sc-0.25,yFM_sc+ymid,1,'.','MarkerFaceColor','b','MarkerEdgeColor','b');
+    hold on
+    CalcFM_sc = (CalcFM./maxFM)./2;
+    plot(this_feat_sc-0.25,CalcFM_sc+ymid,'Color','m','LineWidth',1)
+end
 axis off
-ax = gca; ax.XTick = []; ax.YTick = [];
-
-axes('Position',[0.396 0.42 0.0654 0.11])
-X = [ones(26,1),DF1(:,top5FM(3))]; b = X\yFM; CalcFM = X*b;
-scatter(DF1(:,top5FM(3)),yFM,30,'MarkerFaceColor',col,'MarkerEdgeColor',col);
-hold on
-box on
-plot(DF1(:,top5FM(3)),CalcFM,'Color',col2,'LineWidth',1)
-axis off
-ax = gca; ax.XTick = []; ax.YTick = [];
-
-axes('Position',[0.401 0.28 0.0654 0.11])
-X = [ones(26,1),DF1(:,top5FM(4))]; b = X\yFM; CalcFM = X*b;
-scatter(DF1(:,top5FM(4)),yFM,30,'MarkerFaceColor',col,'MarkerEdgeColor',col);
-hold on
-box on
-plot(DF1(:,top5FM(4)),CalcFM,'Color',col2,'LineWidth',1)
-axis off
-ax = gca; ax.XTick = []; ax.YTick = [];
-
-axes('Position',[0.415 0.14 0.045 0.11])
-X = [ones(26,1),DF1(:,top5FM(5))]; b = X\yFM; CalcFM = X*b;
-scatter(DF1(:,top5FM(5)),yFM,30,'MarkerFaceColor',col,'MarkerEdgeColor',col);
-hold on
-box on
-plot(DF1(:,top5FM(5)),CalcFM,'Color',col2,'LineWidth',1)
-axis off
+box off
+set(gca,'color','none','YColor','none','Ticklength', [0 0])
 ax = gca; ax.XTick = []; ax.YTick = [];
 
 %% plotting Random Forests Wolf
@@ -188,119 +128,73 @@ xmax = ceil(max(max(WO_RF)));
 % xmin = floor(min(min(WO_RF(1:15,:))));
 xmin = floor(min(min(WO_RF)));
 Y = Y/xmax;
-% figure(2)
-% clf
-subplot(1,2,2);
-set(gca,'Position',[.55 .1 .4 .9])
+
+axes('Position',[.54 .05 .43 .94])
 hold on
-% box around each feature
-line([0.80 0.94],[46.5 46.5],'Color',0.2*[1 1 1]);
-line([0.94 0.94],[46.5 48.8],'Color',0.2*[1 1 1]);
-line([0.94 0.80],[48.8 48.8],'Color',0.2*[1 1 1]);
-line([0.80 0.80],[48.8 46.5],'Color',0.2*[1 1 1]);
+ylim([0 nrow+0.5])
 
-line([0.80 0.94],[46.3 46.3],'Color',0.2*[1 1 1]);
-line([0.94 0.94],[46.3 44.0],'Color',0.2*[1 1 1]);
-line([0.94 0.80],[44.0 44.0],'Color',0.2*[1 1 1]);
-line([0.80 0.80],[44.0 46.3],'Color',0.2*[1 1 1]);
-
-line([0.80 0.94],[43.8 43.8],'Color',0.2*[1 1 1]);
-line([0.94 0.94],[43.8 41.5],'Color',0.2*[1 1 1]);
-line([0.94 0.80],[41.5 41.5],'Color',0.2*[1 1 1]);
-line([0.80 0.80],[41.5 43.8],'Color',0.2*[1 1 1]);
-
-line([0.80 0.94],[41.3 41.3],'Color',0.2*[1 1 1]);
-line([0.94 0.94],[41.3 39.0],'Color',0.2*[1 1 1]);
-line([0.94 0.80],[39.0 39.0],'Color',0.2*[1 1 1]);
-line([0.80 0.80],[39.0 41.3],'Color',0.2*[1 1 1]);
-
-line([0.80 0.94],[38.8 38.8],'Color',0.2*[1 1 1]);
-line([0.94 0.94],[38.8 36.5],'Color',0.2*[1 1 1]);
-line([0.94 0.80],[36.5 36.5],'Color',0.2*[1 1 1]);
-line([0.80 0.80],[36.5 38.8],'Color',0.2*[1 1 1]);
-
-% surrounding box
-line([0.61 0.95],[36.3 36.3],'Color',0.2*[1 1 1]);
-line([0.95 0.95],[36.3 49.0],'Color',0.2*[1 1 1]);
-line([0.95 0.61],[49.0 49.0],'Color',0.2*[1 1 1]);
-line([0.61 0.61],[49.0 36.3],'Color',0.2*[1 1 1]);
-
-text(0.79,47.6,'Initial WMFT Score','HorizontalAlignment','right');
-text(0.79,45.1,'Initial Box-and-Blocks','HorizontalAlignment','right');
-text(0.79,42.6,'Max PMTD','HorizontalAlignment','right');
-text(0.79,40.1,'Mean PMTD','HorizontalAlignment','right');
-text(0.79,37.6,'Initial UEFM Score','HorizontalAlignment','right');
-
-for i = 1:51
-    nrow = size(WO_RF,1);
+for i = 1:nrow
     % center of box at nrow-i+0.5
     ymid = (nrow-i)+0.5;
+    % add the dot from lasso, fraction of cross-validations where
+    % this feature was used
+    plot(WO_LS_counts(WO_RF_order(i)),ymid,'bd','MarkerSize',7,'MarkerFaceColor',[92,171,181]/255,'MarkerEdgeColor','none');
+    % now plot RF
     for j = 1:100
         yy = ymid + ((rand-0.5)*.7); % add noise to y-value
-        plot(WO_RF(i,j)/xmax,yy,'.','Color',[205/255 102/255 0],'MarkerSize',5);
+        plot(WO_RF(WO_RF_order(i),j)/xmax,yy,'.','Color',0.2*[1 1 1],'MarkerSize',4);
     end
 %     text(xmin/xmax*8,ymid,rnam4{i},'HorizontalAlignment','left');
     % now plot the box for each value
-    line([Y(i,1) Y(i,3)],[ymid-0.25 ymid-0.25],'Color',[0 139/255 139/255]);
-    line([Y(i,1) Y(i,1)],[ymid-0.25 ymid+0.25],'Color',[0 139/255 139/255]);
-    line([Y(i,3) Y(i,3)],[ymid-0.25 ymid+0.25],'Color',[0 139/255 139/255]);
-    line([Y(i,3) Y(i,1)],[ymid+0.25 ymid+0.25],'Color',[0 139/255 139/255]);
-    line([Y(i,2) Y(i,2)],[ymid-0.25 ymid+0.25],'Color',[0 139/255 139/255]); % Median
+    line([Y(WO_RF_order(i),1) Y(WO_RF_order(i),3)],[ymid-0.25 ymid-0.25],'Color',0.8*[1 0.7 0],'LineWidth',1);
+    line([Y(WO_RF_order(i),1) Y(WO_RF_order(i),1)],[ymid-0.25 ymid+0.25],'Color',0.8*[1 0.7 0],'LineWidth',1);
+    line([Y(WO_RF_order(i),3) Y(WO_RF_order(i),3)],[ymid-0.25 ymid+0.25],'Color',0.8*[1 0.7 0],'LineWidth',1);
+    line([Y(WO_RF_order(i),3) Y(WO_RF_order(i),1)],[ymid+0.25 ymid+0.25],'Color',0.8*[1 0.7 0],'LineWidth',1);
+    line([Y(WO_RF_order(i),2) Y(WO_RF_order(i),2)],[ymid-0.25 ymid+0.25],'Color',0.8*[1 0.7 0],'LineWidth',1); % Median
     
-    if i >= 7
-        text(Y(i,2)+0.03, ymid, RownamesWO(i),'HorizontalAlignment','left');
+    if i == 1
+        text(Y(WO_RF_order(i),2)-0.03, ymid, RownamesWO(WO_RF_order(i)),'HorizontalAlignment','right');
     else
-        text(Y(i,2)-0.03, ymid, RownamesWO(i),'HorizontalAlignment','right');
+        text(Y(WO_RF_order(i),2)+0.03, ymid, RownamesWO(WO_RF_order(i)),'HorizontalAlignment','left');
     end
 end
 box off
-set(gca,'color','none','YColor','none','Ticklength', [0 0])
+set(gca,'color','none','YColor','none')%,'Ticklength', [0 0])
+set(gca,'XTick',[0 0.2 0.4 0.6 0.8 1])
 xlim([xmin/xmax 1])
 xlabel('Normalized Feature Importance')
-% title('Variable Importance for Change in Wolf Motor Function')
 
-% plot individual top features
-axes('Position',[0.867 0.7 0.054 0.11])
-X = [ones(26,1),DF1(:,top5WO(1))]; b = X\yWO; CalcWO = X*b;
-scatter(DF1(:,top5WO(1)),yWO,30,'MarkerFaceColor',col,'MarkerEdgeColor',col);
-hold on
-box on
-plot(DF1(:,top5WO(1)),CalcWO,'Color',col2,'LineWidth',1)
-axis off
-ax = gca; ax.XTick = []; ax.YTick = [];
+% draw the extra axis for lasso
+line([0 1],[51 51],'Color',[92,171,181]/255); 
+line([1 1],[51 51.3],'Color',[92,171,181]/255);        text(1,51.5,'1','Color',[92,171,181]/255,'HorizontalAlignment','center');
+line([0.8 0.8],[51 51.3],'Color',[92,171,181]/255);    text(0.8,51.5,'0.8','Color',[92,171,181]/255,'HorizontalAlignment','center');
+line([0.6 0.6],[51 51.3],'Color',[92,171,181]/255);    text(0.6,51.5,'0.6','Color',[92,171,181]/255,'HorizontalAlignment','center');
+line([0.4 0.4],[51 51.3],'Color',[92,171,181]/255);    text(0.4,51.5,'0.4','Color',[92,171,181]/255,'HorizontalAlignment','center');
+line([0.2 0.2],[51 51.3],'Color',[92,171,181]/255);    text(0.2,51.5,'0.2','Color',[92,171,181]/255,'HorizontalAlignment','center');
+line([0 0],[51 51.3],'Color',[92,171,181]/255);        text(0,51.5,'0','Color',[92,171,181]/255,'HorizontalAlignment','center');
 
-axes('Position',[0.87 0.56 0.052 0.11])
-X = [ones(26,1),DF1(:,top5WO(2))]; b = X\yWO; CalcWO = X*b;
-scatter(DF1(:,top5WO(2)),yWO,30,'MarkerFaceColor',col,'MarkerEdgeColor',col);
-hold on
-box on
-plot(DF1(:,top5WO(2)),CalcWO,'Color',col2,'LineWidth',1)
-axis off
-ax = gca; ax.XTick = []; ax.YTick = [];
+% scale yFM for the smaller plots, divide by max yFM
+maxWO = max(yWO);
+yWO_sc = yWO./maxWO; % this scales it between -1 and 1
+yWO_sc = yWO_sc./2; % this scales it between -0.5 and 0.5
 
-axes('Position',[0.853 0.42 0.065 0.11])
-X = [ones(26,1),DF1(:,top5WO(3))]; b = X\yWO; CalcWO = X*b;
-scatter(DF1(:,top5WO(3)),yWO,30,'MarkerFaceColor',col,'MarkerEdgeColor',col);
+% now plot each feature
+axes('Position',[0.52 .05 .01 0.94])
 hold on
-box on
-plot(DF1(:,top5WO(3)),CalcWO,'Color',col2,'LineWidth',1)
+ylim([0 nrow+0.5])
+xlim([-0.5 0.8])
+for i = 1:nrow
+    ymid = (nrow-i)+0.5;
+    % plot individual top features
+    this_feat = DF1(:,WO_RF_order(i)); % the feature to be plotted at position i (counting from the top)
+    this_feat_sc = this_feat./max(this_feat); % scale the feature between -1 and 1
+    X = [ones(26,1),this_feat]; b = X\yWO; CalcWO = X*b;
+    scatter(this_feat_sc-0.25,yWO_sc+ymid,1,'.','MarkerFaceColor','b','MarkerEdgeColor','b');
+    hold on
+    CalcWO_sc = (CalcWO./maxWO)./2;
+    plot(this_feat_sc-0.25,CalcWO_sc+ymid,'Color','m','LineWidth',1)
+end
 axis off
-ax = gca; ax.XTick = []; ax.YTick = [];
-
-axes('Position',[0.867 0.28 0.0652 0.11])
-X = [ones(26,1),DF1(:,top5WO(4))]; b = X\yWO; CalcWO = X*b;
-scatter(DF1(:,top5WO(4)),yWO,30,'MarkerFaceColor',col,'MarkerEdgeColor',col);
-hold on
-box on
-plot(DF1(:,top5WO(4)),CalcWO,'Color',col2,'LineWidth',1)
-axis off
-ax = gca; ax.XTick = []; ax.YTick = [];
-
-axes('Position',[0.867 0.14 0.0652 0.11])
-X = [ones(26,1),DF1(:,top5WO(5))]; b = X\yWO; CalcWO = X*b;
-scatter(DF1(:,top5WO(5)),yWO,30,'MarkerFaceColor',col,'MarkerEdgeColor',col);
-hold on
-box on
-plot(DF1(:,top5WO(5)),CalcWO,'Color',col2,'LineWidth',1)
-axis off
+box off
+set(gca,'color','none','YColor','none','Ticklength', [0 0])
 ax = gca; ax.XTick = []; ax.YTick = [];
